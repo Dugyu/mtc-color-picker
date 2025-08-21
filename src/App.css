@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind utilities;
+
+:root {
+  font-size: 16px;
+}
+.dark {
+  --color-base-1: rgba(18, 11, 61, 1);
+  --color-base-2: rgba(9, 0, 47, 1);
+  --color-base-3: rgba(28, 24, 75, 1);
+  --color-base-4: rgba(9, 0, 47, 1);
+  --color-base-content: rgba(161, 177, 255, 1);
+  --color-primary: rgba(248, 97, 180, 1);
+  --color-primary-content: rgba(80, 3, 35, 1);
+  --color-secondary: rgba(113, 209, 254, 1);
+  --color-secondary-content: rgba(4, 46, 73, 1);
+  --color-muted: rgba(18, 11, 61, 1);
+  --color-muted-content: rgba(161, 177, 255, 0.6);
+  --color-neutral: rgba(66, 42, 213, 1);
+  --color-neutral-content: rgba(198, 210, 255, 1);
+}

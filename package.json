@@ -1,0 +1,32 @@
+{
+  "name": "rspeedy-react-ts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rspeedy build",
+    "dev": "rspeedy dev",
+    "format": "prettier --write .",
+    "preview": "rspeedy preview"
+  },
+  "dependencies": {
+    "@lynx-js/react": "^0.112.3"
+  },
+  "devDependencies": {
+    "@lynx-js/qrcode-rsbuild-plugin": "^0.4.0",
+    "@lynx-js/react-rsbuild-plugin": "^0.10.12",
+    "@lynx-js/rspeedy": "^0.10.7",
+    "@lynx-js/tailwind-preset": "^0.2.0",
+    "@lynx-js/types": "3.3.0",
+    "@rsbuild/plugin-type-check": "1.2.4",
+    "@types/react": "^18.3.23",
+    "prettier": "^3.6.2",
+    "rsbuild-plugin-tailwindcss": "^0.2.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.9.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true,
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
+}
