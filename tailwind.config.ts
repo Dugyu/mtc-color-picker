@@ -37,7 +37,7 @@ export default {
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
+        lg: '26px',
       },
     },
   },
