@@ -1,4 +1,9 @@
-import { useMainThreadRef, useEffect, useMemo } from '@lynx-js/react';
+import {
+  useMainThreadRef,
+  useEffect,
+  useMemo,
+  runOnMainThread,
+} from '@lynx-js/react';
 
 type AnyFunction = (...args: any[]) => any;
 
@@ -6,8 +11,17 @@ function useMTSEffectEvent<T extends AnyFunction>(fn: T): T {
   const ref = useMainThreadRef(fn);
 
   useEffect(() => {
-    'main thread';
-    ref.current = fn;
+    let active = true;
+    async function updateRef() {
+      await runOnMainThread(() => {
+        'main thread';
+        if (active) ref.current = fn;
+      });
+    }
+    updateRef();
+    return () => {
+      active = false;
+    };
   }, [fn]);
 
   // https://github.com/facebook/react/issues/19240

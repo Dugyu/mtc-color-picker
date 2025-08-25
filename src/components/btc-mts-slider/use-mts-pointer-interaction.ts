@@ -5,7 +5,7 @@ import { useMTSEffectEvent, mtsNoop } from './use-mts-effect-event';
 /**
  * Raw pointer position relative to an element's bounding box.
  */
-export interface PointerPosition {
+interface PointerPosition {
   /**
    * Horizontal offset from the element's left edge, in pixels.
    * May be < 0 if the pointer is left of the element,
@@ -29,11 +29,11 @@ export interface PointerPosition {
  * - Does not apply clamp, min/max, or step logic (leave that to higher-level hooks).
  * - Internally stabilizes callbacks so listeners don't depend on caller memoization.
  */
-export interface UseMTSPointerInteractionProps {
+interface UseMTSPointerInteractionProps {
   /** Called continuously while pointer moves (dragging). */
-  onValueUpdate?: (pos: PointerPosition) => void;
+  onMTSValueUpdate?: (pos: PointerPosition) => void;
   /** Called once at the end of an interaction (pointer up). */
-  onValueCommit?: (pos: PointerPosition) => void;
+  onMTSValueCommit?: (pos: PointerPosition) => void;
 }
 
 /**
@@ -48,8 +48,8 @@ export interface UseMTSPointerInteractionProps {
  */
 
 function useMTSPointerInteraction({
-  onValueUpdate,
-  onValueCommit,
+  onMTSValueUpdate,
+  onMTSValueCommit,
 }: UseMTSPointerInteractionProps = {}) {
   /** Element (coordinate frame) metrics */
   const elementLeftRef = useMainThreadRef<number | null>(null);
@@ -64,8 +64,8 @@ function useMTSPointerInteraction({
 
   const draggingRef = useMainThreadRef(false);
 
-  const stableUpdate = useMTSEffectEvent(onValueUpdate ?? mtsNoop);
-  const stableCommit = useMTSEffectEvent(onValueCommit ?? mtsNoop);
+  const stableUpdate = useMTSEffectEvent(onMTSValueUpdate ?? mtsNoop);
+  const stableCommit = useMTSEffectEvent(onMTSValueCommit ?? mtsNoop);
 
   const buildPosition = useCallback((x: number): PointerPosition | null => {
     'main thread';
@@ -150,4 +150,19 @@ function useMTSPointerInteraction({
   };
 }
 
+interface UseMTSPointerInteractionReturnValue {
+  onMTSPointerDown: (e: MainThread.TouchEvent) => void;
+  onMTSPointerMove: (e: MainThread.TouchEvent) => void;
+  onMTSPointerUp: (e: MainThread.TouchEvent) => void;
+  onMTSElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
+  onMTSContainerLayoutChange: (
+    e: MainThread.LayoutChangeEvent,
+  ) => Promise<void>;
+}
+
 export { useMTSPointerInteraction };
+export type {
+  PointerPosition,
+  UseMTSPointerInteractionProps,
+  UseMTSPointerInteractionReturnValue,
+};
