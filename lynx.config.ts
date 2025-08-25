@@ -7,7 +7,9 @@ import { pluginTailwindCSS } from 'rsbuild-plugin-tailwindcss';
 
 export default defineConfig({
   source: {
-    entry: {},
+    entry: {
+      BTCSlider: './src/demos/BTCSlider.tsx',
+    },
   },
   plugins: [
     pluginQRCode({
