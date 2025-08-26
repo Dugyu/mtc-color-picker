@@ -15,7 +15,7 @@ import type {
   MTSWriterRef,
   MTSWriterWithControls,
 } from './use-mts-controllable';
-import { useMTSEffectEvent, mtsNoop } from './use-mts-effect-event';
+// import { useMTSEffectEvent } from './use-mts-effect-event';
 
 interface UseMTSSliderProps {
   mtsWriteValue?: MTSWriterRef<number>;
@@ -50,7 +50,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     min === max ? 0 : (initialValue - min) / (max - min),
   );
 
-  const stableOnCommit = useMTSEffectEvent(onMTSCommit ?? mtsNoop);
+  // const stableOnCommit = useMTSEffectEvent(onMTSCommit);
 
   const step = useMemo(() => (stepProp > 0 ? stepProp : 1), [stepProp]);
 
@@ -71,9 +71,9 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
       'main thread';
       if (disabled) return;
       const next = quantize(pos);
-      writeValue(next);
-      ratioRef.current =
-        min === max ? 0 : (valueRef.current - min) / (max - min);
+      const ratio = min === max ? 0 : (next - min) / (max - min);
+      ratioRef.current = ratio;
+      writeValue(next); // write value and notify change, call onMTSChange
     },
     [disabled, quantize, writeValue],
   );
@@ -83,8 +83,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
       'main thread';
       if (disabled) return;
       const next = quantize(pos);
-      stableOnCommit(next);
-      writeValue(next);
+      onMTSCommit?.(next);
     },
     [disabled, quantize, writeValue],
   );
@@ -99,19 +98,35 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     onMTSCommit: onMTSPointerCommit,
   });
 
-  return {
-    valueRef,
-    writeValue,
-    ratioRef,
-    min,
-    max,
-    step,
-    disabled,
-    onMTSPointerDown,
-    onMTSPointerMove,
-    onMTSPointerUp,
-    onMTSTrackLayoutChange: onMTSElementLayoutChange,
-  };
+  const returnedValue = useMemo(
+    () => ({
+      valueRef,
+      writeValue,
+      ratioRef,
+      min,
+      max,
+      step,
+      disabled,
+      onMTSPointerDown,
+      onMTSPointerMove,
+      onMTSPointerUp,
+      onMTSTrackLayoutChange: onMTSElementLayoutChange,
+    }),
+    [
+      writeValue,
+      min,
+      max,
+      step,
+      disabled,
+      onMTSPointerDown,
+      onMTSPointerMove,
+      onMTSPointerUp,
+      onMTSPointerUp,
+      onMTSElementLayoutChange,
+    ],
+  );
+
+  return returnedValue;
 }
 
 interface UseMTSSliderReturnValue {

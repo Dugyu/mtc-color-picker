@@ -1,7 +1,7 @@
 import { useMainThreadRef, useCallback } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 
-import { useMTSEffectEvent, mtsNoop } from './use-mts-effect-event';
+// import { useMTSEffectEvent } from './use-mts-effect-event';
 /**
  * Raw pointer position relative to an element's bounding box.
  */
@@ -64,8 +64,8 @@ function useMTSPointerInteraction({
 
   const draggingRef = useMainThreadRef(false);
 
-  const stableUpdate = useMTSEffectEvent(onMTSUpdate ?? mtsNoop);
-  const stableCommit = useMTSEffectEvent(onMTSCommit ?? mtsNoop);
+  // const stableUpdate = useMTSEffectEvent(onMTSUpdate);
+  // const stableCommit = useMTSEffectEvent(onMTSCommit);
 
   const buildPosition = useCallback((x: number): PointerPosition | null => {
     'main thread';
@@ -88,7 +88,8 @@ function useMTSPointerInteraction({
       draggingRef.current = true;
       buildPosition(e.detail.x);
       if (posRef.current) {
-        stableUpdate(posRef.current);
+        onMTSUpdate?.(posRef.current);
+        //stableUpdate(posRef.current);
       }
     },
     [buildPosition],
@@ -100,7 +101,8 @@ function useMTSPointerInteraction({
       if (!draggingRef.current) return;
       buildPosition(e.detail.x);
       if (posRef.current) {
-        stableUpdate(posRef.current);
+        onMTSUpdate?.(posRef.current);
+        // stableUpdate(posRef.current);
       }
     },
     [buildPosition],
@@ -112,8 +114,10 @@ function useMTSPointerInteraction({
       draggingRef.current = false;
       buildPosition(e.detail.x);
       if (posRef.current) {
-        stableUpdate(posRef.current);
-        stableCommit(posRef.current);
+        onMTSUpdate?.(posRef.current);
+        onMTSCommit?.(posRef.current);
+        // stableUpdate(posRef.current);
+        // stableCommit(posRef.current);
       }
     },
     [buildPosition],

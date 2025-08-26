@@ -5,7 +5,7 @@ import {
   MainThreadRef,
 } from '@lynx-js/react';
 
-import { useMTSEffectEvent, mtsNoop } from './use-mts-effect-event';
+// import { useMTSEffectEvent } from './use-mts-effect-event';
 
 type RefWriteAction<T> =
   | (T | undefined)
@@ -87,18 +87,21 @@ function useMTSUncontrolled<T>({
 }: Omit<useMTSControllabeProps<T>, 'mtsWriteValue'>) {
   const currentRef = useMainThreadRef<T>(initialValue);
 
-  const stableOnChange = useMTSEffectEvent(onMTSChange ?? mtsNoop);
+  // const stableOnChange = useMTSEffectEvent(onMTSChange);
 
   const writeCurrent = useCallback(
     (next: RefWriteAction<T | undefined>) => {
       'main thread';
       const resolved = isUpdater(next) ? next(currentRef.current) : next;
-      if (resolved !== currentRef.current && resolved !== undefined) {
-        currentRef.current = resolved;
-        stableOnChange(resolved);
+      if (resolved !== undefined) {
+        if (resolved !== currentRef.current) {
+          currentRef.current = resolved;
+          onMTSChange?.(resolved);
+          // stableOnChange(resolved);
+        }
       }
     },
-    [stableOnChange],
+    [onMTSChange],
   );
 
   return [currentRef, writeCurrent] as const;

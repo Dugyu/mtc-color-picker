@@ -1,13 +1,14 @@
 import {
   useMainThreadRef,
   useEffect,
-  useMemo,
+  // useMemo,
   runOnMainThread,
+  useCallback,
 } from '@lynx-js/react';
 
 type AnyFunction = (...args: any[]) => any;
 
-function useMTSEffectEvent<T extends AnyFunction>(fn: T): T {
+function useMTSEffectEvent<T extends AnyFunction>(fn: T | undefined): T {
   const ref = useMainThreadRef(fn);
 
   useEffect(() => {
@@ -25,18 +26,26 @@ function useMTSEffectEvent<T extends AnyFunction>(fn: T): T {
   }, [fn]);
 
   // https://github.com/facebook/react/issues/19240
-  return useMemo(
+  /*   return useMemo(
     () =>
       ((...args) => {
         'main thread';
-        ref.current(...args);
+        if (ref.current && typeof ref.current === 'function') {
+          ref.current(...args);
+        }
       }) as T,
+    [],
+  ); */
+
+  return useCallback(
+    ((...args) => {
+      'main thread';
+      if (ref.current && typeof ref.current === 'function') {
+        ref.current(...args);
+      }
+    }) as T,
     [],
   );
 }
 
-const mtsNoop = <T extends any[] = any[]>(..._args: T): void => {
-  'main thread';
-};
-
-export { useMTSEffectEvent, mtsNoop };
+export { useMTSEffectEvent };

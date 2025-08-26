@@ -1,4 +1,4 @@
-import { useMainThreadRef, useState } from '@lynx-js/react';
+import { useCallback, useMainThreadRef, useState } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 import { useMTSSlider } from './use-mts-slider';
 import type { MTSWriterRef, MTSWriter } from './use-mts-slider';
@@ -33,7 +33,7 @@ function MTSSlider(props: MTSSliderProps) {
     mtsWriteValue,
     initialValue,
     onMTSInit,
-    onMTSChange,
+    onMTSChange: onMTSChangeProp,
     onMTSCommit,
     mtsWriteRootStyle,
     mtsWriteTrackStyle,
@@ -47,19 +47,29 @@ function MTSSlider(props: MTSSliderProps) {
   const mtsTrackRef = useMainThreadRef<MainThread.Element | null>(null);
   const mtsThumbRef = useMainThreadRef<MainThread.Element | null>(null);
 
-  const currentRootStyleRef =
+  const mtsRootStyleRef =
     useMainThreadRef<Record<string, string>>(initialRootStyle);
-  const currentTrackStyleRef =
+  const mtsTrackStyleRef =
     useMainThreadRef<Record<string, string>>(initialTrackStyle);
 
-  const onChange = (value: number) => {
-    'main thread';
-    updateThumbStyle();
-    onMTSChange?.(value);
-  };
+  const mtsUpdateListenerRef = useMainThreadRef<() => void>();
+
+  const onMTSChange = useCallback(
+    (value: number) => {
+      'main thread';
+      if (onMTSChangeProp) {
+        onMTSChangeProp(value);
+      }
+      if (mtsUpdateListenerRef.current) {
+        mtsUpdateListenerRef.current();
+      }
+    },
+    [onMTSChangeProp],
+  );
 
   const {
     ratioRef,
+    valueRef,
     writeValue,
     onMTSPointerDown,
     onMTSPointerMove,
@@ -68,7 +78,7 @@ function MTSSlider(props: MTSSliderProps) {
   } = useMTSSlider({
     initialValue,
     mtsWriteValue,
-    onMTSChange: onChange,
+    onMTSChange: onMTSChange,
     onMTSCommit: onMTSCommit,
     ...restProps,
   });
@@ -78,12 +88,10 @@ function MTSSlider(props: MTSSliderProps) {
   ) {
     'main thread';
     if (mtsRootRef.current) {
-      const resolved = isUpdater(next)
-        ? next(currentRootStyleRef.current)
-        : next;
+      const resolved = isUpdater(next) ? next(mtsRootStyleRef.current) : next;
       if (resolved !== undefined) {
         mtsRootRef.current.setStyleProperties(resolved);
-        currentRootStyleRef.current = resolved;
+        mtsRootStyleRef.current = resolved;
       }
     }
   }
@@ -93,57 +101,57 @@ function MTSSlider(props: MTSSliderProps) {
   ) {
     'main thread';
     if (mtsTrackRef.current) {
-      const resolved = isUpdater(next)
-        ? next(currentTrackStyleRef.current)
-        : next;
+      const resolved = isUpdater(next) ? next(mtsTrackStyleRef.current) : next;
       if (resolved !== undefined) {
         mtsTrackRef.current.setStyleProperties(resolved);
-        currentTrackStyleRef.current = resolved;
+        mtsTrackStyleRef.current = resolved;
       }
     }
   }
 
-  function updateThumbStyle() {
+  const updateThumbStyle = () => {
     'main thread';
     if (mtsThumbRef.current) {
       mtsThumbRef.current.setStyleProperties({
         left: `${ratioRef.current * 100}%`,
       });
     }
-  }
+  };
 
-  const initRoot = (ref: MainThread.Element) => {
+  const initRoot = useCallback((ref: MainThread.Element) => {
     'main thread';
     mtsRootRef.current = ref;
-
     // Bind writeValue to mtsWriteValue
     writeValue.init();
-
     // Initialization callback
     onMTSInit?.(ref);
-
     if (mtsWriteRootStyle) {
       mtsWriteRootStyle.current = updateRootStyle;
     }
     // init root style
-    updateRootStyle(currentRootStyleRef.current);
-  };
+    updateRootStyle(mtsRootStyleRef.current);
+  }, []);
 
-  const initTrack = (ref: MainThread.Element) => {
+  const initTrack = useCallback((ref: MainThread.Element) => {
     'main thread';
-    mtsTrackRef.current = ref;
     if (mtsWriteTrackStyle) {
       mtsWriteTrackStyle.current = updateTrackStyle;
     }
+    mtsTrackRef.current = ref;
     // init track style
-    updateTrackStyle(currentTrackStyleRef.current);
-  };
+    updateTrackStyle(mtsTrackStyleRef.current);
+  }, []);
 
-  const initThumb = (ref: MainThread.Element) => {
+  const initThumb = useCallback((ref: MainThread.Element) => {
     'main thread';
     mtsThumbRef.current = ref;
+    if (ref) {
+      mtsUpdateListenerRef.current = updateThumbStyle;
+    } else {
+      mtsUpdateListenerRef.current = undefined;
+    }
     updateThumbStyle();
-  };
+  }, []);
 
   return (
     // Root
@@ -157,9 +165,9 @@ function MTSSlider(props: MTSSliderProps) {
     >
       {/* Track Positioner */}
       <view
-        className="relative w-full h-full flex flex-row items-center"
         main-thread:ref={initTrack}
         main-thread:bindlayoutchange={onMTSTrackLayoutChange}
+        className="relative w-full h-full flex flex-row items-center"
       >
         {/* Track Visualizer */}
         <view className="w-full h-full bg-secondary"></view>
