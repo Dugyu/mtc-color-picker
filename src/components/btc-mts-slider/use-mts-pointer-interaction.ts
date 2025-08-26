@@ -31,9 +31,9 @@ interface PointerPosition {
  */
 interface UseMTSPointerInteractionProps {
   /** Called continuously while pointer moves (dragging). */
-  onMTSValueUpdate?: (pos: PointerPosition) => void;
+  onMTSUpdate?: (pos: PointerPosition) => void;
   /** Called once at the end of an interaction (pointer up). */
-  onMTSValueCommit?: (pos: PointerPosition) => void;
+  onMTSCommit?: (pos: PointerPosition) => void;
 }
 
 /**
@@ -48,8 +48,8 @@ interface UseMTSPointerInteractionProps {
  */
 
 function useMTSPointerInteraction({
-  onMTSValueUpdate,
-  onMTSValueCommit,
+  onMTSUpdate,
+  onMTSCommit,
 }: UseMTSPointerInteractionProps = {}) {
   /** Element (coordinate frame) metrics */
   const elementLeftRef = useMainThreadRef<number | null>(null);
@@ -64,8 +64,8 @@ function useMTSPointerInteraction({
 
   const draggingRef = useMainThreadRef(false);
 
-  const stableUpdate = useMTSEffectEvent(onMTSValueUpdate ?? mtsNoop);
-  const stableCommit = useMTSEffectEvent(onMTSValueCommit ?? mtsNoop);
+  const stableUpdate = useMTSEffectEvent(onMTSUpdate ?? mtsNoop);
+  const stableCommit = useMTSEffectEvent(onMTSCommit ?? mtsNoop);
 
   const buildPosition = useCallback((x: number): PointerPosition | null => {
     'main thread';

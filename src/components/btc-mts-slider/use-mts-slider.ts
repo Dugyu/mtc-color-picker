@@ -1,6 +1,6 @@
 import {
   useCallback,
-  useEffect,
+  useMemo,
   useMainThreadRef,
   MainThreadRef,
 } from '@lynx-js/react';
@@ -9,12 +9,16 @@ import type { MainThread } from '@lynx-js/types';
 import { useMTSPointerInteraction } from './use-mts-pointer-interaction';
 import type { PointerPosition } from './use-mts-pointer-interaction';
 
-import { useMTSControllable, type MTSSetterRef } from './use-mts-controllable';
+import { useMTSControllable } from './use-mts-controllable';
+import type {
+  MTSWriterRef,
+  MTSWriterWithControls,
+} from './use-mts-controllable';
 import { useMTSEffectEvent, mtsNoop } from './use-mts-effect-event';
 
 interface UseMTSSliderProps {
-  mtsSetValue?: MTSSetterRef<number>;
-  initialValue: number;
+  mtsWriteValue?: MTSWriterRef<number>;
+  initialValue?: number;
   min?: number;
   max?: number;
   step?: number;
@@ -25,7 +29,7 @@ interface UseMTSSliderProps {
 
 function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
   const {
-    mtsSetValue: externalSetterRef,
+    mtsWriteValue,
     min = 0,
     max = 100,
     step: stepProp = 1,
@@ -35,8 +39,8 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     onMTSCommit,
   } = props;
 
-  const [valueRef, setValue] = useMTSControllable({
-    mtsSetValue: externalSetterRef,
+  const [valueRef, writeValue] = useMTSControllable({
+    mtsWriteValue,
     initialValue,
     onMTSChange,
   });
@@ -47,16 +51,41 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
 
   const stableOnCommit = useMTSEffectEvent(onMTSCommit ?? mtsNoop);
 
-  const step = stepProp > 0 ? stepProp : 1;
+  const step = useMemo(() => (stepProp > 0 ? stepProp : 1), [stepProp]);
 
   const quantize = useCallback(
     ({ offsetRatio }: PointerPosition) => {
       'main thread';
-      const raw = min + offsetRatio * (max - min);
-      const aligned = Math.round(raw / step) * step;
+      const span = max - min;
+      if (!Number.isFinite(span) || span <= 0) return min;
+      const raw = min + offsetRatio * span;
+      const aligned = Math.round((raw - min) / step) * step + min;
       return clamp(aligned, min, max);
     },
     [min, max, step],
+  );
+
+  const onMTSPointerUpdate = useCallback(
+    (pos: PointerPosition) => {
+      'main thread';
+      if (disabled) return;
+      const next = quantize(pos);
+      writeValue(next);
+      ratioRef.current =
+        min === max ? 0 : (valueRef.current - min) / (max - min);
+    },
+    [disabled, quantize, writeValue],
+  );
+
+  const onMTSPointerCommit = useCallback(
+    async (pos: PointerPosition) => {
+      'main thread';
+      if (disabled) return;
+      const next = quantize(pos);
+      stableOnCommit(next);
+      writeValue(next);
+    },
+    [disabled, quantize, writeValue],
   );
 
   const {
@@ -65,25 +94,13 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     onMTSPointerUp,
     onMTSElementLayoutChange,
   } = useMTSPointerInteraction({
-    onMTSValueUpdate: (pos) => {
-      'main thread';
-      if (disabled) return;
-      const next = quantize(pos);
-      setValue(next);
-    },
-    onMTSValueCommit: async (pos) => {
-      'main thread';
-      if (disabled) return;
-      const next = quantize(pos);
-      stableOnCommit(next);
-      setValue(next);
-    },
+    onMTSUpdate: onMTSPointerUpdate,
+    onMTSCommit: onMTSPointerCommit,
   });
-
-  useEffect(() => {}, []);
 
   return {
     valueRef,
+    writeValue,
     ratioRef,
     min,
     max,
@@ -97,6 +114,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
 }
 
 interface UseMTSSliderReturnValue {
+  writeValue: MTSWriterWithControls<number>;
   valueRef: MainThreadRef<number>;
   ratioRef: MainThreadRef<number>;
   onMTSPointerDown: (e: MainThread.TouchEvent) => void;
@@ -116,4 +134,4 @@ function clamp(v: number, min: number, max: number): number {
 }
 
 export { useMTSSlider };
-export type { UseMTSSliderProps, UseMTSSliderReturnValue };
+export type { UseMTSSliderProps, UseMTSSliderReturnValue, MTSWriterRef };
