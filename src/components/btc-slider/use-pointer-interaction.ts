@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from '@lynx-js/react';
+import type { MutableRefObject } from '@lynx-js/react';
 import type { LayoutChangeEvent, NodesRef, TouchEvent } from '@lynx-js/types';
 
 import { useEffectEvent, noop } from './use-effect-event';
@@ -6,7 +7,7 @@ import { useEffectEvent, noop } from './use-effect-event';
 /**
  * Raw pointer position relative to an element's bounding box.
  */
-export interface PointerPosition {
+interface PointerPosition {
   /**
    * Horizontal offset from the element's left edge, in pixels.
    * May be < 0 if the pointer is left of the element,
@@ -30,11 +31,11 @@ export interface PointerPosition {
  * - Does not apply clamp, min/max, or step logic (leave that to higher-level hooks).
  * - Internally stabilizes callbacks so listeners don't depend on caller memoization.
  */
-export interface UsePointerInteractionProps {
+interface UsePointerInteractionProps {
   /** Called continuously while pointer moves (dragging). */
-  onValueUpdate?: (pos: PointerPosition) => void;
+  onUpdate?: (pos: PointerPosition) => void;
   /** Called once at the end of an interaction (pointer up). */
-  onValueCommit?: (pos: PointerPosition) => void;
+  onCommit?: (pos: PointerPosition) => void;
 }
 
 /**
@@ -48,9 +49,9 @@ export interface UsePointerInteractionProps {
  * - If element metrics are not ready when a pointer event arrives, we skip updates safely.
  */
 function usePointerInteraction({
-  onValueUpdate,
-  onValueCommit,
-}: UsePointerInteractionProps = {}) {
+  onUpdate,
+  onCommit,
+}: UsePointerInteractionProps = {}): UsePointerInteractionReturnValue {
   /** Element (coordinate frame) metrics */
   const elementLeftRef = useRef<number | null>(null);
   const elementWidthRef = useRef(0);
@@ -73,8 +74,8 @@ function usePointerInteraction({
     _setDragging(next);
   }, []);
 
-  const stableUpdate = useEffectEvent(onValueUpdate ?? noop);
-  const stableCommit = useEffectEvent(onValueCommit ?? noop);
+  const stableUpdate = useEffectEvent(onUpdate ?? noop);
+  const stableCommit = useEffectEvent(onCommit ?? noop);
 
   const buildPosition = useCallback((x: number): PointerPosition | null => {
     const elementWidth = elementWidthRef.current;
@@ -98,7 +99,7 @@ function usePointerInteraction({
         stableUpdate(posRef.current);
       }
     },
-    [buildPosition, setDragging],
+    [buildPosition, setDragging, stableUpdate],
   );
 
   const onPointerMove = useCallback(
@@ -109,7 +110,7 @@ function usePointerInteraction({
         stableUpdate(posRef.current);
       }
     },
-    [buildPosition, setDragging],
+    [buildPosition, setDragging, stableUpdate],
   );
 
   const onPointerUp = useCallback(
@@ -121,7 +122,7 @@ function usePointerInteraction({
         stableCommit(posRef.current);
       }
     },
-    [buildPosition, setDragging],
+    [buildPosition, setDragging, stableUpdate, stableCommit],
   );
 
   const onElementLayoutChange = useCallback((e: LayoutChangeEvent) => {
@@ -161,5 +162,20 @@ function usePointerInteraction({
     onContainerLayoutChange,
   };
 }
+interface UsePointerInteractionReturnValue {
+  elementRef: MutableRefObject<NodesRef | null>;
+  containerRef: MutableRefObject<NodesRef | null>;
+  dragging: boolean;
+  onPointerDown: (e: TouchEvent) => void;
+  onPointerMove: (e: TouchEvent) => void;
+  onPointerUp: (e: TouchEvent) => void;
+  onElementLayoutChange: (e: LayoutChangeEvent) => void;
+  onContainerLayoutChange: (e: LayoutChangeEvent) => void;
+}
 
 export { usePointerInteraction };
+export type {
+  PointerPosition,
+  UsePointerInteractionProps,
+  UsePointerInteractionReturnValue,
+};

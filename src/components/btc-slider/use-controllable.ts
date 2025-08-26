@@ -40,7 +40,7 @@ function useControllable<T>({
         setUncontrolled(next);
       }
     },
-    [isControlled, controlled, setUncontrolled],
+    [isControlled, controlled, setUncontrolled, stableOnChange],
   );
 
   return [current, setCurrent] as const;
@@ -61,7 +61,7 @@ function useUncontrolled<T>({
       }
       prevRef.current = current;
     }
-  }, [current]);
+  }, [current, stableOnChange]);
 
   return [current, setCurrent] as const;
 }

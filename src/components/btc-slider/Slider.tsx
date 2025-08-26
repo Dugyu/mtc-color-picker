@@ -1,3 +1,4 @@
+import { useMemo } from '@lynx-js/react';
 import type { CSSProperties } from '@lynx-js/types';
 import { useSlider } from './use-slider';
 import { HSLGradients } from '@/utils/hsl-gradients';
@@ -40,13 +41,13 @@ function Slider(props: SliderProps) {
       className="relative px-5 bg-primary w-full h-10 flex flex-row items-center rounded-full"
       style={rootStyle}
     >
-      {/* Positioning */}
+      {/* Track Positioner */}
       <view
         ref={trackRef}
         bindlayoutchange={onTrackLayoutChange}
         className="relative w-full h-full flex flex-row items-center"
       >
-        {/* Track */}
+        {/* Track Visualizer */}
         <view className="w-full h-full bg-secondary" style={trackStyle}></view>
         {/* Thumb */}
         <view
@@ -77,7 +78,10 @@ function HueSlider({
   onCommit?: (h: number) => void;
   disabled?: boolean;
 }) {
-  const { track: trackBg, edge: edgeBg } = HSLGradients.hueGradientPair(s, l);
+  const { track: trackBg, edge: edgeBg } = useMemo(
+    () => HSLGradients.hueGradientPair(s, l),
+    [s, l],
+  );
 
   return (
     <Slider
