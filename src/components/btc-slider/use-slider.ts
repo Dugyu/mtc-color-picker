@@ -1,4 +1,3 @@
-import { useCallback, useRef, useEffect } from '@lynx-js/react';
 import type { RefObject } from '@lynx-js/react';
 import type { LayoutChangeEvent, NodesRef, TouchEvent } from '@lynx-js/types';
 
@@ -6,7 +5,6 @@ import { usePointerInteraction } from './use-pointer-interaction';
 import type { PointerPosition } from './use-pointer-interaction';
 
 import { useControllable } from './use-controllable';
-import { useEffectEvent, noop } from './use-effect-event';
 
 interface UseSliderProps {
   value?: number;
@@ -37,21 +35,15 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     onChange,
   });
 
-  const stableOnCommit = useEffectEvent(onCommit ?? noop);
-
-  const dragStartValueRef = useRef<number>(value);
-  const prevDraggingRef = useRef(false);
-
   const step = stepProp > 0 ? stepProp : 1;
 
-  const quantize = useCallback(
-    ({ offsetRatio }: PointerPosition) => {
-      const raw = min + offsetRatio * (max - min);
-      const aligned = Math.round(raw / step) * step;
-      return clamp(aligned, min, max);
-    },
-    [min, max, step],
-  );
+  const quantize = ({ offsetRatio }: PointerPosition) => {
+    const span = max - min;
+    if (!Number.isFinite(span) || span <= 0) return min;
+    const raw = min + offsetRatio * span;
+    const aligned = Math.round((raw - min) / step) * step + min;
+    return clamp(aligned, min, max);
+  };
 
   const {
     elementRef: trackRef,
@@ -61,27 +53,18 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     onPointerUp,
     onElementLayoutChange,
   } = usePointerInteraction({
-    onValueUpdate: (pos) => {
+    onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
       setValue(next);
     },
-    onValueCommit: (pos) => {
+    onCommit: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      if (next !== dragStartValueRef.current) {
-        stableOnCommit(next);
-      }
       setValue(next);
+      onCommit?.(next);
     },
   });
-
-  useEffect(() => {
-    if (dragging && !prevDraggingRef.current) {
-      dragStartValueRef.current = value;
-    }
-    prevDraggingRef.current = dragging;
-  }, [dragging, value]);
 
   return {
     value,
