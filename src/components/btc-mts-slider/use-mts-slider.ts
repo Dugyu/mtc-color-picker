@@ -11,6 +11,7 @@ import type { PointerPosition } from './use-mts-pointer-interaction';
 
 import { useMTSControllable } from './use-mts-controllable';
 import type {
+  MTSWriter,
   MTSWriterRef,
   MTSWriterWithControls,
 } from './use-mts-controllable';
@@ -134,4 +135,9 @@ function clamp(v: number, min: number, max: number): number {
 }
 
 export { useMTSSlider };
-export type { UseMTSSliderProps, UseMTSSliderReturnValue, MTSWriterRef };
+export type {
+  UseMTSSliderProps,
+  UseMTSSliderReturnValue,
+  MTSWriterRef,
+  MTSWriter,
+};
