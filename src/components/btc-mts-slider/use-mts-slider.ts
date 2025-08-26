@@ -40,19 +40,25 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     onMTSCommit,
   } = props;
 
+  const step = useMemo(() => (stepProp > 0 ? stepProp : 1), [stepProp]);
+  const ratioRef = useMainThreadRef(valueToRatio(initialValue, min, max));
+
+  const forwardOnMTSChange = useCallback(
+    (v: number) => {
+      'main thread';
+      ratioRef.current = mtsValueToRatio(v, min, max);
+      onMTSChange?.(v);
+    },
+    [onMTSChange, min, max],
+  );
+
   const [valueRef, writeValue] = useMTSControllable({
     mtsWriteValue,
     initialValue,
-    onMTSChange,
+    onMTSChange: forwardOnMTSChange,
   });
 
-  const ratioRef = useMainThreadRef(
-    min === max ? 0 : (initialValue - min) / (max - min),
-  );
-
   // const stableOnCommit = useMTSEffectEvent(onMTSCommit);
-
-  const step = useMemo(() => (stepProp > 0 ? stepProp : 1), [stepProp]);
 
   const quantize = useCallback(
     ({ offsetRatio }: PointerPosition) => {
@@ -71,8 +77,6 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
       'main thread';
       if (disabled) return;
       const next = quantize(pos);
-      const ratio = min === max ? 0 : (next - min) / (max - min);
-      ratioRef.current = ratio;
       writeValue(next); // write value and notify change, call onMTSChange
     },
     [disabled, quantize, writeValue],
@@ -147,6 +151,23 @@ function clamp(v: number, min: number, max: number): number {
   'main thread';
   // Ensure value stays within [min, max]
   return Math.max(min, Math.min(max, v));
+}
+
+function clamp01(x: number) {
+  return x < 0 ? 0 : x > 1 ? 1 : x;
+}
+
+function valueToRatio(v: number, min: number, max: number) {
+  const span = max - min;
+  if (!Number.isFinite(span) || span <= 0) return 0;
+  return clamp01((v - min) / span);
+}
+
+function mtsValueToRatio(v: number, min: number, max: number) {
+  'main thread';
+  const span = max - min;
+  if (!Number.isFinite(span) || span <= 0) return 0;
+  return clamp((v - min) / span, 0, 1);
 }
 
 export { useMTSSlider };

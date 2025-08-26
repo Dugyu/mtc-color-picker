@@ -33,7 +33,7 @@ function MTSSlider(props: MTSSliderProps) {
     mtsWriteValue,
     initialValue,
     onMTSInit,
-    onMTSChange: onMTSChangeProp,
+    onMTSChange,
     onMTSCommit,
     mtsWriteRootStyle,
     mtsWriteTrackStyle,
@@ -54,22 +54,21 @@ function MTSSlider(props: MTSSliderProps) {
 
   const mtsUpdateListenerRef = useMainThreadRef<() => void>();
 
-  const onMTSChange = useCallback(
+  const forwardOnMTSChange = useCallback(
     (value: number) => {
       'main thread';
-      if (onMTSChangeProp) {
-        onMTSChangeProp(value);
+      if (onMTSChange) {
+        onMTSChange(value);
       }
       if (mtsUpdateListenerRef.current) {
         mtsUpdateListenerRef.current();
       }
     },
-    [onMTSChangeProp],
+    [onMTSChange],
   );
 
   const {
     ratioRef,
-    valueRef,
     writeValue,
     onMTSPointerDown,
     onMTSPointerMove,
@@ -78,8 +77,8 @@ function MTSSlider(props: MTSSliderProps) {
   } = useMTSSlider({
     initialValue,
     mtsWriteValue,
-    onMTSChange: onMTSChange,
-    onMTSCommit: onMTSCommit,
+    onMTSChange: forwardOnMTSChange,
+    onMTSCommit,
     ...restProps,
   });
 
@@ -122,7 +121,11 @@ function MTSSlider(props: MTSSliderProps) {
     'main thread';
     mtsRootRef.current = ref;
     // Bind writeValue to mtsWriteValue
-    writeValue.init();
+    if (ref) {
+      writeValue.init();
+    } else {
+      writeValue.dispose();
+    }
     // Initialization callback
     onMTSInit?.(ref);
     if (mtsWriteRootStyle) {
@@ -134,10 +137,11 @@ function MTSSlider(props: MTSSliderProps) {
 
   const initTrack = useCallback((ref: MainThread.Element) => {
     'main thread';
+    mtsTrackRef.current = ref;
+
     if (mtsWriteTrackStyle) {
       mtsWriteTrackStyle.current = updateTrackStyle;
     }
-    mtsTrackRef.current = ref;
     // init track style
     updateTrackStyle(mtsTrackStyleRef.current);
   }, []);
@@ -165,12 +169,14 @@ function MTSSlider(props: MTSSliderProps) {
     >
       {/* Track Positioner */}
       <view
-        main-thread:ref={initTrack}
         main-thread:bindlayoutchange={onMTSTrackLayoutChange}
         className="relative w-full h-full flex flex-row items-center"
       >
         {/* Track Visualizer */}
-        <view className="w-full h-full bg-secondary"></view>
+        <view
+          main-thread:ref={initTrack}
+          className="w-full h-full bg-secondary"
+        ></view>
         <view
           main-thread:ref={initThumb}
           className="absolute bg-white size-8 rounded-full -translate-x-1/2 shadow-md"
@@ -215,16 +221,16 @@ function HueSlider({
         resolved[0],
         resolved[1],
       );
-      mtsWriteRootStyle.current?.({ backgroundImage: edgeBg });
-      mtsWriteTrackStyle.current?.({ backgroundImage: trackBg });
+      mtsWriteRootStyle.current?.({ 'background-image': edgeBg });
+      mtsWriteTrackStyle.current?.({ 'background-image': trackBg });
     }
   };
-  const init = () => {
+  const init = useCallback(() => {
     'main thread';
     if (mtsWriteSL) {
       mtsWriteSL.current = updateStyle;
     }
-  };
+  }, []);
 
   return (
     <MTSSlider
@@ -239,8 +245,8 @@ function HueSlider({
       disabled={disabled}
       mtsWriteRootStyle={mtsWriteRootStyle}
       mtsWriteTrackStyle={mtsWriteTrackStyle}
-      initialRootStyle={{ backgroundImage: gradients.edge }}
-      initialTrackStyle={{ backgroundImage: gradients.track }}
+      initialRootStyle={{ 'background-image': gradients.edge }}
+      initialTrackStyle={{ 'background-image': gradients.track }}
     />
   );
 }
