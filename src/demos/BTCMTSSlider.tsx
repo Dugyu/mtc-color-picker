@@ -1,10 +1,16 @@
-import { root, useState } from '@lynx-js/react';
+import { root, runOnBackground, useCallback, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 
-import { MTSSlider } from '@/components/btc-mts-slider/MTSSlider';
+import { HueSlider } from '@/components/btc-mts-slider/MTSSlider';
 
 export function App() {
-  const [value, _setValue] = useState(200);
+  const [value, setValue] = useState(200);
+
+  const onMTSValueChange = useCallback((next: number) => {
+    'main thread';
+    console.log('updating app value...');
+    runOnBackground(setValue)(next);
+  }, []);
 
   return (
     <AppLayout title="BTC-MTS Slider" h={value} s={100} l={50}>
@@ -12,7 +18,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-12">
-        <MTSSlider initialValue={48} />
+        <HueSlider initialValue={value} onMTSChange={onMTSValueChange} />
       </view>
     </AppLayout>
   );
