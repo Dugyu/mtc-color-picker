@@ -3,7 +3,7 @@ import type { MainThread } from '@lynx-js/types';
 import { useMTSSlider } from './use-mts-slider';
 import type { MTSWriterRef, MTSWriter } from './use-mts-slider';
 import type { RefWriteAction } from './use-mts-controllable';
-import { isUpdater } from './use-mts-controllable';
+import { resolveNextValue } from './use-mts-controllable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
 
@@ -82,12 +82,10 @@ function MTSSlider(props: MTSSliderProps) {
     ...restProps,
   });
 
-  function updateRootStyle(
-    next: RefWriteAction<Record<string, string> | undefined>,
-  ) {
+  function updateRootStyle(next: RefWriteAction<Record<string, string>>) {
     'main thread';
     if (mtsRootRef.current) {
-      const resolved = isUpdater(next) ? next(mtsRootStyleRef.current) : next;
+      const resolved = resolveNextValue(mtsRootStyleRef.current, next);
       if (resolved !== undefined) {
         mtsRootRef.current.setStyleProperties(resolved);
         mtsRootStyleRef.current = resolved;
@@ -95,12 +93,10 @@ function MTSSlider(props: MTSSliderProps) {
     }
   }
 
-  function updateTrackStyle(
-    next: RefWriteAction<Record<string, string> | undefined>,
-  ) {
+  function updateTrackStyle(next: RefWriteAction<Record<string, string>>) {
     'main thread';
     if (mtsTrackRef.current) {
-      const resolved = isUpdater(next) ? next(mtsTrackStyleRef.current) : next;
+      const resolved = resolveNextValue(mtsTrackStyleRef.current, next);
       if (resolved !== undefined) {
         mtsTrackRef.current.setStyleProperties(resolved);
         mtsTrackStyleRef.current = resolved;
@@ -211,11 +207,9 @@ function HueSlider({
   const mtsWriteTrackStyle =
     useMainThreadRef<MTSWriter<Record<string, string>>>();
 
-  const updateStyle = (
-    next: RefWriteAction<readonly [number, number] | undefined>,
-  ) => {
+  const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
     'main thread';
-    const resolved = isUpdater(next) ? next(currentSLRef.current) : next;
+    const resolved = resolveNextValue(currentSLRef.current, next);
     if (resolved !== undefined) {
       const { edge: edgeBg, track: trackBg } = MTSHSLGradients.hueGradientPair(
         resolved[0],
@@ -252,3 +246,4 @@ function HueSlider({
 }
 
 export { MTSSlider, HueSlider };
+export type { MTSWriterRef, MTSWriter, RefWriteAction };

@@ -92,7 +92,7 @@ function useMTSPointerInteraction({
         //stableUpdate(posRef.current);
       }
     },
-    [buildPosition],
+    [buildPosition, onMTSUpdate],
   );
 
   const onPointerMove = useCallback(
@@ -105,7 +105,7 @@ function useMTSPointerInteraction({
         // stableUpdate(posRef.current);
       }
     },
-    [buildPosition],
+    [buildPosition, onMTSUpdate],
   );
 
   const onPointerUp = useCallback(
@@ -114,13 +114,12 @@ function useMTSPointerInteraction({
       draggingRef.current = false;
       buildPosition(e.detail.x);
       if (posRef.current) {
-        onMTSUpdate?.(posRef.current);
         onMTSCommit?.(posRef.current);
         // stableUpdate(posRef.current);
         // stableCommit(posRef.current);
       }
     },
-    [buildPosition],
+    [buildPosition, onMTSCommit],
   );
 
   const onElementLayoutChange = useCallback(

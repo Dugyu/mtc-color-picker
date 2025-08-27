@@ -7,11 +7,9 @@ import {
 
 // import { useMTSEffectEvent } from './use-mts-effect-event';
 
-type RefWriteAction<T> =
-  | (T | undefined)
-  | ((prev: T | undefined) => T | undefined);
+type RefWriteAction<T> = T | ((prev: T) => T);
 
-function isUpdater<T>(v: RefWriteAction<T>): v is (prev: T | undefined) => T {
+function isUpdater<T>(v: RefWriteAction<T>): v is (prev: T) => T {
   'main thread';
   return typeof v === 'function';
 }
@@ -23,53 +21,91 @@ type MTSWriterWithControls<T> = MTSWriter<T> & {
   dispose: () => void;
 };
 
-interface useMTSControllabeProps<T> {
-  mtsWriteValue?: MTSWriterRef<T>;
+interface UseMTSControlledProps<T> {
+  mtsWriteValue: MTSWriterRef<T>;
   initialValue: T;
   onMTSChange?: (value: T) => void;
 }
 
-function useMTSControllable<T>({
-  mtsWriteValue: externalWriterRef,
-  initialValue,
-  onMTSChange,
-}: useMTSControllabeProps<T>) {
+interface UseMTSUncontrolledProps<T> {
+  initialValue: T;
+  onMTSChange?: (value: T) => void;
+}
+
+type ShallowExpand<T> = {
+  [K in keyof T]: T[K];
+} & {};
+
+type UseMTSControllabeProps<T> = ShallowExpand<
+  | UseMTSControlledProps<T>
+  | (UseMTSUncontrolledProps<T> & { mtsWriteValue?: never })
+>;
+
+function isUseMTSControlled<T>(
+  props: UseMTSControllabeProps<T>,
+): props is UseMTSControlledProps<T> {
+  return 'mtsWriteValue' in props;
+}
+
+function useMTSControllable<T>(props: UseMTSControllabeProps<T>) {
+  const { initialValue, onMTSChange } = props;
+
+  // Internal Single Source of Truth
   const [currentRef, internalWriter] = useMTSUncontrolled({
     initialValue,
     onMTSChange,
   });
 
-  const isBoundRef = useMainThreadRef(false);
+  const isControlled = isUseMTSControlled(props);
+  const externalWriterRef = isControlled ? props.mtsWriteValue : undefined;
 
-  const initWriter = useCallback(() => {
-    'main thread';
-    if (externalWriterRef) {
-      // Controlled
-      externalWriterRef.current = internalWriter;
-      isBoundRef.current = true;
-    }
-  }, [internalWriter]);
-
-  const disposeWriter = useCallback(() => {
-    'main thread';
-    if (!externalWriterRef) return;
-    if (externalWriterRef.current === internalWriter) {
-      externalWriterRef.current = undefined;
-    }
-    isBoundRef.current = false;
-  }, [internalWriter]);
-
-  const writeCurrentBase = useCallback(
-    (next: RefWriteAction<T | undefined>) => {
+  const notifier = useCallback<MTSWriter<T>>(
+    (next) => {
       'main thread';
-      const target = externalWriterRef?.current ?? internalWriter;
-      target(next);
+      const resolved = resolveNextValue(currentRef.current, next);
+      if (resolved !== undefined && resolved !== currentRef.current) {
+        onMTSChange?.(resolved);
+      }
+    },
+    [onMTSChange],
+  );
+
+  const externalWriter = useCallback<MTSWriter<T>>(
+    (next) => {
+      'main thread';
+      internalWriter(next);
     },
     [internalWriter],
   );
 
+  const initWriter = useCallback(() => {
+    'main thread';
+    if (externalWriterRef) {
+      externalWriterRef.current = externalWriter;
+    }
+  }, [externalWriter]);
+
+  const disposeWriter = useCallback(() => {
+    'main thread';
+    if (!externalWriterRef) return;
+    if (externalWriterRef.current === externalWriter) {
+      // Only dispose if it is set by *our* initWriter, not by some other logic
+      externalWriterRef.current = undefined;
+    }
+  }, [externalWriter]);
+
+  const writeCurrentBase = useCallback<MTSWriter<T>>(
+    (next) => {
+      'main thread';
+      console.log('isControlled :', isControlled);
+      const target = isControlled ? notifier : internalWriter;
+      target(next);
+    },
+    [isControlled, notifier, internalWriter],
+  );
+
   const writeCurrent = useMemo<MTSWriterWithControls<T>>(() => {
-    const fn = ((next: RefWriteAction<T | undefined>) => {
+    const fn = ((next: RefWriteAction<T>) => {
       'main thread';
       writeCurrentBase(next);
     }) as MTSWriterWithControls<T>;
@@ -84,21 +120,21 @@ function useMTSControllable<T>({
 function useMTSUncontrolled<T>({
   initialValue,
   onMTSChange,
-}: Omit<useMTSControllabeProps<T>, 'mtsWriteValue'>) {
+}: UseMTSUncontrolledProps<T>) {
   const currentRef = useMainThreadRef<T>(initialValue);
 
   // const stableOnChange = useMTSEffectEvent(onMTSChange);
 
-  const writeCurrent = useCallback(
-    (next: RefWriteAction<T | undefined>) => {
+  const writeCurrent = useCallback<MTSWriter<T>>(
+    (next) => {
       'main thread';
-      const resolved = isUpdater(next) ? next(currentRef.current) : next;
-      if (resolved !== undefined) {
-        if (resolved !== currentRef.current) {
-          currentRef.current = resolved;
-          onMTSChange?.(resolved);
-          // stableOnChange(resolved);
-        }
+      const resolved = resolveNextValue(currentRef.current, next);
+      if (resolved !== undefined && resolved !== currentRef.current) {
+        // Update Internals
+        currentRef.current = resolved;
+        // Notify
+        onMTSChange?.(resolved);
+        // stableOnChange(resolved);
       }
     },
     [onMTSChange],
@@ -107,5 +143,22 @@ function useMTSUncontrolled<T>({
   return [currentRef, writeCurrent] as const;
 }
 
-export { useMTSControllable, useMTSUncontrolled, isUpdater };
-export type { RefWriteAction, MTSWriter, MTSWriterRef, MTSWriterWithControls };
+function resolveNextValue<T>(current: T, next: RefWriteAction<T>): T {
+  'main thread';
+  return isUpdater(next) ? (next as (p: T) => T)(current) : next;
+}
+
+export {
+  useMTSControllable,
+  useMTSUncontrolled,
+  resolveNextValue,
+  isUseMTSControlled,
+};
+export type {
+  UseMTSControllabeProps,
+  UseMTSUncontrolledProps,
+  RefWriteAction,
+  MTSWriter,
+  MTSWriterRef,
+  MTSWriterWithControls,
+};

@@ -74,19 +74,26 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
 
   const onMTSPointerUpdate = useCallback(
     (pos: PointerPosition) => {
-      'main thread';
+      ('main thread');
       if (disabled) return;
       const next = quantize(pos);
-      writeValue(next); // write value and notify change, call onMTSChange
+
+      // if controlled: notify change;
+      // if uncontrolled: update internals and notify change;
+      writeValue(next);
     },
     [disabled, quantize, writeValue],
   );
 
   const onMTSPointerCommit = useCallback(
     async (pos: PointerPosition) => {
-      'main thread';
+      ('main thread');
       if (disabled) return;
       const next = quantize(pos);
+
+      // if controlled: notify change;
+      // if uncontrolled: update internals and notify change;
+      writeValue(next);
       onMTSCommit?.(next);
     },
     [disabled, quantize, writeValue],
