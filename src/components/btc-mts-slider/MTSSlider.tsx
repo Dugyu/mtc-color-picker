@@ -245,7 +245,131 @@ function HueSlider({
   );
 }
 
-export { MTSSlider, HueSlider };
+/** ================= Saturation Slider ================= */
+
+function SaturationSlider({
+  mtsWriteValue,
+  initialValue,
+  onMTSChange,
+  onMTSCommit,
+  initialHL = [0, 50],
+  mtsWriteHL,
+  disabled,
+}: Omit<MTSSliderProps, 'min' | 'max' | 'step'> & {
+  initialHL?: readonly [number, number];
+  mtsWriteHL?: MTSWriterRef<readonly [number, number]>;
+}) {
+  const [gradients] = useState(() => {
+    return HSLGradients.saturationGradientPair(initialHL[0], initialHL[1]);
+  });
+
+  const currentHLRef = useMainThreadRef<readonly [number, number]>(initialHL);
+
+  const mtsWriteRootStyle =
+    useMainThreadRef<MTSWriter<Record<string, string>>>();
+  const mtsWriteTrackStyle =
+    useMainThreadRef<MTSWriter<Record<string, string>>>();
+
+  const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
+    'main thread';
+    const resolved = resolveNextValue(currentHLRef.current, next);
+    if (resolved !== undefined) {
+      const { edge: edgeBg, track: trackBg } =
+        MTSHSLGradients.saturationGradientPair(resolved[0], resolved[1]);
+      mtsWriteRootStyle.current?.({ 'background-image': edgeBg });
+      mtsWriteTrackStyle.current?.({ 'background-image': trackBg });
+    }
+  };
+
+  const init = useCallback(() => {
+    'main thread';
+    if (mtsWriteHL) {
+      mtsWriteHL.current = updateStyle;
+    }
+  }, []);
+
+  return (
+    <MTSSlider
+      mtsWriteValue={mtsWriteValue}
+      initialValue={initialValue}
+      onMTSInit={init}
+      onMTSChange={onMTSChange}
+      onMTSCommit={onMTSCommit}
+      min={0}
+      max={100}
+      step={1}
+      disabled={disabled}
+      mtsWriteRootStyle={mtsWriteRootStyle}
+      mtsWriteTrackStyle={mtsWriteTrackStyle}
+      initialRootStyle={{ 'background-image': gradients.edge }}
+      initialTrackStyle={{ 'background-image': gradients.track }}
+    />
+  );
+}
+
+/** ================= Lightness Slider ================= */
+
+function LightnessSlider({
+  mtsWriteValue,
+  initialValue,
+  onMTSChange,
+  onMTSCommit,
+  initialHS = [0, 100],
+  mtsWriteHS,
+  disabled,
+}: Omit<MTSSliderProps, 'min' | 'max' | 'step'> & {
+  initialHS?: readonly [number, number];
+  mtsWriteHS?: MTSWriterRef<readonly [number, number]>;
+}) {
+  const [gradients] = useState(() => {
+    return HSLGradients.lightnessGradientPair(initialHS[0], initialHS[1]);
+  });
+
+  const currentHSRef = useMainThreadRef<readonly [number, number]>(initialHS);
+
+  const mtsWriteRootStyle =
+    useMainThreadRef<MTSWriter<Record<string, string>>>();
+  const mtsWriteTrackStyle =
+    useMainThreadRef<MTSWriter<Record<string, string>>>();
+
+  const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
+    'main thread';
+    const resolved = resolveNextValue(currentHSRef.current, next);
+    if (resolved !== undefined) {
+      const { edge: edgeBg, track: trackBg } =
+        MTSHSLGradients.lightnessGradientPair(resolved[0], resolved[1]);
+      mtsWriteRootStyle.current?.({ 'background-image': edgeBg });
+      mtsWriteTrackStyle.current?.({ 'background-image': trackBg });
+    }
+  };
+
+  const init = useCallback(() => {
+    'main thread';
+    if (mtsWriteHS) {
+      mtsWriteHS.current = updateStyle;
+    }
+  }, []);
+
+  return (
+    <MTSSlider
+      mtsWriteValue={mtsWriteValue}
+      initialValue={initialValue}
+      onMTSInit={init}
+      onMTSChange={onMTSChange}
+      onMTSCommit={onMTSCommit}
+      min={0}
+      max={100}
+      step={1}
+      disabled={disabled}
+      mtsWriteRootStyle={mtsWriteRootStyle}
+      mtsWriteTrackStyle={mtsWriteTrackStyle}
+      initialRootStyle={{ 'background-image': gradients.edge }}
+      initialTrackStyle={{ 'background-image': gradients.track }}
+    />
+  );
+}
+
+export { MTSSlider, HueSlider, LightnessSlider, SaturationSlider };
 export type {
   MTSWriterRef,
   MTSWriter,
