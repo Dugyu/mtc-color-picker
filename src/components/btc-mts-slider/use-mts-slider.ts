@@ -14,16 +14,18 @@ import type {
   MTSWriter,
   MTSWriterRef,
   MTSWriterWithControls,
+  MTSWriterWithControlsRef,
 } from './use-mts-controllable';
-// import { useMTSEffectEvent } from './use-mts-effect-event';
 
 interface UseMTSSliderProps {
-  mtsWriteValue?: MTSWriterRef<number>;
+  mtsWriteValue?: MTSWriterWithControlsRef<number>;
   initialValue?: number;
   min?: number;
   max?: number;
   step?: number;
   disabled?: boolean;
+
+  onMTSDerivedChange?: (value: number) => void;
   onMTSChange?: (value: number) => void;
   onMTSCommit?: (value: number) => void;
 }
@@ -36,6 +38,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     step: stepProp = 1,
     initialValue = min,
     disabled = false,
+    onMTSDerivedChange,
     onMTSChange,
     onMTSCommit,
   } = props;
@@ -43,22 +46,21 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
   const step = useMemo(() => (stepProp > 0 ? stepProp : 1), [stepProp]);
   const ratioRef = useMainThreadRef(valueToRatio(initialValue, min, max));
 
-  const forwardOnMTSChange = useCallback(
+  const forwardOnMTSDerivedChange = useCallback(
     (v: number) => {
       'main thread';
       ratioRef.current = mtsValueToRatio(v, min, max);
-      onMTSChange?.(v);
+      onMTSDerivedChange?.(v);
     },
-    [onMTSChange, min, max],
+    [onMTSDerivedChange, min, max],
   );
 
   const [valueRef, writeValue] = useMTSControllable({
     mtsWriteValue,
     initialValue,
-    onMTSChange: forwardOnMTSChange,
+    onMTSDerivedChange: forwardOnMTSDerivedChange,
+    onMTSChange,
   });
-
-  // const stableOnCommit = useMTSEffectEvent(onMTSCommit);
 
   const quantize = useCallback(
     ({ offsetRatio }: PointerPosition) => {
@@ -77,9 +79,8 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
       ('main thread');
       if (disabled) return;
       const next = quantize(pos);
-
-      // if controlled: notify change;
-      // if uncontrolled: update internals and notify change;
+      // Controlled: only notify change;
+      // Uncontrolled: update internals and notify change;
       writeValue(next);
     },
     [disabled, quantize, writeValue],
@@ -90,9 +91,8 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
       ('main thread');
       if (disabled) return;
       const next = quantize(pos);
-
-      // if controlled: notify change;
-      // if uncontrolled: update internals and notify change;
+      // Controlled: only notify change;
+      // Uncontrolled: update internals and notify change;
       writeValue(next);
       onMTSCommit?.(next);
     },
@@ -183,4 +183,6 @@ export type {
   UseMTSSliderReturnValue,
   MTSWriterRef,
   MTSWriter,
+  MTSWriterWithControls,
+  MTSWriterWithControlsRef,
 };

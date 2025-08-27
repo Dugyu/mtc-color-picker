@@ -1,14 +1,23 @@
-import { root, runOnBackground, useCallback, useState } from '@lynx-js/react';
+import {
+  root,
+  runOnBackground,
+  useCallback,
+  useMainThreadRef,
+  useState,
+} from '@lynx-js/react';
 import { AppLayout } from '@/App';
 
 import { HueSlider } from '@/components/btc-mts-slider/MTSSlider';
+import type { MTSWriterWithControls } from '@/components/btc-mts-slider/MTSSlider';
 
 export function App() {
   const [value, setValue] = useState(200);
 
+  const mtsWriteValue = useMainThreadRef<MTSWriterWithControls<number>>();
+
   const onMTSValueChange = useCallback((next: number) => {
     'main thread';
-    console.log('updating app value...');
+    mtsWriteValue.current?.(next);
     runOnBackground(setValue)(next);
   }, []);
 
@@ -18,7 +27,11 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-12">
-        <HueSlider initialValue={value} onMTSChange={onMTSValueChange} />
+        <HueSlider
+          initialValue={value}
+          mtsWriteValue={mtsWriteValue}
+          onMTSChange={onMTSValueChange}
+        />
       </view>
     </AppLayout>
   );
