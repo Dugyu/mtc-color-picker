@@ -71,15 +71,18 @@ function ColorPicker({
     <view className="w-full h-full flex flex-col gap-y-4">
       <HueSlider
         onMTSChange={onMTSHueChange}
+        initialValue={initialHSL[0]}
         initialSL={[initialHSL[1], initialHSL[2]]}
         mtsWriteSL={mtsWriteSL}
       />
       <SaturationSlider
+        initialValue={initialHSL[1]}
         onMTSChange={onMTSSaturationChange}
         initialHL={[initialHSL[0], initialHSL[2]]}
         mtsWriteHL={mtsWriteHL}
       />
       <LightnessSlider
+        initialValue={initialHSL[2]}
         onMTSChange={onMTSLightnessChange}
         initialHS={[initialHSL[0], initialHSL[1]]}
         mtsWriteHS={mtsWriteHS}
