@@ -8,6 +8,7 @@ import { pluginTailwindCSS } from 'rsbuild-plugin-tailwindcss';
 export default defineConfig({
   source: {
     entry: {
+      BTCMTSColorPicker: './src/demos/BTCMTSColorPicker.tsx',
       BTCMTSSlider: './src/demos/BTCMTSSlider.tsx',
       BTCSlider: './src/demos/BTCSlider.tsx',
     },
