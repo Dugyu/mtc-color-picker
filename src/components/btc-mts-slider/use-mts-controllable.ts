@@ -65,7 +65,7 @@ type UseMTSControllabeProps<T> = ShallowExpand<
 function isUseMTSControlled<T>(
   props: UseMTSControllabeProps<T>,
 ): props is UseMTSControlledProps<T> {
-  return 'mtsWriteValue' in props;
+  return props.mtsWriteValue != null;
 }
 
 function useMTSControllable<T>(
