@@ -16,20 +16,41 @@ function isUpdater<T>(v: RefWriteAction<T>): v is (prev: T) => T {
 
 type MTSWriter<T> = (next: RefWriteAction<T>) => void;
 type MTSWriterRef<T> = MainThreadRef<MTSWriter<T> | undefined>;
+
 type MTSWriterWithControls<T> = MTSWriter<T> & {
+  /** Default write: land + derive + notify */
+  write: (next: RefWriteAction<T>) => void;
+  /** Silent write: land + derive only (no external notify) */
+  writeSilent: (next: RefWriteAction<T>) => void;
+  /** Notify only: emit external change (no land, no derive) */
+  notify: (next: RefWriteAction<T>) => void;
+  /** Lifecycle hooks (no-op in uncontrolled mode) */
   init: () => void;
   dispose: () => void;
 };
+type MTSWriterWithControlsRef<T> = MainThreadRef<
+  MTSWriterWithControls<T> | undefined
+>;
+
+type UseMTSControllableReturnValue<T> = Readonly<
+  [MainThreadRef<T>, MTSWriterWithControls<T>]
+>;
+
+type UseMTSUncontrolledReturnValue<T> = Readonly<
+  [MainThreadRef<T>, MTSWriterWithControls<T>]
+>;
 
 interface UseMTSControlledProps<T> {
-  mtsWriteValue: MTSWriterRef<T>;
+  mtsWriteValue: MTSWriterWithControlsRef<T>;
   initialValue: T;
   onMTSChange?: (value: T) => void;
+  onMTSDerivedChange?: (value: T) => void;
 }
 
 interface UseMTSUncontrolledProps<T> {
   initialValue: T;
   onMTSChange?: (value: T) => void;
+  onMTSDerivedChange?: (value: T) => void;
 }
 
 type ShallowExpand<T> = {
@@ -47,98 +68,176 @@ function isUseMTSControlled<T>(
   return 'mtsWriteValue' in props;
 }
 
-function useMTSControllable<T>(props: UseMTSControllabeProps<T>) {
-  const { initialValue, onMTSChange } = props;
+function useMTSControllable<T>(
+  props: UseMTSControllabeProps<T>,
+): UseMTSControllableReturnValue<T> {
+  const { initialValue, onMTSChange, onMTSDerivedChange } = props;
 
   // Internal Single Source of Truth
   const [currentRef, internalWriter] = useMTSUncontrolled({
     initialValue,
     onMTSChange,
+    onMTSDerivedChange,
   });
 
   const isControlled = isUseMTSControlled(props);
   const externalWriterRef = isControlled ? props.mtsWriteValue : undefined;
 
-  const notifier = useCallback<MTSWriter<T>>(
-    (next) => {
+  const bindExternal = useCallback(() => {
+    'main thread';
+    if (externalWriterRef) {
+      externalWriterRef.current = internalWriter;
+    }
+  }, [internalWriter]);
+
+  const unbindExternal = useCallback(() => {
+    'main thread';
+    if (!externalWriterRef) return;
+    if (externalWriterRef.current === internalWriter) {
+      externalWriterRef.current = undefined; // Only dispose if set by us (not by external logic)
+    }
+  }, [internalWriter]);
+
+  const write = useCallback(
+    (next: RefWriteAction<T>) => {
       'main thread';
-      const resolved = resolveNextValue(currentRef.current, next);
-      if (resolved !== undefined && resolved !== currentRef.current) {
-        onMTSChange?.(resolved);
+      if (isControlled) {
+        // Default behaviour for controlled mode: only notify
+        internalWriter.notify(next);
+      } else {
+        internalWriter.write(next);
       }
     },
-    [onMTSChange],
+    [isControlled, internalWriter],
   );
 
-  const externalWriter = useCallback<MTSWriter<T>>(
-    (next) => {
+  const writeSilent = useCallback(
+    (next: RefWriteAction<T>) => {
       'main thread';
-      internalWriter(next);
+      internalWriter.writeSilent(next);
     },
     [internalWriter],
   );
 
-  const initWriter = useCallback(() => {
-    'main thread';
-    if (externalWriterRef) {
-      externalWriterRef.current = externalWriter;
-    }
-  }, [externalWriter]);
-
-  const disposeWriter = useCallback(() => {
-    'main thread';
-    if (!externalWriterRef) return;
-    if (externalWriterRef.current === externalWriter) {
-      // Only dispose if it is set by *our* initWriter, not by some other logic
-      externalWriterRef.current = undefined;
-    }
-  }, [externalWriter]);
-
-  const writeCurrentBase = useCallback<MTSWriter<T>>(
-    (next) => {
+  const notify = useCallback(
+    (next: RefWriteAction<T>) => {
       'main thread';
-      console.log('isControlled :', isControlled);
-      const target = isControlled ? notifier : internalWriter;
-      target(next);
+      internalWriter.notify(next);
     },
-    [isControlled, notifier, internalWriter],
+    [internalWriter],
   );
+
+  /**
+   * Wrap the internal writer to attach lifecycle:
+   * - default callable = write
+   * - writeSilent / notifyOnly delegated
+   * - init/dispose bind/unbind external writer ref safely
+   */
 
   const writeCurrent = useMemo<MTSWriterWithControls<T>>(() => {
     const fn = ((next: RefWriteAction<T>) => {
       'main thread';
-      writeCurrentBase(next);
+      write(next);
     }) as MTSWriterWithControls<T>;
-    fn.init = initWriter;
-    fn.dispose = disposeWriter;
+    fn.write = write;
+    fn.writeSilent = writeSilent;
+    fn.notify = notify;
+    fn.init = bindExternal;
+    fn.dispose = unbindExternal;
     return fn;
-  }, [writeCurrentBase, initWriter, disposeWriter]);
+  }, [write, writeSilent, notify, bindExternal, unbindExternal]);
 
   return [currentRef, writeCurrent] as const;
 }
 
 function useMTSUncontrolled<T>({
   initialValue,
+  onMTSDerivedChange,
   onMTSChange,
-}: UseMTSUncontrolledProps<T>) {
+}: UseMTSUncontrolledProps<T>): UseMTSUncontrolledReturnValue<T> {
   const currentRef = useMainThreadRef<T>(initialValue);
 
-  // const stableOnChange = useMTSEffectEvent(onMTSChange);
-
-  const writeCurrent = useCallback<MTSWriter<T>>(
+  /**
+   * Notify-only path:
+   * - Does NOT land into internal state
+   * - Does NOT trigger derived updates
+   * - ONLY emits external onMTSChange (if changed)
+   */
+  const notify = useCallback<MTSWriter<T>>(
     (next) => {
       'main thread';
       const resolved = resolveNextValue(currentRef.current, next);
       if (resolved !== undefined && resolved !== currentRef.current) {
-        // Update Internals
-        currentRef.current = resolved;
-        // Notify
+        // External Notify
         onMTSChange?.(resolved);
-        // stableOnChange(resolved);
       }
     },
     [onMTSChange],
   );
+
+  /**
+   * Internal commit:
+   * - Resolves next value from current
+   * - Lands into internal state (single source of truth)
+   * - Triggers derived/internal updates
+   * - Optionally emits external onMTSChange
+   */
+  const commit = useCallback(
+    (next: RefWriteAction<T>, notifyExternal: boolean) => {
+      'main thread';
+      const resolved = resolveNextValue(currentRef.current, next);
+      if (resolved !== undefined && resolved !== currentRef.current) {
+        // 1) Land into internal state
+        currentRef.current = resolved;
+        // 2) Fire derived/internal updates (ratios, layout, animations, etc.)
+        onMTSDerivedChange?.(resolved);
+        // 3) Optionally notify external listeners
+        if (notifyExternal) onMTSChange?.(resolved);
+      }
+    },
+    [onMTSChange, onMTSDerivedChange, currentRef],
+  );
+  /** Write with external notification (land + derive + notify) */
+  const write = useCallback<MTSWriter<T>>(
+    (n) => {
+      'main thread';
+      commit(n, true);
+    },
+    [commit],
+  );
+
+  /** Write silently (land + derive, but NO external notify) */
+  const writeSilent = useCallback<MTSWriter<T>>(
+    (n) => {
+      'main thread';
+      commit(n, false);
+    },
+    [commit],
+  );
+
+  const noop = useCallback(() => {
+    'main thread';
+  }, []);
+
+  /**
+   * Expose a function-object:
+   * - callable default = write (land + derive + notify)
+   * - writeSilent = land + derive (no notify)
+   * - notifyOnly = emit only (no land, no derive)
+   * - init/dispose = no-op here; meaningful in the higher-level compositors
+   */
+  const writeCurrent = useMemo<MTSWriterWithControls<T>>(() => {
+    const fn = ((next: RefWriteAction<T>) => {
+      'main thread';
+      write(next);
+    }) as MTSWriterWithControls<T>;
+    fn.write = write;
+    fn.writeSilent = writeSilent;
+    fn.notify = notify;
+    fn.init = noop;
+    fn.dispose = noop;
+    return fn;
+  }, [write, writeSilent, notify]);
 
   return [currentRef, writeCurrent] as const;
 }
@@ -161,4 +260,5 @@ export type {
   MTSWriter,
   MTSWriterRef,
   MTSWriterWithControls,
+  MTSWriterWithControlsRef,
 };

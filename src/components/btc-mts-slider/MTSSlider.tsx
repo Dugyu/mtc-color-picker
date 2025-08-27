@@ -1,14 +1,19 @@
 import { useCallback, useMainThreadRef, useState } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 import { useMTSSlider } from './use-mts-slider';
-import type { MTSWriterRef, MTSWriter } from './use-mts-slider';
+import type {
+  MTSWriterRef,
+  MTSWriter,
+  MTSWriterWithControlsRef,
+  MTSWriterWithControls,
+} from './use-mts-slider';
 import type { RefWriteAction } from './use-mts-controllable';
 import { resolveNextValue } from './use-mts-controllable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
 
 interface MTSSliderProps {
-  mtsWriteValue?: MTSWriterRef<number>;
+  mtsWriteValue?: MTSWriterWithControlsRef<number>;
   initialValue?: number;
   min?: number;
   max?: number;
@@ -52,20 +57,14 @@ function MTSSlider(props: MTSSliderProps) {
   const mtsTrackStyleRef =
     useMainThreadRef<Record<string, string>>(initialTrackStyle);
 
-  const mtsUpdateListenerRef = useMainThreadRef<() => void>();
+  const mtsUpdateListenerRef = useMainThreadRef<(value: number) => void>();
 
-  const forwardOnMTSChange = useCallback(
-    (value: number) => {
-      'main thread';
-      if (onMTSChange) {
-        onMTSChange(value);
-      }
-      if (mtsUpdateListenerRef.current) {
-        mtsUpdateListenerRef.current();
-      }
-    },
-    [onMTSChange],
-  );
+  const onMTSDerivedChange = useCallback((value: number) => {
+    'main thread';
+    if (mtsUpdateListenerRef.current) {
+      mtsUpdateListenerRef.current(value);
+    }
+  }, []);
 
   const {
     ratioRef,
@@ -77,7 +76,8 @@ function MTSSlider(props: MTSSliderProps) {
   } = useMTSSlider({
     initialValue,
     mtsWriteValue,
-    onMTSChange: forwardOnMTSChange,
+    onMTSDerivedChange,
+    onMTSChange,
     onMTSCommit,
     ...restProps,
   });
@@ -246,4 +246,9 @@ function HueSlider({
 }
 
 export { MTSSlider, HueSlider };
-export type { MTSWriterRef, MTSWriter, RefWriteAction };
+export type {
+  MTSWriterRef,
+  MTSWriter,
+  MTSWriterWithControls,
+  MTSWriterWithControlsRef,
+};
