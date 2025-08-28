@@ -5,8 +5,10 @@
  * @param ms milliseconds
  */
 export function sleep(ms: number) {
-  const start = Date.now();
-  while (Date.now() - start < ms) {
-    // Intentionally do nothing
+  if (__ENABLE_BACKGROUND_BLOCKING__) {
+    const start = Date.now();
+    while (Date.now() - start < ms) {
+      // Intentionally do nothing
+    }
   }
 }
