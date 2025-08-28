@@ -1,7 +1,14 @@
 import { root, runOnBackground, useCallback, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
+import { sleep } from '@/utils/sleep';
 
 import { ColorPicker } from '@/components/btc-mts-colorpicker/MTSColorPicker';
+
+if (__BACKGROUND__) {
+  setInterval(() => {
+    sleep(250);
+  }, 100);
+}
 
 export function App() {
   const [value, setValue] = useState<readonly [number, number, number]>([

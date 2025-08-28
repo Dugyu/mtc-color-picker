@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "rspeedy build",
-    "dev": "rspeedy dev",
+    "demo": "cross-env LYNX_DEMO_BLOCKING_ENABLED=true rspeedy dev",
+    "build": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy build",
+    "dev": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy dev",
     "format": "prettier --write .",
-    "preview": "rspeedy preview"
+    "preview": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy preview"
   },
   "dependencies": {
     "@lynx-js/react": "^0.112.4"
@@ -19,6 +20,7 @@
     "@lynx-js/types": "3.3.0",
     "@rsbuild/plugin-type-check": "1.2.4",
     "@types/react": "^18.3.23",
+    "cross-env": "^10.0.0",
     "prettier": "^3.6.2",
     "rsbuild-plugin-tailwindcss": "^0.2.3",
     "tailwindcss": "^3.4.17",
