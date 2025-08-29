@@ -1,8 +1,5 @@
 'main thread';
-import { signal } from '@lynx-js/react/signals';
 import { MTCSlider } from './MTCSlider';
-
-const color = signal('#A88AFF');
 
 type Color = readonly [number, number, number];
 
@@ -13,14 +10,15 @@ interface MTCColorPicker {
 
 function MTCColorPicker({ initialValue, onMTCValueChange }: MTCColorPicker) {
   return (
-    <view
-      className="w-full h-full flex flex-col gap-y-4"
-      bindtap={() => {
-        color.value = 'red';
-        onMTCValueChange?.([327, 92, 68]);
-      }}
-    >
-      <MTCSlider />
+    <view className="w-full h-full flex flex-col gap-y-4">
+      <MTCSlider
+        min={0}
+        max={360}
+        defaultValue={initialValue[0]}
+        onChange={(hue: number) => {
+          onMTCValueChange?.([hue, initialValue[1], initialValue[2]]);
+        }}
+      />
       <text className="text-content">{`${initialValue}`}</text>
     </view>
   );
