@@ -1,8 +1,20 @@
 'main thread';
 import { useSignal } from '@lynx-js/react/signals';
+import { useMTCPointerInteraction } from './use-mtc-pointer-interaction';
+import type { PointerPosition } from './use-mtc-pointer-interaction';
 
 function MTCSlider() {
   const ratio = useSignal(0);
+  const {
+    onMTCElementLayoutChange,
+    onMTCPointerDown,
+    onMTCPointerMove,
+    onMTCPointerUp,
+  } = useMTCPointerInteraction({
+    onMTCUpdate: (pos: PointerPosition) => {
+      console.log(pos.offsetRatio);
+    },
+  });
 
   return (
     // Root
@@ -14,7 +26,19 @@ function MTCSlider() {
       }}
     >
       {/* Track Positioner */}
-      <view className="relative w-full h-full flex flex-row items-center">
+      <view
+        className="relative w-full h-full flex flex-row items-center"
+        // @ts-expect-error
+        bindlayoutchange={onMTCElementLayoutChange}
+        // @ts-expect-error
+        bindtouchstart={onMTCPointerDown}
+        // @ts-expect-error
+        bindtouchmove={onMTCPointerMove}
+        // @ts-expect-error
+        bindtouchend={onMTCPointerUp}
+        // @ts-expect-error
+        bindtouchcancel={onMTCPointerUp}
+      >
         {/* Track Visualizer */}
         <view className="w-full h-full bg-secondary"></view>
         {/* Thumb */}
