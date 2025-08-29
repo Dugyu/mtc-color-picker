@@ -13,6 +13,10 @@ interface MTCSliderProps extends UseMTCSliderProps {
   trackStyle?: CSSProperties;
 }
 
+const defaultSaturation = signal(100);
+const defaultLightness = signal(50);
+const defaultHue = signal(0);
+
 /** ================= Base Slider ================= */
 
 function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
@@ -58,9 +62,6 @@ function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
 
 /** ================= Hue Slider ================= */
 
-const defaultSaturation = signal(100);
-const defaultLightness = signal(50);
-
 function MTCHueSlider({
   s = defaultSaturation,
   l = defaultLightness,
@@ -101,4 +102,89 @@ function MTCHueSlider({
     />
   );
 }
-export { MTCSlider, MTCHueSlider };
+
+/** ================= Saturation Slider ================= */
+
+function MTCSaturationSlider({
+  h = defaultHue,
+  l = defaultLightness,
+  defaultValue,
+  onChange,
+  onCommit,
+  disabled,
+}: Omit<MTCSliderProps, 'min' | 'max' | 'step'> & {
+  h?: ReturnType<typeof useSignal<number>>;
+  l?: ReturnType<typeof useSignal<number>>;
+}) {
+  const edgeGradient = useComputed(() =>
+    HSLGradients.saturationEdge(
+      h.value ?? defaultHue.value,
+      l.value ?? defaultLightness.value,
+    ),
+  );
+
+  const trackGradient = useComputed(() =>
+    HSLGradients.saturationTrack(
+      h.value ?? defaultHue.value,
+      l.value ?? defaultLightness.value,
+    ),
+  );
+
+  return (
+    <MTCSlider
+      defaultValue={defaultValue}
+      min={0}
+      max={100}
+      step={1}
+      disabled={disabled}
+      onChange={onChange}
+      onCommit={onCommit}
+      rootStyle={{ backgroundImage: edgeGradient.value }}
+      trackStyle={{ backgroundImage: trackGradient.value }}
+    />
+  );
+}
+
+/** ================= Lightness Slider ================= */
+
+function MTCLightnessSlider({
+  h = defaultHue,
+  s = defaultSaturation,
+  defaultValue,
+  onChange,
+  onCommit,
+  disabled,
+}: Omit<MTCSliderProps, 'min' | 'max' | 'step'> & {
+  h?: ReturnType<typeof useSignal<number>>;
+  s?: ReturnType<typeof useSignal<number>>;
+}) {
+  const edgeGradient = useComputed(() =>
+    HSLGradients.lightnessEdge(
+      h.value ?? defaultHue.value,
+      s.value ?? defaultSaturation.value,
+    ),
+  );
+
+  const trackGradient = useComputed(() =>
+    HSLGradients.lightnessTrack(
+      h.value ?? defaultHue.value,
+      s.value ?? defaultSaturation.value,
+    ),
+  );
+
+  return (
+    <MTCSlider
+      defaultValue={defaultValue}
+      min={0}
+      max={100}
+      step={1}
+      disabled={disabled}
+      onChange={onChange}
+      onCommit={onCommit}
+      rootStyle={{ backgroundImage: edgeGradient.value }}
+      trackStyle={{ backgroundImage: trackGradient.value }}
+    />
+  );
+}
+
+export { MTCSlider, MTCHueSlider, MTCSaturationSlider, MTCLightnessSlider };
