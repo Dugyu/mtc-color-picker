@@ -4,9 +4,10 @@ import { MTCColorPicker } from '@/components/mtc/MTCColorPicker';
 import { DummyStyle } from '@/components/shared/DummyStyle';
 
 type Color = readonly [number, number, number];
+const initial: Color = [199, 99, 72];
 
 export function App() {
-  const [value, setValue] = useState<Color>([199, 99, 72]);
+  const [value, setValue] = useState<Color>(() => initial);
 
   function onMTCValueChange(v: Color) {
     'use background';
@@ -24,7 +25,7 @@ export function App() {
       </view>
       <view className="w-60 h-48">
         <MTCColorPicker
-          initialValue={value}
+          initialValue={initial}
           onMTCValueChange={onMTCValueChange}
         />
       </view>

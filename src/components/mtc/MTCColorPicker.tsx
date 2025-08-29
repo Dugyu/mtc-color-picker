@@ -1,5 +1,6 @@
 'main thread';
-import { MTCSlider } from './MTCSlider';
+import { useSignal } from '@lynx-js/react/signals';
+import { MTCHueSlider } from './MTCSlider';
 
 type Color = readonly [number, number, number];
 
@@ -9,11 +10,14 @@ interface MTCColorPicker {
 }
 
 function MTCColorPicker({ initialValue, onMTCValueChange }: MTCColorPicker) {
+  const s = useSignal(initialValue[1]);
+  const l = useSignal(initialValue[2]);
+
   return (
     <view className="w-full h-full flex flex-col gap-y-4">
-      <MTCSlider
-        min={0}
-        max={360}
+      <MTCHueSlider
+        s={s}
+        l={l}
         defaultValue={initialValue[0]}
         onChange={(hue: number) => {
           onMTCValueChange?.([hue, initialValue[1], initialValue[2]]);
