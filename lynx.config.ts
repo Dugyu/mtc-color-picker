@@ -10,6 +10,7 @@ const blockingEnabled = process.env.LYNX_DEMO_BLOCKING_ENABLED === 'true';
 export default defineConfig({
   source: {
     entry: {
+      MTCColorPicker: './src/demos/MTCColorPicker.tsx',
       BTCMTSColorPicker: './src/demos/BTCMTSColorPicker.tsx',
       BTCMTSSlider: './src/demos/BTCMTSSlider.tsx',
       BTCSlider: './src/demos/BTCSlider.tsx',
