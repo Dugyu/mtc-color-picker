@@ -2,6 +2,13 @@ import { root, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 import { MTCColorPicker } from '@/components/mtc/MTCColorPicker';
 import { DummyStyle } from '@/components/shared/DummyStyle';
+import { sleep } from '@/utils/sleep';
+
+if (__BACKGROUND__) {
+  setInterval(() => {
+    sleep(250);
+  }, 100);
+}
 
 type Color = readonly [number, number, number];
 const initial: Color = [199, 99, 72];
