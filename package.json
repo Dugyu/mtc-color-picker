@@ -10,11 +10,11 @@
     "preview": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy preview"
   },
   "dependencies": {
-    "@lynx-js/react": "^0.112.4"
+    "@lynx-js/react": "file:./lynx-js-react-0.112.2.tgz"
   },
   "devDependencies": {
     "@lynx-js/qrcode-rsbuild-plugin": "^0.4.1",
-    "@lynx-js/react-rsbuild-plugin": "^0.10.13",
+    "@lynx-js/react-rsbuild-plugin": "file:./lynx-js-react-rsbuild-plugin-0.10.11.tgz",
     "@lynx-js/rspeedy": "^0.10.8",
     "@lynx-js/tailwind-preset": "^0.2.0",
     "@lynx-js/types": "3.3.0",
@@ -28,6 +28,11 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "pnpm":{
+    "overrides": {
+      "@lynx-js/react-webpack-plugin": "file:./lynx-js-react-webpack-plugin-0.6.19.tgz"
+    }
   },
   "private": true,
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"

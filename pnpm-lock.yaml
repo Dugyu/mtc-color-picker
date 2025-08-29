@@ -4,20 +4,23 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@lynx-js/react-webpack-plugin': file:./lynx-js-react-webpack-plugin-0.6.19.tgz
+
 importers:
 
   .:
     dependencies:
       '@lynx-js/react':
-        specifier: ^0.112.4
-        version: 0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+        specifier: file:./lynx-js-react-0.112.2.tgz
+        version: file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
     devDependencies:
       '@lynx-js/qrcode-rsbuild-plugin':
         specifier: ^0.4.1
         version: 0.4.1
       '@lynx-js/react-rsbuild-plugin':
-        specifier: ^0.10.13
-        version: 0.10.13(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(webpack@5.101.3)
+        specifier: file:./lynx-js-react-rsbuild-plugin-0.10.11.tgz
+        version: file:lynx-js-react-rsbuild-plugin-0.10.11.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(webpack@5.101.3)
       '@lynx-js/rspeedy':
         specifier: ^0.10.8
         version: 0.10.8(@rspack/core@1.4.11(@swc/helpers@0.5.17))(typescript@5.9.2)(webpack@5.101.3)
@@ -156,8 +159,8 @@ packages:
     peerDependencies:
       '@rspack/core': ^1.3.10
 
-  '@lynx-js/css-extract-webpack-plugin@0.6.2':
-    resolution: {integrity: sha512-bxnC+snXCl1L29QcZFLBcVTzgSw2BGkMDD4xzJQPJgoGvHmQDEvEpFatQC8ykcMA3284q9HEfVQhICtOBQ7FWQ==}
+  '@lynx-js/css-extract-webpack-plugin@0.6.1':
+    resolution: {integrity: sha512-k5PiYG4EzIBMBdcFtoJ4VS3XPO0CZHTUhQ2i/LTUurCE/HH5cc0LXO+EL4EWcGzeqjGcIwa2RK6kGXHZoh2gzg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@lynx-js/template-webpack-plugin': ^0.8.0
@@ -169,18 +172,20 @@ packages:
     resolution: {integrity: sha512-/vgepVuALv68daarsVRqqfhlMO+R6ywfgKxokUnrVKu4rKTS+p9O8q9r8gMIXdCheQRsX8hVY/ora2l3Z/iHTQ==}
     engines: {node: '>=18'}
 
-  '@lynx-js/react-alias-rsbuild-plugin@0.10.13':
-    resolution: {integrity: sha512-CwaEF3HhsxGBnePZOSjowSFMeIOvw0iLSYJa4SsCK0rO3uQyNyiWwiY99z6YC1eisFYvp8DcO11miaAZar6iRA==}
+  '@lynx-js/react-alias-rsbuild-plugin@0.10.11':
+    resolution: {integrity: sha512-/vZJnw3TduGm1WzDBmJAuh1vaMOGW/i4X36mwmSERpsmtYM/E7cFEvPWlLaJg5MXTpPUFEGa26zRcEhW4/d77A==}
     engines: {node: '>=18'}
 
   '@lynx-js/react-refresh-webpack-plugin@0.3.4':
     resolution: {integrity: sha512-R5hpuih6TAzxtKngrrg7i6MQUBeMMQWZWR31UMF9ld98wH1WnRrMeq0ZjkmYZhDhQQA2ViQDaHkOvOrtU4yjhg==}
+    version: 0.3.4
     engines: {node: '>=18'}
     peerDependencies:
       '@lynx-js/react-webpack-plugin': ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0
 
-  '@lynx-js/react-rsbuild-plugin@0.10.13':
-    resolution: {integrity: sha512-NIyI9glXbJwEH65L7dQUPxwTdkUxroutFwSmlRUIKbLZFF46/D0Hsadyw2S5mny8iXwmTe/hDpWXcmYJJifgJw==}
+  '@lynx-js/react-rsbuild-plugin@file:lynx-js-react-rsbuild-plugin-0.10.11.tgz':
+    resolution: {integrity: sha512-ucMndHI/cCKxgl+0O8CuyTbPj4dkVZouSn0Ni72l+GCOCx6M8QKzqiM+Bn9JNntLWQnh5NgJxBj3J9Zay3z1WQ==, tarball: file:lynx-js-react-rsbuild-plugin-0.10.11.tgz}
+    version: 0.10.11
     engines: {node: '>=18'}
     peerDependencies:
       '@lynx-js/react': ^0.103.0 || ^0.104.0 || ^0.105.0 || ^0.106.0 || ^0.107.0 || ^0.108.0 || ^0.109.0 || ^0.110.0 || ^0.111.0 || ^0.112.0
@@ -188,8 +193,9 @@ packages:
       '@lynx-js/react':
         optional: true
 
-  '@lynx-js/react-webpack-plugin@0.6.20':
-    resolution: {integrity: sha512-KzvRURFDeeMq9PP6aZ1nW/xNLm4TCBMrkiWn1h01aPAUjn4Q4cd2fbEIq+2v2xOjG7paitPMKT09Obo2OlaJQw==}
+  '@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz':
+    resolution: {integrity: sha512-3iVV6u8cYeaZvRR6tRjmx6OheaX6luxa88HfNuNk192ldpBUQ2LGGeyuQ9Wc5RuJGS9oATxgAHdZQfY5041z3Q==, tarball: file:lynx-js-react-webpack-plugin-0.6.19.tgz}
+    version: 0.6.19
     engines: {node: '>=18'}
     peerDependencies:
       '@lynx-js/react': ^0.103.0 || ^0.104.0 || ^0.105.0 || ^0.106.0 || ^0.107.0 || ^0.108.0 || ^0.109.0 || ^0.110.0 || ^0.111.0 || ^0.112.0
@@ -198,8 +204,9 @@ packages:
       '@lynx-js/react':
         optional: true
 
-  '@lynx-js/react@0.112.4':
-    resolution: {integrity: sha512-4LcaKnH0Fb5LsGl0wzRLeCINEKwk/328qlzIEYavhAvcTyvVJl8dCBx7Ux1Zl4N7a9D/KeLyEl7NuJdqYt3Vmw==}
+  '@lynx-js/react@file:lynx-js-react-0.112.2.tgz':
+    resolution: {integrity: sha512-NDejpyeGc1JntSf+nWfmsVAsmZkKivubWixixmZiE6zf6VsAa51ZJqxpzM9jefBhe1XOwJWxAOODF/zocAiNug==, tarball: file:lynx-js-react-0.112.2.tgz}
+    version: 0.112.2
     peerDependencies:
       '@lynx-js/types': '*'
       '@types/react': ^18
@@ -217,8 +224,8 @@ packages:
       typescript:
         optional: true
 
-  '@lynx-js/runtime-wrapper-webpack-plugin@0.1.3':
-    resolution: {integrity: sha512-F/spRqXWE5XS4h36mN89ulGGXjvs7DEiBFUO/Xf6barstKXbhLM485CwMzXz/Zh07ZIFvnHFtRZprOT0jNrrag==}
+  '@lynx-js/runtime-wrapper-webpack-plugin@0.1.2':
+    resolution: {integrity: sha512-zfVas0CHT423TgX4FRRcz5De0IOhOe3s9NSa4HmxUTy3o7A1DNQ0mqwCWxzWl6wSzD8aqwl6MVWyM/wGKko03w==}
     engines: {node: '>=18'}
 
   '@lynx-js/tailwind-preset@0.2.0':
@@ -226,11 +233,11 @@ packages:
     peerDependencies:
       tailwindcss: ^3
 
-  '@lynx-js/tasm@0.0.17':
-    resolution: {integrity: sha512-SiLmx6ScI8lrmVvpOq95MlbaLSWDOA5aJ6P9/60dxZoWomRXP4kGH/oGr47Gqnd35u5FyPHf6KicPIc09rnIXw==}
+  '@lynx-js/tasm@0.0.5':
+    resolution: {integrity: sha512-E5ZTtNQslv0zGMqtEo/GULHM0XiyvkuL4K8SxP8R9n0WnInppIiekIP5Rzvt+oex7Sg8ngtm/ToUDiZ0NQ9+Qg==}
 
-  '@lynx-js/template-webpack-plugin@0.8.5':
-    resolution: {integrity: sha512-9PsQbHeWanb/rFozaRsxg236AFZ5Rwx7WZRhvGuu8KZzkplIKvOd+udsJiElzlSZUsDazRg22QuHM84/I81/+Q==}
+  '@lynx-js/template-webpack-plugin@0.8.3':
+    resolution: {integrity: sha512-3nqbRPfS0mQjoErdKxctR/lcqnUOqEMW7PRbItFa6W2b9mE9ro5e/sGGWnyuEZmOAH8YqYenBwu5P8sjcIDaLA==}
     engines: {node: '>=18'}
 
   '@lynx-js/types@3.3.0':
@@ -238,11 +245,16 @@ packages:
 
   '@lynx-js/use-sync-external-store@1.5.0':
     resolution: {integrity: sha512-iXwLiGUBgfWLozCIh3ICe07x534p9CVlFS3/iGEiFOce58MLX6/PbAvWcE8qEhYaOKiQNe9hqUnS2RbyCqoqGg==}
+    version: 1.5.0
     peerDependencies:
       '@lynx-js/react': '*'
 
   '@lynx-js/webpack-dev-transport@0.2.0':
     resolution: {integrity: sha512-RSy02FSoMsavEn2wna4khSJwT2uGW4XeLduKH8UDT3aCsBNM/rXndUyG6PbwMcywXCeyb8UofkhaQDtJvNJklA==}
+    engines: {node: '>=18'}
+
+  '@lynx-js/webpack-runtime-globals@0.0.5':
+    resolution: {integrity: sha512-fqQ9TQ70xHgDf2iLUxUr1PnBvqBkgz/Y4PHZd3Z/5wsa5JsPX86VGDbbj7wxwf3LgUSVORnidtqY6fcEfRuV1Q==}
     engines: {node: '>=18'}
 
   '@lynx-js/webpack-runtime-globals@0.0.6':
@@ -295,6 +307,14 @@ packages:
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
+
+  '@preact/signals-core@1.12.1':
+    resolution: {integrity: sha512-BwbTXpj+9QutoZLQvbttRg5x3l5468qaV2kufh+51yha1c53ep5dY4kTuZR35+3pAZxpfQerGJiQqg34ZNZ6uA==}
+
+  '@preact/signals@1.3.2':
+    resolution: {integrity: sha512-naxcJgUJ6BTOROJ7C3QML7KvwKwCXQJYTc5L/b0eEsdYgPB6SxwoQ1vDGcS0Q7GVjAenVq/tXrybVdFShHYZWg==}
+    peerDependencies:
+      preact: 10.x
 
   '@rsbuild/core@1.4.15':
     resolution: {integrity: sha512-KoSTtKjzQUQwamcbeCp63Ne9kL7io1WI4+skTJe2chfLz6wsp/Gfg8aKkfs1DuyG1p+zxFDcYpwTWMsNtxqqiw==}
@@ -498,106 +518,106 @@ packages:
   '@types/yargs@17.0.33':
     resolution: {integrity: sha512-WpxBCKWPLr4xSsHgz511rFJAM+wS28w2zEO1QDNY5zM/S8ok70NNfztH0xwhqKyaK0OHCbN98LDAZuy1ctxDkA==}
 
-  '@unrs/resolver-binding-android-arm-eabi@1.11.1':
-    resolution: {integrity: sha512-ppLRUgHVaGRWUx0R0Ut06Mjo9gBaBkg3v/8AxusGLhsIotbBLuRk51rAzqLC8gq6NyyAojEXglNjzf6R948DNw==}
+  '@unrs/resolver-binding-android-arm-eabi@1.9.2':
+    resolution: {integrity: sha512-tS+lqTU3N0kkthU+rYp0spAYq15DU8ld9kXkaKg9sbQqJNF+WPMuNHZQGCgdxrUOEO0j22RKMwRVhF1HTl+X8A==}
     cpu: [arm]
     os: [android]
 
-  '@unrs/resolver-binding-android-arm64@1.11.1':
-    resolution: {integrity: sha512-lCxkVtb4wp1v+EoN+HjIG9cIIzPkX5OtM03pQYkG+U5O/wL53LC4QbIeazgiKqluGeVEeBlZahHalCaBvU1a2g==}
+  '@unrs/resolver-binding-android-arm64@1.9.2':
+    resolution: {integrity: sha512-MffGiZULa/KmkNjHeuuflLVqfhqLv1vZLm8lWIyeADvlElJ/GLSOkoUX+5jf4/EGtfwrNFcEaB8BRas03KT0/Q==}
     cpu: [arm64]
     os: [android]
 
-  '@unrs/resolver-binding-darwin-arm64@1.11.1':
-    resolution: {integrity: sha512-gPVA1UjRu1Y/IsB/dQEsp2V1pm44Of6+LWvbLc9SDk1c2KhhDRDBUkQCYVWe6f26uJb3fOK8saWMgtX8IrMk3g==}
+  '@unrs/resolver-binding-darwin-arm64@1.9.2':
+    resolution: {integrity: sha512-dzJYK5rohS1sYl1DHdJ3mwfwClJj5BClQnQSyAgEfggbUwA9RlROQSSbKBLqrGfsiC/VyrDPtbO8hh56fnkbsQ==}
     cpu: [arm64]
     os: [darwin]
 
-  '@unrs/resolver-binding-darwin-x64@1.11.1':
-    resolution: {integrity: sha512-cFzP7rWKd3lZaCsDze07QX1SC24lO8mPty9vdP+YVa3MGdVgPmFc59317b2ioXtgCMKGiCLxJ4HQs62oz6GfRQ==}
+  '@unrs/resolver-binding-darwin-x64@1.9.2':
+    resolution: {integrity: sha512-gaIMWK+CWtXcg9gUyznkdV54LzQ90S3X3dn8zlh+QR5Xy7Y+Efqw4Rs4im61K1juy4YNb67vmJsCDAGOnIeffQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@unrs/resolver-binding-freebsd-x64@1.11.1':
-    resolution: {integrity: sha512-fqtGgak3zX4DCB6PFpsH5+Kmt/8CIi4Bry4rb1ho6Av2QHTREM+47y282Uqiu3ZRF5IQioJQ5qWRV6jduA+iGw==}
+  '@unrs/resolver-binding-freebsd-x64@1.9.2':
+    resolution: {integrity: sha512-S7QpkMbVoVJb0xwHFwujnwCAEDe/596xqY603rpi/ioTn9VDgBHnCCxh+UFrr5yxuMH+dliHfjwCZJXOPJGPnw==}
     cpu: [x64]
     os: [freebsd]
 
-  '@unrs/resolver-binding-linux-arm-gnueabihf@1.11.1':
-    resolution: {integrity: sha512-u92mvlcYtp9MRKmP+ZvMmtPN34+/3lMHlyMj7wXJDeXxuM0Vgzz0+PPJNsro1m3IZPYChIkn944wW8TYgGKFHw==}
+  '@unrs/resolver-binding-linux-arm-gnueabihf@1.9.2':
+    resolution: {integrity: sha512-+XPUMCuCCI80I46nCDFbGum0ZODP5NWGiwS3Pj8fOgsG5/ctz+/zzuBlq/WmGa+EjWZdue6CF0aWWNv84sE1uw==}
     cpu: [arm]
     os: [linux]
 
-  '@unrs/resolver-binding-linux-arm-musleabihf@1.11.1':
-    resolution: {integrity: sha512-cINaoY2z7LVCrfHkIcmvj7osTOtm6VVT16b5oQdS4beibX2SYBwgYLmqhBjA1t51CarSaBuX5YNsWLjsqfW5Cw==}
+  '@unrs/resolver-binding-linux-arm-musleabihf@1.9.2':
+    resolution: {integrity: sha512-sqvUyAd1JUpwbz33Ce2tuTLJKM+ucSsYpPGl2vuFwZnEIg0CmdxiZ01MHQ3j6ExuRqEDUCy8yvkDKvjYFPb8Zg==}
     cpu: [arm]
     os: [linux]
 
-  '@unrs/resolver-binding-linux-arm64-gnu@1.11.1':
-    resolution: {integrity: sha512-34gw7PjDGB9JgePJEmhEqBhWvCiiWCuXsL9hYphDF7crW7UgI05gyBAi6MF58uGcMOiOqSJ2ybEeCvHcq0BCmQ==}
+  '@unrs/resolver-binding-linux-arm64-gnu@1.9.2':
+    resolution: {integrity: sha512-UYA0MA8ajkEDCFRQdng/FVx3F6szBvk3EPnkTTQuuO9lV1kPGuTB+V9TmbDxy5ikaEgyWKxa4CI3ySjklZ9lFA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
-    resolution: {integrity: sha512-RyMIx6Uf53hhOtJDIamSbTskA99sPHS96wxVE/bJtePJJtpdKGXO1wY90oRdXuYOGOTuqjT8ACccMc4K6QmT3w==}
+  '@unrs/resolver-binding-linux-arm64-musl@1.9.2':
+    resolution: {integrity: sha512-P/CO3ODU9YJIHFqAkHbquKtFst0COxdphc8TKGL5yCX75GOiVpGqd1d15ahpqu8xXVsqP4MGFP2C3LRZnnL5MA==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
-    resolution: {integrity: sha512-D8Vae74A4/a+mZH0FbOkFJL9DSK2R6TFPC9M+jCWYia/q2einCubX10pecpDiTmkJVUH+y8K3BZClycD8nCShA==}
+  '@unrs/resolver-binding-linux-ppc64-gnu@1.9.2':
+    resolution: {integrity: sha512-uKStFlOELBxBum2s1hODPtgJhY4NxYJE9pAeyBgNEzHgTqTiVBPjfTlPFJkfxyTjQEuxZbbJlJnMCrRgD7ubzw==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
-    resolution: {integrity: sha512-frxL4OrzOWVVsOc96+V3aqTIQl1O2TjgExV4EKgRY09AJ9leZpEg8Ak9phadbuX0BA4k8U5qtvMSQQGGmaJqcQ==}
+  '@unrs/resolver-binding-linux-riscv64-gnu@1.9.2':
+    resolution: {integrity: sha512-LkbNnZlhINfY9gK30AHs26IIVEZ9PEl9qOScYdmY2o81imJYI4IMnJiW0vJVtXaDHvBvxeAgEy5CflwJFIl3tQ==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
-    resolution: {integrity: sha512-mJ5vuDaIZ+l/acv01sHoXfpnyrNKOk/3aDoEdLO/Xtn9HuZlDD6jKxHlkN8ZhWyLJsRBxfv9GYM2utQ1SChKew==}
+  '@unrs/resolver-binding-linux-riscv64-musl@1.9.2':
+    resolution: {integrity: sha512-vI+e6FzLyZHSLFNomPi+nT+qUWN4YSj8pFtQZSFTtmgFoxqB6NyjxSjAxEC1m93qn6hUXhIsh8WMp+fGgxCoRg==}
     cpu: [riscv64]
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
-    resolution: {integrity: sha512-kELo8ebBVtb9sA7rMe1Cph4QHreByhaZ2QEADd9NzIQsYNQpt9UkM9iqr2lhGr5afh885d/cB5QeTXSbZHTYPg==}
+  '@unrs/resolver-binding-linux-s390x-gnu@1.9.2':
+    resolution: {integrity: sha512-sSO4AlAYhSM2RAzBsRpahcJB1msc6uYLAtP6pesPbZtptF8OU/CbCPhSRW6cnYOGuVmEmWVW5xVboAqCnWTeHQ==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
-    resolution: {integrity: sha512-C3ZAHugKgovV5YvAMsxhq0gtXuwESUKc5MhEtjBpLoHPLYM+iuwSj3lflFwK3DPm68660rZ7G8BMcwSro7hD5w==}
+  '@unrs/resolver-binding-linux-x64-gnu@1.9.2':
+    resolution: {integrity: sha512-jkSkwch0uPFva20Mdu8orbQjv2A3G88NExTN2oPTI1AJ+7mZfYW3cDCTyoH6OnctBKbBVeJCEqh0U02lTkqD5w==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-x64-musl@1.11.1':
-    resolution: {integrity: sha512-rV0YSoyhK2nZ4vEswT/QwqzqQXw5I6CjoaYMOX0TqBlWhojUf8P94mvI7nuJTeaCkkds3QE4+zS8Ko+GdXuZtA==}
+  '@unrs/resolver-binding-linux-x64-musl@1.9.2':
+    resolution: {integrity: sha512-Uk64NoiTpQbkpl+bXsbeyOPRpUoMdcUqa+hDC1KhMW7aN1lfW8PBlBH4mJ3n3Y47dYE8qi0XTxy1mBACruYBaw==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-wasm32-wasi@1.11.1':
-    resolution: {integrity: sha512-5u4RkfxJm+Ng7IWgkzi3qrFOvLvQYnPBmjmZQ8+szTK/b31fQCnleNl1GgEt7nIsZRIf5PLhPwT0WM+q45x/UQ==}
+  '@unrs/resolver-binding-wasm32-wasi@1.9.2':
+    resolution: {integrity: sha512-EpBGwkcjDicjR/ybC0g8wO5adPNdVuMrNalVgYcWi+gYtC1XYNuxe3rufcO7dA76OHGeVabcO6cSkPJKVcbCXQ==}
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
 
-  '@unrs/resolver-binding-win32-arm64-msvc@1.11.1':
-    resolution: {integrity: sha512-nRcz5Il4ln0kMhfL8S3hLkxI85BXs3o8EYoattsJNdsX4YUU89iOkVn7g0VHSRxFuVMdM4Q1jEpIId1Ihim/Uw==}
+  '@unrs/resolver-binding-win32-arm64-msvc@1.9.2':
+    resolution: {integrity: sha512-EdFbGn7o1SxGmN6aZw9wAkehZJetFPao0VGZ9OMBwKx6TkvDuj6cNeLimF/Psi6ts9lMOe+Dt6z19fZQ9Ye2fw==}
     cpu: [arm64]
     os: [win32]
 
-  '@unrs/resolver-binding-win32-ia32-msvc@1.11.1':
-    resolution: {integrity: sha512-DCEI6t5i1NmAZp6pFonpD5m7i6aFrpofcp4LA2i8IIq60Jyo28hamKBxNrZcyOwVOZkgsRp9O2sXWBWP8MnvIQ==}
+  '@unrs/resolver-binding-win32-ia32-msvc@1.9.2':
+    resolution: {integrity: sha512-JY9hi1p7AG+5c/dMU8o2kWemM8I6VZxfGwn1GCtf3c5i+IKcMo2NQ8OjZ4Z3/itvY/Si3K10jOBQn7qsD/whUA==}
     cpu: [ia32]
     os: [win32]
 
-  '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
-    resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
+  '@unrs/resolver-binding-win32-x64-msvc@1.9.2':
+    resolution: {integrity: sha512-ryoo+EB19lMxAd80ln9BVf8pdOAxLb97amrQ3SFN9OCRn/5M5wvwDgAe4i8ZjhpbiHoDeP8yavcTEnpKBo7lZg==}
     cpu: [x64]
     os: [win32]
 
@@ -1577,8 +1597,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  napi-postinstall@0.3.3:
-    resolution: {integrity: sha512-uTp172LLXSxuSYHv/kou+f6KW3SMppU9ivthaVTXian9sOt3XM/zHYHpRZiLgQoxeWfYUnslNWQHF1+G71xcow==}
+  napi-postinstall@0.2.5:
+    resolution: {integrity: sha512-kmsgUvCRIJohHjbZ3V8avP0I1Pekw329MVAMDzVxsrkjgdnqiwvMX5XwR+hWV66vsAtZ+iM+fVnq8RTQawUmCQ==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     hasBin: true
 
@@ -2245,8 +2265,8 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
-  unrs-resolver@1.11.1:
-    resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
+  unrs-resolver@1.9.2:
+    resolution: {integrity: sha512-VUyWiTNQD7itdiMuJy+EuLEErLj3uwX/EpHQF8EOf33Dq3Ju6VW1GXm+swk6+1h7a49uv9fKZ+dft9jU7esdLA==}
 
   update-browserslist-db@1.1.3:
     resolution: {integrity: sha512-UxhIZQ+QInVdunkDAaiazvvT/+fXL5Osr0JZlJulepYu6Jd7qJtDZjlur0emRlT71EN3ScPoE7gvsuIKKNavKw==}
@@ -2451,9 +2471,9 @@ snapshots:
       '@lynx-js/webpack-runtime-globals': 0.0.6
       '@rspack/core': 1.4.11(@swc/helpers@0.5.17)
 
-  '@lynx-js/css-extract-webpack-plugin@0.6.2(@lynx-js/template-webpack-plugin@0.8.5)(webpack@5.101.3)':
+  '@lynx-js/css-extract-webpack-plugin@0.6.1(@lynx-js/template-webpack-plugin@0.8.3)(webpack@5.101.3)':
     dependencies:
-      '@lynx-js/template-webpack-plugin': 0.8.5
+      '@lynx-js/template-webpack-plugin': 0.8.3
       mini-css-extract-plugin: 2.9.4(webpack@5.101.3)
     transitivePeerDependencies:
       - webpack
@@ -2464,39 +2484,40 @@ snapshots:
 
   '@lynx-js/qrcode-rsbuild-plugin@0.4.1': {}
 
-  '@lynx-js/react-alias-rsbuild-plugin@0.10.13':
+  '@lynx-js/react-alias-rsbuild-plugin@0.10.11':
     dependencies:
-      unrs-resolver: 1.11.1
+      unrs-resolver: 1.9.2
 
-  '@lynx-js/react-refresh-webpack-plugin@0.3.4(@lynx-js/react-webpack-plugin@0.6.20(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.5))':
+  '@lynx-js/react-refresh-webpack-plugin@0.3.4(@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3))':
     dependencies:
-      '@lynx-js/react-webpack-plugin': 0.6.20(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.5)
+      '@lynx-js/react-webpack-plugin': file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3)
 
-  '@lynx-js/react-rsbuild-plugin@0.10.13(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(webpack@5.101.3)':
+  '@lynx-js/react-rsbuild-plugin@file:lynx-js-react-rsbuild-plugin-0.10.11.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(webpack@5.101.3)':
     dependencies:
-      '@lynx-js/css-extract-webpack-plugin': 0.6.2(@lynx-js/template-webpack-plugin@0.8.5)(webpack@5.101.3)
-      '@lynx-js/react-alias-rsbuild-plugin': 0.10.13
-      '@lynx-js/react-refresh-webpack-plugin': 0.3.4(@lynx-js/react-webpack-plugin@0.6.20(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.5))
-      '@lynx-js/react-webpack-plugin': 0.6.20(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.5)
-      '@lynx-js/runtime-wrapper-webpack-plugin': 0.1.3
-      '@lynx-js/template-webpack-plugin': 0.8.5
-      '@lynx-js/use-sync-external-store': 1.5.0(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))
+      '@lynx-js/css-extract-webpack-plugin': 0.6.1(@lynx-js/template-webpack-plugin@0.8.3)(webpack@5.101.3)
+      '@lynx-js/react-alias-rsbuild-plugin': 0.10.11
+      '@lynx-js/react-refresh-webpack-plugin': 0.3.4(@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3))
+      '@lynx-js/react-webpack-plugin': file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3)
+      '@lynx-js/runtime-wrapper-webpack-plugin': 0.1.2
+      '@lynx-js/template-webpack-plugin': 0.8.3
+      '@lynx-js/use-sync-external-store': 1.5.0(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))
       background-only: 0.0.1
     optionalDependencies:
-      '@lynx-js/react': 0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
     transitivePeerDependencies:
       - webpack
 
-  '@lynx-js/react-webpack-plugin@0.6.20(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.5)':
+  '@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3)':
     dependencies:
-      '@lynx-js/template-webpack-plugin': 0.8.5
-      '@lynx-js/webpack-runtime-globals': 0.0.6
+      '@lynx-js/template-webpack-plugin': 0.8.3
+      '@lynx-js/webpack-runtime-globals': 0.0.5
       tiny-invariant: 1.3.3
     optionalDependencies:
-      '@lynx-js/react': 0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
 
-  '@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23)':
+  '@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)':
     dependencies:
+      '@preact/signals': 1.3.2(@hongzhiyuan/preact@10.24.0-00213bad)
       '@types/react': 18.3.23
       preact: '@hongzhiyuan/preact@10.24.0-00213bad'
     optionalDependencies:
@@ -2527,21 +2548,21 @@ snapshots:
       - utf-8-validate
       - webpack
 
-  '@lynx-js/runtime-wrapper-webpack-plugin@0.1.3':
+  '@lynx-js/runtime-wrapper-webpack-plugin@0.1.2':
     dependencies:
-      '@lynx-js/webpack-runtime-globals': 0.0.6
+      '@lynx-js/webpack-runtime-globals': 0.0.5
 
   '@lynx-js/tailwind-preset@0.2.0(tailwindcss@3.4.17)':
     dependencies:
       tailwindcss: 3.4.17
 
-  '@lynx-js/tasm@0.0.17': {}
+  '@lynx-js/tasm@0.0.5': {}
 
-  '@lynx-js/template-webpack-plugin@0.8.5':
+  '@lynx-js/template-webpack-plugin@0.8.3':
     dependencies:
       '@lynx-js/css-serializer': 0.1.3
-      '@lynx-js/tasm': 0.0.17
-      '@lynx-js/webpack-runtime-globals': 0.0.6
+      '@lynx-js/tasm': 0.0.5
+      '@lynx-js/webpack-runtime-globals': 0.0.5
       '@rspack/lite-tapable': 1.0.1
       css-tree: 3.1.0
       object.groupby: 1.0.3
@@ -2550,11 +2571,13 @@ snapshots:
     dependencies:
       csstype: 3.1.3
 
-  '@lynx-js/use-sync-external-store@1.5.0(@lynx-js/react@0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23))':
+  '@lynx-js/use-sync-external-store@1.5.0(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))':
     dependencies:
-      '@lynx-js/react': 0.112.4(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
 
   '@lynx-js/webpack-dev-transport@0.2.0': {}
+
+  '@lynx-js/webpack-runtime-globals@0.0.5': {}
 
   '@lynx-js/webpack-runtime-globals@0.0.6': {}
 
@@ -2617,6 +2640,13 @@ snapshots:
     optional: true
 
   '@polka/url@1.0.0-next.29': {}
+
+  '@preact/signals-core@1.12.1': {}
+
+  '@preact/signals@1.3.2(@hongzhiyuan/preact@10.24.0-00213bad)':
+    dependencies:
+      '@preact/signals-core': 1.12.1
+      preact: '@hongzhiyuan/preact@10.24.0-00213bad'
 
   '@rsbuild/core@1.4.15':
     dependencies:
@@ -2911,63 +2941,63 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  '@unrs/resolver-binding-android-arm-eabi@1.11.1':
+  '@unrs/resolver-binding-android-arm-eabi@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-android-arm64@1.11.1':
+  '@unrs/resolver-binding-android-arm64@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-darwin-arm64@1.11.1':
+  '@unrs/resolver-binding-darwin-arm64@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-darwin-x64@1.11.1':
+  '@unrs/resolver-binding-darwin-x64@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-freebsd-x64@1.11.1':
+  '@unrs/resolver-binding-freebsd-x64@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm-gnueabihf@1.11.1':
+  '@unrs/resolver-binding-linux-arm-gnueabihf@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm-musleabihf@1.11.1':
+  '@unrs/resolver-binding-linux-arm-musleabihf@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm64-gnu@1.11.1':
+  '@unrs/resolver-binding-linux-arm64-gnu@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
+  '@unrs/resolver-binding-linux-arm64-musl@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
+  '@unrs/resolver-binding-linux-ppc64-gnu@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
+  '@unrs/resolver-binding-linux-riscv64-gnu@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
+  '@unrs/resolver-binding-linux-riscv64-musl@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
+  '@unrs/resolver-binding-linux-s390x-gnu@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
+  '@unrs/resolver-binding-linux-x64-gnu@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-linux-x64-musl@1.11.1':
+  '@unrs/resolver-binding-linux-x64-musl@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-wasm32-wasi@1.11.1':
+  '@unrs/resolver-binding-wasm32-wasi@1.9.2':
     dependencies:
       '@napi-rs/wasm-runtime': 0.2.12
     optional: true
 
-  '@unrs/resolver-binding-win32-arm64-msvc@1.11.1':
+  '@unrs/resolver-binding-win32-arm64-msvc@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-win32-ia32-msvc@1.11.1':
+  '@unrs/resolver-binding-win32-ia32-msvc@1.9.2':
     optional: true
 
-  '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
+  '@unrs/resolver-binding-win32-x64-msvc@1.9.2':
     optional: true
 
   '@webassemblyjs/ast@1.14.1':
@@ -4035,7 +4065,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  napi-postinstall@0.3.3: {}
+  napi-postinstall@0.2.5: {}
 
   negotiator@0.6.3: {}
 
@@ -4748,29 +4778,29 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unrs-resolver@1.11.1:
+  unrs-resolver@1.9.2:
     dependencies:
-      napi-postinstall: 0.3.3
+      napi-postinstall: 0.2.5
     optionalDependencies:
-      '@unrs/resolver-binding-android-arm-eabi': 1.11.1
-      '@unrs/resolver-binding-android-arm64': 1.11.1
-      '@unrs/resolver-binding-darwin-arm64': 1.11.1
-      '@unrs/resolver-binding-darwin-x64': 1.11.1
-      '@unrs/resolver-binding-freebsd-x64': 1.11.1
-      '@unrs/resolver-binding-linux-arm-gnueabihf': 1.11.1
-      '@unrs/resolver-binding-linux-arm-musleabihf': 1.11.1
-      '@unrs/resolver-binding-linux-arm64-gnu': 1.11.1
-      '@unrs/resolver-binding-linux-arm64-musl': 1.11.1
-      '@unrs/resolver-binding-linux-ppc64-gnu': 1.11.1
-      '@unrs/resolver-binding-linux-riscv64-gnu': 1.11.1
-      '@unrs/resolver-binding-linux-riscv64-musl': 1.11.1
-      '@unrs/resolver-binding-linux-s390x-gnu': 1.11.1
-      '@unrs/resolver-binding-linux-x64-gnu': 1.11.1
-      '@unrs/resolver-binding-linux-x64-musl': 1.11.1
-      '@unrs/resolver-binding-wasm32-wasi': 1.11.1
-      '@unrs/resolver-binding-win32-arm64-msvc': 1.11.1
-      '@unrs/resolver-binding-win32-ia32-msvc': 1.11.1
-      '@unrs/resolver-binding-win32-x64-msvc': 1.11.1
+      '@unrs/resolver-binding-android-arm-eabi': 1.9.2
+      '@unrs/resolver-binding-android-arm64': 1.9.2
+      '@unrs/resolver-binding-darwin-arm64': 1.9.2
+      '@unrs/resolver-binding-darwin-x64': 1.9.2
+      '@unrs/resolver-binding-freebsd-x64': 1.9.2
+      '@unrs/resolver-binding-linux-arm-gnueabihf': 1.9.2
+      '@unrs/resolver-binding-linux-arm-musleabihf': 1.9.2
+      '@unrs/resolver-binding-linux-arm64-gnu': 1.9.2
+      '@unrs/resolver-binding-linux-arm64-musl': 1.9.2
+      '@unrs/resolver-binding-linux-ppc64-gnu': 1.9.2
+      '@unrs/resolver-binding-linux-riscv64-gnu': 1.9.2
+      '@unrs/resolver-binding-linux-riscv64-musl': 1.9.2
+      '@unrs/resolver-binding-linux-s390x-gnu': 1.9.2
+      '@unrs/resolver-binding-linux-x64-gnu': 1.9.2
+      '@unrs/resolver-binding-linux-x64-musl': 1.9.2
+      '@unrs/resolver-binding-wasm32-wasi': 1.9.2
+      '@unrs/resolver-binding-win32-arm64-msvc': 1.9.2
+      '@unrs/resolver-binding-win32-ia32-msvc': 1.9.2
+      '@unrs/resolver-binding-win32-x64-msvc': 1.9.2
 
   update-browserslist-db@1.1.3(browserslist@4.25.3):
     dependencies:
