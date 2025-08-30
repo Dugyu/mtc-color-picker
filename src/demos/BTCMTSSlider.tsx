@@ -39,6 +39,7 @@ export function App() {
           initialValue={value}
           onMTSChange={onMTSValueChange}
           // mtsWriteValue={mtsWriteValue}
+          initialSL={[99, 72]}
         />
       </view>
     </AppLayout>

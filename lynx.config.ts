@@ -11,7 +11,8 @@ export default defineConfig({
   source: {
     entry: {
       MTCColorPicker: './src/demos/MTCColorPicker.tsx',
-      BTCMTSColorPicker: './src/demos/BTCMTSColorPicker.tsx',
+      'BTCMTSColorPicker-MTSCoord': './src/demos/BTCMTSColorPicker.tsx',
+      'BTCMTSColorPicker-BTCCoord': './src/demos/BTCBTCMTSColorPicker.tsx',
       BTCMTSSlider: './src/demos/BTCMTSSlider.tsx',
       BTCSlider: './src/demos/BTCSlider.tsx',
     },

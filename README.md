@@ -24,7 +24,7 @@ Scan the QRCode in the terminal with your LynxExplorer App to see the result.
 
 ## Testing Background Blocking
 
-This demo includes a toggle for simulating background thread blocking, to verify that Main Thread Scripting (MTS) ensures UI responsiveness even under heavy background load.
+This demo includes a toggle for simulating background thread blocking, to verify that Main-Thread Scripting (MTS) ensures UI responsiveness even under heavy background load.
 
 Run with blocking enabled:
 

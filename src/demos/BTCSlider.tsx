@@ -23,7 +23,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-12">
-        <HueSlider defaultValue={value} onChange={onChange} />
+        <HueSlider defaultValue={value} onChange={onChange} s={99} l={72} />
       </view>
     </AppLayout>
   );

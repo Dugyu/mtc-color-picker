@@ -7,6 +7,7 @@ import './App.css';
 
 export interface AppLayoutProps {
   title?: string;
+  subtitle?: string;
   children?: ReactNode;
   /** Hue (0–360) */
   h?: number;
@@ -17,6 +18,7 @@ export interface AppLayoutProps {
 }
 export function AppLayout({
   title = 'Demo',
+  subtitle,
   children,
   h,
   s,
@@ -29,16 +31,23 @@ export function AppLayout({
   }, [h, s, l]);
 
   return (
-    <page className="dark p-16 flex-col justify-center items-center bg-base-1">
-      <text className="text-content text-3xl mb-12">{title}</text>
+    <page className={`dark flex-col items-center bg-base-1`}>
+      <view
+        className={`absolute w-full h-20 flex-col justify-end items-center ${subtitle ? 'bottom-[calc(33.33%+336px)]' : 'bottom-[calc(33.33%+372px)]'}`}
+      >
+        <text className="text-content text-3xl">{title}</text>
+        {subtitle && (
+          <text className="text-content text-2xl opacity-60">{subtitle}</text>
+        )}
+      </view>
       {/* ColorDisplay */}
       <MaskIcon
         iconUrl={logoUrl}
-        className="rounded-full size-72 bg-content"
+        className="absolute bottom-1/3 rounded-full size-72 bg-content"
         style={color ? { backgroundColor: color } : undefined}
       />
       {/* BottomSheet */}
-      <view className="absolute bottom-0 w-full h-1/3 p-4 flex-col items-center bg-base-4 rounded-t-lg shadow-xl">
+      <view className="absolute bottom-0 w-full h-[calc(33.33%+24px)] p-4 flex-col items-center bg-base-4 rounded-t-lg shadow-xl">
         {children}
       </view>
     </page>
