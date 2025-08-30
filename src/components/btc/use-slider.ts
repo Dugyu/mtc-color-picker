@@ -1,8 +1,8 @@
-import type { RefObject } from '@lynx-js/react';
-import type { LayoutChangeEvent, NodesRef, TouchEvent } from '@lynx-js/types';
-
 import { usePointerInteraction } from './use-pointer-interaction';
-import type { PointerPosition } from './use-pointer-interaction';
+import type {
+  PointerPosition,
+  UsePointerInteractionReturnValue,
+} from './use-pointer-interaction';
 
 import { useControllable } from './use-controllable';
 
@@ -45,14 +45,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     return clamp(aligned, min, max);
   };
 
-  const {
-    elementRef: trackRef,
-    dragging,
-    onPointerDown,
-    onPointerMove,
-    onPointerUp,
-    onElementLayoutChange,
-  } = usePointerInteraction({
+  const pointerReturnedValue = usePointerInteraction({
     onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
@@ -69,28 +62,17 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
   return {
     value,
     ratio: valueToRatio(value, min, max),
-    dragging,
     min,
     max,
     step,
     disabled,
-    onPointerDown,
-    onPointerMove,
-    onPointerUp,
-    trackRef,
-    onTrackLayoutChange: onElementLayoutChange,
+    ...pointerReturnedValue,
   };
 }
 
-interface UseSliderReturnValue {
+interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
   value: number;
   ratio: number;
-  dragging: boolean;
-  onPointerDown: (e: TouchEvent) => void;
-  onPointerMove: (e: TouchEvent) => void;
-  onPointerUp: (e: TouchEvent) => void;
-  onTrackLayoutChange: (e: LayoutChangeEvent) => void;
-  trackRef: RefObject<NodesRef>;
   min: number;
   max: number;
   step: number;
