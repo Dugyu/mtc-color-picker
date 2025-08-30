@@ -27,7 +27,6 @@ interface PointerPosition {
  * Pointer to element-local coordinates adapter.
  * - Converts global pointer X into element-relative offset and ratio.
  * - Does not apply clamp, min/max, or step logic (leave that to higher-level hooks).
- * - Internally stabilizes callbacks so listeners don't depend on caller memoization.
  */
 interface UseMTSPointerInteractionProps {
   /** Called continuously while pointer moves (dragging). */

@@ -1,7 +1,7 @@
 import { root, useCallback, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 
-import { HueSlider } from '@/components/btc-slider/Slider';
+import { HueSlider } from '@/components/btc/Slider';
 import { sleep } from '@/utils/sleep';
 
 if (__BACKGROUND__) {

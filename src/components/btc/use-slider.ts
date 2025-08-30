@@ -68,7 +68,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
 
   return {
     value,
-    ratio: min === max ? 0 : (value - min) / (max - min),
+    ratio: valueToRatio(value, min, max),
     dragging,
     min,
     max,
@@ -100,6 +100,16 @@ interface UseSliderReturnValue {
 function clamp(v: number, min: number, max: number): number {
   // Ensure value stays within [min, max]
   return Math.max(min, Math.min(max, v));
+}
+
+function clamp01(x: number) {
+  return x < 0 ? 0 : x > 1 ? 1 : x;
+}
+
+function valueToRatio(v: number, min: number, max: number) {
+  const span = max - min;
+  if (!Number.isFinite(span) || span <= 0) return 0;
+  return clamp01((v - min) / span);
 }
 
 export { useSlider };

@@ -3,8 +3,8 @@ import {
   HueSlider,
   LightnessSlider,
   SaturationSlider,
-} from '@/components/btc-mts-slider/MTSSlider';
-import type { MTSWriter } from '@/components/btc-mts-slider/MTSSlider';
+} from '@/components/btc-mts/MTSSlider';
+import type { MTSWriter } from '@/components/btc-mts/MTSSlider';
 
 interface ColorPickerProps {
   initialHSL?: readonly [number, number, number];
