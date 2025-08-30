@@ -1,5 +1,5 @@
 'main thread';
-import { useSignal } from '@lynx-js/react/signals';
+import { useSignal, useSignalEffect } from '@lynx-js/react/signals';
 import {
   MTCHueSlider,
   MTCSaturationSlider,
@@ -18,31 +18,35 @@ function MTCColorPicker({ initialValue, onMTCValueChange }: MTCColorPicker) {
   const s = useSignal(initialValue[1]);
   const l = useSignal(initialValue[2]);
 
+  useSignalEffect(() => {
+    onMTCValueChange?.([h.value, s.value, l.value]);
+  });
+
   return (
     <view className="w-full h-full flex flex-col gap-y-4">
       <MTCHueSlider
         s={s}
         l={l}
         defaultValue={initialValue[0]}
-        onChange={(hue: number) =>
-          onMTCValueChange?.([hue, initialValue[1], initialValue[2]])
-        }
+        onChange={(hue: number) => {
+          h.value = hue;
+        }}
       />
       <MTCSaturationSlider
         h={h}
         l={l}
         defaultValue={initialValue[1]}
-        onChange={(sat: number) =>
-          onMTCValueChange?.([initialValue[0], sat, initialValue[2]])
-        }
+        onChange={(sat: number) => {
+          s.value = sat;
+        }}
       />
       <MTCLightnessSlider
         h={h}
         s={s}
         defaultValue={initialValue[2]}
-        onChange={(light: number) =>
-          onMTCValueChange?.([initialValue[0], initialValue[1], light])
-        }
+        onChange={(light: number) => {
+          l.value = light;
+        }}
       />
     </view>
   );
