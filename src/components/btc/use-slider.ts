@@ -1,8 +1,8 @@
-import type { RefObject } from '@lynx-js/react';
-import type { LayoutChangeEvent, NodesRef, TouchEvent } from '@lynx-js/types';
-
 import { usePointerInteraction } from './use-pointer-interaction';
-import type { PointerPosition } from './use-pointer-interaction';
+import type {
+  PointerPosition,
+  UsePointerInteractionReturnValue,
+} from './use-pointer-interaction';
 
 import { useControllable } from './use-controllable';
 
@@ -45,14 +45,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     return clamp(aligned, min, max);
   };
 
-  const {
-    elementRef: trackRef,
-    dragging,
-    onPointerDown,
-    onPointerMove,
-    onPointerUp,
-    onElementLayoutChange,
-  } = usePointerInteraction({
+  const pointerReturnedValue = usePointerInteraction({
     onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
@@ -68,29 +61,18 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
 
   return {
     value,
-    ratio: min === max ? 0 : (value - min) / (max - min),
-    dragging,
+    ratio: valueToRatio(value, min, max),
     min,
     max,
     step,
     disabled,
-    onPointerDown,
-    onPointerMove,
-    onPointerUp,
-    trackRef,
-    onTrackLayoutChange: onElementLayoutChange,
+    ...pointerReturnedValue,
   };
 }
 
-interface UseSliderReturnValue {
+interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
   value: number;
   ratio: number;
-  dragging: boolean;
-  onPointerDown: (e: TouchEvent) => void;
-  onPointerMove: (e: TouchEvent) => void;
-  onPointerUp: (e: TouchEvent) => void;
-  onTrackLayoutChange: (e: LayoutChangeEvent) => void;
-  trackRef: RefObject<NodesRef>;
   min: number;
   max: number;
   step: number;
@@ -100,6 +82,16 @@ interface UseSliderReturnValue {
 function clamp(v: number, min: number, max: number): number {
   // Ensure value stays within [min, max]
   return Math.max(min, Math.min(max, v));
+}
+
+function clamp01(x: number) {
+  return x < 0 ? 0 : x > 1 ? 1 : x;
+}
+
+function valueToRatio(v: number, min: number, max: number) {
+  const span = max - min;
+  if (!Number.isFinite(span) || span <= 0) return 0;
+  return clamp01((v - min) / span);
 }
 
 export { useSlider };

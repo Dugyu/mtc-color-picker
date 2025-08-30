@@ -8,7 +8,7 @@ import {
 import { AppLayout } from '@/App';
 import { sleep } from '@/utils/sleep';
 
-import { HueSlider } from '@/components/btc-mts-slider/MTSSlider';
+import { HueSlider } from '@/components/btc-mts/MTSSlider';
 // import type { MTSWriterWithControls } from '@/components/btc-mts-slider/MTSSlider';
 
 if (__BACKGROUND__) {

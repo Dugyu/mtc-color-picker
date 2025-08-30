@@ -23,28 +23,28 @@ function Slider(props: SliderProps) {
   const { rootStyle, trackStyle, ...sliderProps } = props;
 
   const {
-    onPointerDown,
-    onPointerMove,
-    onPointerUp,
-    onTrackLayoutChange,
-    trackRef,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
+    elementRef,
     ratio,
   } = useSlider(sliderProps);
 
   return (
     // Root
     <view
-      bindtouchstart={onPointerDown}
-      bindtouchmove={onPointerMove}
-      bindtouchend={onPointerUp}
-      bindtouchcancel={onPointerUp}
+      bindtouchstart={handlePointerDown}
+      bindtouchmove={handlePointerMove}
+      bindtouchend={handlePointerUp}
+      bindtouchcancel={handlePointerUp}
       className="relative px-5 bg-primary w-full h-10 flex flex-row items-center rounded-full"
       style={rootStyle}
     >
       {/* Track Positioner */}
       <view
-        ref={trackRef}
-        bindlayoutchange={onTrackLayoutChange}
+        ref={elementRef}
+        bindlayoutchange={handleElementLayoutChange}
         className="relative w-full h-full flex flex-row items-center"
       >
         {/* Track Visualizer */}
