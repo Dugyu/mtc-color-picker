@@ -11,6 +11,7 @@ import type { RefWriteAction } from './use-mts-controllable';
 import { resolveNextValue } from './use-mts-controllable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
+import type { Expand } from '@/types/utils';
 
 interface MTSSliderProps {
   mtsWriteValue?: MTSWriterWithControlsRef<number>;
@@ -192,7 +193,7 @@ function HueSlider({
   initialSL = [100, 50],
   mtsWriteSL,
   disabled,
-}: Omit<MTSSliderProps, 'min' | 'max' | 'step'> & {
+}: Expand<Omit<MTSSliderProps, 'min' | 'max' | 'step'>> & {
   initialSL?: readonly [number, number];
   mtsWriteSL?: MTSWriterRef<readonly [number, number]>;
 }) {
@@ -255,7 +256,7 @@ function SaturationSlider({
   initialHL = [0, 50],
   mtsWriteHL,
   disabled,
-}: Omit<MTSSliderProps, 'min' | 'max' | 'step'> & {
+}: Expand<Omit<MTSSliderProps, 'min' | 'max' | 'step'>> & {
   initialHL?: readonly [number, number];
   mtsWriteHL?: MTSWriterRef<readonly [number, number]>;
 }) {
@@ -317,7 +318,7 @@ function LightnessSlider({
   initialHS = [0, 100],
   mtsWriteHS,
   disabled,
-}: Omit<MTSSliderProps, 'min' | 'max' | 'step'> & {
+}: Expand<Omit<MTSSliderProps, 'min' | 'max' | 'step'>> & {
   initialHS?: readonly [number, number];
   mtsWriteHS?: MTSWriterRef<readonly [number, number]>;
 }) {

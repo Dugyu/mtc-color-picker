@@ -26,6 +26,7 @@ export function App() {
   return (
     <AppLayout
       title="BTC-MTS ColorPicker"
+      subtitle="Coordinate on MTS"
       h={value[0]}
       s={value[1]}
       l={value[2]}

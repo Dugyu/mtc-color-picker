@@ -1,7 +1,6 @@
 import { useMainThreadRef, useCallback } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 
-// import { useMTSEffectEvent } from './use-mts-effect-event';
 /**
  * Raw pointer position relative to an element's bounding box.
  */
@@ -54,17 +53,10 @@ function useMTSPointerInteraction({
   const elementLeftRef = useMainThreadRef<number | null>(null);
   const elementWidthRef = useMainThreadRef(0);
 
-  /** (Optional) Container metrics kept for future policies (hit-testing, scroll compensation, etc.) */
-  const containerLeftRef = useMainThreadRef<number | null>(null);
-  const containerWidthRef = useMainThreadRef(0);
-
   /** Last computed pointer position snapshot */
   const posRef = useMainThreadRef<PointerPosition | null>(null);
 
   const draggingRef = useMainThreadRef(false);
-
-  // const stableUpdate = useMTSEffectEvent(onMTSUpdate);
-  // const stableCommit = useMTSEffectEvent(onMTSCommit);
 
   const buildPosition = useCallback((x: number): PointerPosition | null => {
     'main thread';
@@ -88,7 +80,6 @@ function useMTSPointerInteraction({
       buildPosition(e.detail.x);
       if (posRef.current) {
         onMTSUpdate?.(posRef.current);
-        //stableUpdate(posRef.current);
       }
     },
     [buildPosition, onMTSUpdate],
@@ -101,7 +92,6 @@ function useMTSPointerInteraction({
       buildPosition(e.detail.x);
       if (posRef.current) {
         onMTSUpdate?.(posRef.current);
-        // stableUpdate(posRef.current);
       }
     },
     [buildPosition, onMTSUpdate],
@@ -114,8 +104,6 @@ function useMTSPointerInteraction({
       buildPosition(e.detail.x);
       if (posRef.current) {
         onMTSCommit?.(posRef.current);
-        // stableUpdate(posRef.current);
-        // stableCommit(posRef.current);
       }
     },
     [buildPosition, onMTSCommit],
@@ -132,23 +120,11 @@ function useMTSPointerInteraction({
     [],
   );
 
-  const onContainerLayoutChange = useCallback(
-    async (e: MainThread.LayoutChangeEvent) => {
-      'main thread';
-      containerWidthRef.current = e.detail.width;
-      const rect: { left: number } =
-        await e.currentTarget.invoke('boundingClientRect');
-      containerLeftRef.current = rect.left;
-    },
-    [],
-  );
-
   return {
     onMTSPointerDown: onPointerDown,
     onMTSPointerMove: onPointerMove,
     onMTSPointerUp: onPointerUp,
     onMTSElementLayoutChange: onElementLayoutChange,
-    onMTSContainerLayoutChange: onContainerLayoutChange,
   };
 }
 
@@ -157,9 +133,6 @@ interface UseMTSPointerInteractionReturnValue {
   onMTSPointerMove: (e: MainThread.TouchEvent) => void;
   onMTSPointerUp: (e: MainThread.TouchEvent) => void;
   onMTSElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
-  onMTSContainerLayoutChange: (
-    e: MainThread.LayoutChangeEvent,
-  ) => Promise<void>;
 }
 
 export { useMTSPointerInteraction };

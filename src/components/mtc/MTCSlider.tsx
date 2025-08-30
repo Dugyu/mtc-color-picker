@@ -6,6 +6,7 @@ import type { CSSProperties } from '@lynx-js/types';
 import { useMTCSlider } from './use-mtc-slider';
 import type { UseMTCSliderProps } from './use-mtc-slider';
 import { HSLGradients } from '@/utils/hsl-gradients';
+import type { Expand } from '@/types/utils';
 
 interface MTCSliderProps extends UseMTCSliderProps {
   // Styling
@@ -69,7 +70,7 @@ function MTCHueSlider({
   onChange,
   onCommit,
   disabled,
-}: Omit<MTCSliderProps, 'min' | 'max' | 'step'> & {
+}: Expand<Omit<MTCSliderProps, 'min' | 'max' | 'step'>> & {
   s?: ReturnType<typeof useSignal<number>>;
   l?: ReturnType<typeof useSignal<number>>;
 }) {
@@ -104,7 +105,7 @@ function MTCSaturationSlider({
   onChange,
   onCommit,
   disabled,
-}: Omit<MTCSliderProps, 'min' | 'max' | 'step'> & {
+}: Expand<Omit<MTCSliderProps, 'min' | 'max' | 'step'>> & {
   h?: ReturnType<typeof useSignal<number>>;
   l?: ReturnType<typeof useSignal<number>>;
 }) {
@@ -139,7 +140,7 @@ function MTCLightnessSlider({
   onChange,
   onCommit,
   disabled,
-}: Omit<MTCSliderProps, 'min' | 'max' | 'step'> & {
+}: Expand<Omit<MTCSliderProps, 'min' | 'max' | 'step'>> & {
   h?: ReturnType<typeof useSignal<number>>;
   s?: ReturnType<typeof useSignal<number>>;
 }) {

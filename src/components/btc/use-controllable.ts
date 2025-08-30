@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from '@lynx-js/react';
 import type { Dispatch, SetStateAction } from '@lynx-js/react';
 
 import { useEffectEvent, noop } from './use-effect-event';
+import type { Expand } from '@/types/utils';
 
 function isUpdater<T>(v: SetStateAction<T>): v is (prev: T) => T {
   return typeof v === 'function';
@@ -49,7 +50,7 @@ function useControllable<T>({
 function useUncontrolled<T>({
   defaultValue,
   onChange,
-}: Omit<UseControllabeProps<T>, 'value'>) {
+}: Expand<Omit<UseControllabeProps<T>, 'value'>>) {
   const [current, setCurrent] = useState<T | undefined>(defaultValue);
   const prevRef = useRef(current);
   const stableOnChange = useEffectEvent(onChange ?? noop);

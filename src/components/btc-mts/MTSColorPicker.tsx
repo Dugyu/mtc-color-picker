@@ -1,27 +1,26 @@
 import { useCallback, useMainThreadRef } from '@lynx-js/react';
-import {
-  HueSlider,
-  LightnessSlider,
-  SaturationSlider,
-} from '@/components/btc-mts/MTSSlider';
-import type { MTSWriter } from '@/components/btc-mts/MTSSlider';
+import { HueSlider, LightnessSlider, SaturationSlider } from './MTSSlider';
+import type { MTSWriter } from './MTSSlider';
+
+type Color = readonly [number, number, number];
+type Vector2 = readonly [number, number];
 
 interface ColorPickerProps {
-  initialHSL?: readonly [number, number, number];
-  onMTSHSLChange?: (next: readonly [h: number, s: number, l: number]) => void;
+  initialHSL?: Color;
+  onMTSHSLChange?: (next: Color) => void;
 }
 function ColorPicker({
   initialHSL = [199, 99, 72],
   onMTSHSLChange,
 }: ColorPickerProps) {
   const mtsHueRef = useMainThreadRef<number>(initialHSL[0]);
-  const mtsWriteSL = useMainThreadRef<MTSWriter<readonly [number, number]>>();
+  const mtsWriteSL = useMainThreadRef<MTSWriter<Vector2>>();
 
   const mtsSaturationRef = useMainThreadRef<number>(initialHSL[1]);
-  const mtsWriteHL = useMainThreadRef<MTSWriter<readonly [number, number]>>();
+  const mtsWriteHL = useMainThreadRef<MTSWriter<Vector2>>();
 
   const mtsLightnessRef = useMainThreadRef<number>(initialHSL[2]);
-  const mtsWriteHS = useMainThreadRef<MTSWriter<readonly [number, number]>>();
+  const mtsWriteHS = useMainThreadRef<MTSWriter<Vector2>>();
 
   const writeSliderGradients = useCallback(() => {
     'main thread';
