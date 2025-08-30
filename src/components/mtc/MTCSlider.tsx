@@ -73,16 +73,8 @@ function MTCHueSlider({
   s?: ReturnType<typeof useSignal<number>>;
   l?: ReturnType<typeof useSignal<number>>;
 }) {
-  // const trackColor = useComputed(() => `hsl(${199}, ${s.value}%, ${l.value}%)`);
-  const edgeGradient = useComputed(() =>
-    HSLGradients.hueEdge(
-      s.value ?? defaultSaturation.value,
-      l.value ?? defaultLightness.value,
-    ),
-  );
-
-  const trackGradient = useComputed(() =>
-    HSLGradients.hueTrack(
+  const gradients = useComputed(() =>
+    HSLGradients.hueGradientPair(
       s.value ?? defaultSaturation.value,
       l.value ?? defaultLightness.value,
     ),
@@ -97,8 +89,8 @@ function MTCHueSlider({
       disabled={disabled}
       onChange={onChange}
       onCommit={onCommit}
-      rootStyle={{ backgroundImage: edgeGradient.value }}
-      trackStyle={{ backgroundImage: trackGradient.value }}
+      rootStyle={{ backgroundImage: gradients.value.edge }}
+      trackStyle={{ backgroundImage: gradients.value.track }}
     />
   );
 }
@@ -116,15 +108,8 @@ function MTCSaturationSlider({
   h?: ReturnType<typeof useSignal<number>>;
   l?: ReturnType<typeof useSignal<number>>;
 }) {
-  const edgeGradient = useComputed(() =>
-    HSLGradients.saturationEdge(
-      h.value ?? defaultHue.value,
-      l.value ?? defaultLightness.value,
-    ),
-  );
-
-  const trackGradient = useComputed(() =>
-    HSLGradients.saturationTrack(
+  const gradients = useComputed(() =>
+    HSLGradients.saturationGradientPair(
       h.value ?? defaultHue.value,
       l.value ?? defaultLightness.value,
     ),
@@ -139,8 +124,8 @@ function MTCSaturationSlider({
       disabled={disabled}
       onChange={onChange}
       onCommit={onCommit}
-      rootStyle={{ backgroundImage: edgeGradient.value }}
-      trackStyle={{ backgroundImage: trackGradient.value }}
+      rootStyle={{ backgroundImage: gradients.value.edge }}
+      trackStyle={{ backgroundImage: gradients.value.track }}
     />
   );
 }
@@ -158,15 +143,8 @@ function MTCLightnessSlider({
   h?: ReturnType<typeof useSignal<number>>;
   s?: ReturnType<typeof useSignal<number>>;
 }) {
-  const edgeGradient = useComputed(() =>
-    HSLGradients.lightnessEdge(
-      h.value ?? defaultHue.value,
-      s.value ?? defaultSaturation.value,
-    ),
-  );
-
-  const trackGradient = useComputed(() =>
-    HSLGradients.lightnessTrack(
+  const gradients = useComputed(() =>
+    HSLGradients.lightnessGradientPair(
       h.value ?? defaultHue.value,
       s.value ?? defaultSaturation.value,
     ),
@@ -181,8 +159,8 @@ function MTCLightnessSlider({
       disabled={disabled}
       onChange={onChange}
       onCommit={onCommit}
-      rootStyle={{ backgroundImage: edgeGradient.value }}
-      trackStyle={{ backgroundImage: trackGradient.value }}
+      rootStyle={{ backgroundImage: gradients.value.edge }}
+      trackStyle={{ backgroundImage: gradients.value.track }}
     />
   );
 }
