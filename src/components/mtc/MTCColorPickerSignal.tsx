@@ -1,33 +1,30 @@
 'main thread';
 import { useSignal, useSignalEffect } from '@lynx-js/react/signals';
 import {
-  MTCHueSlider,
-  MTCSaturationSlider,
-  MTCLightnessSlider,
+  HueSlider,
+  SaturationSlider,
+  LightnessSlider,
 } from './MTCSliderSignal';
 
 type Color = readonly [number, number, number];
 
-interface MTCColorPickerProps {
+interface ColorPickerProps {
   initialValue: Color;
-  onMTCValueChange?: (next: Color) => void;
+  onChange?: (next: Color) => void;
 }
 
-function MTCColorPicker({
-  initialValue,
-  onMTCValueChange,
-}: MTCColorPickerProps) {
+function ColorPicker({ initialValue, onChange }: ColorPickerProps) {
   const h = useSignal(initialValue[0]);
   const s = useSignal(initialValue[1]);
   const l = useSignal(initialValue[2]);
 
   useSignalEffect(() => {
-    onMTCValueChange?.([h.value, s.value, l.value]);
+    onChange?.([h.value, s.value, l.value]);
   });
 
   return (
     <view className="w-full h-full flex flex-col gap-y-4">
-      <MTCHueSlider
+      <HueSlider
         s={s}
         l={l}
         initialValue={initialValue[0]}
@@ -35,7 +32,7 @@ function MTCColorPicker({
           h.value = hue;
         }}
       />
-      <MTCSaturationSlider
+      <SaturationSlider
         h={h}
         l={l}
         initialValue={initialValue[1]}
@@ -43,7 +40,7 @@ function MTCColorPicker({
           s.value = sat;
         }}
       />
-      <MTCLightnessSlider
+      <LightnessSlider
         h={h}
         s={s}
         initialValue={initialValue[2]}
@@ -55,4 +52,4 @@ function MTCColorPicker({
   );
 }
 
-export { MTCColorPicker };
+export { ColorPicker };
