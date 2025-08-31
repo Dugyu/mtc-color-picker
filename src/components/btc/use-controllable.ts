@@ -10,17 +10,17 @@ function isUpdater<T>(v: SetStateAction<T>): v is (prev: T) => T {
 
 interface UseControllabeProps<T> {
   value?: T | undefined;
-  defaultValue?: T | undefined;
+  initialValue?: T | undefined;
   onChange?: (value: T) => void;
 }
 
 function useControllable<T>({
   value: controlled,
   onChange,
-  defaultValue,
+  initialValue,
 }: UseControllabeProps<T>) {
   const [uncontrolled, setUncontrolled] = useUncontrolled({
-    defaultValue,
+    initialValue,
     onChange,
   });
 
@@ -48,10 +48,10 @@ function useControllable<T>({
 }
 
 function useUncontrolled<T>({
-  defaultValue,
+  initialValue,
   onChange,
 }: Expand<Omit<UseControllabeProps<T>, 'value'>>) {
-  const [current, setCurrent] = useState<T | undefined>(defaultValue);
+  const [current, setCurrent] = useState<T | undefined>(initialValue);
   const prevRef = useRef(current);
   const stableOnChange = useEffectEvent(onChange ?? noop);
 

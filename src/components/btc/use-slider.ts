@@ -8,7 +8,7 @@ import { useControllable } from './use-controllable';
 
 interface UseSliderProps {
   value?: number;
-  defaultValue?: number;
+  initialValue?: number;
   min?: number;
   max?: number;
   step?: number;
@@ -23,15 +23,15 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     min = 0,
     max = 100,
     step: stepProp = 1,
-    defaultValue = min,
+    initialValue = min,
     disabled = false,
     onChange,
     onCommit,
   } = props;
 
-  const [value = defaultValue, setValue] = useControllable<number>({
+  const [value = initialValue, setValue] = useControllable<number>({
     value: controlledValue,
-    defaultValue,
+    initialValue,
     onChange,
   });
 

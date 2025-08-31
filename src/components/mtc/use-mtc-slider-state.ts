@@ -8,7 +8,7 @@ import type {
 } from './use-mtc-pointer-interaction';
 
 interface UseMTCSliderProps {
-  defaultValue?: number;
+  initialValue?: number;
   min?: number;
   max?: number;
   step?: number;
@@ -21,12 +21,12 @@ function useMTCSlider({
   min = 0,
   max = 100,
   step: stepProp = 1,
-  defaultValue = min,
+  initialValue = min,
   disabled = false,
   onChange,
   onCommit,
 }: UseMTCSliderProps) {
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(initialValue);
 
   const ratio = valueToRatio(value, min, max);
   const step = stepProp > 0 ? stepProp : 1;

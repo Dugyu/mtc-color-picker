@@ -55,7 +55,7 @@ function Slider(props: SliderProps) {
 
 function HueSlider({
   value,
-  defaultValue,
+  initialValue,
   s = 100,
   l = 50,
   onChange,
@@ -63,7 +63,7 @@ function HueSlider({
   disabled,
 }: {
   value?: number;
-  defaultValue?: number;
+  initialValue?: number;
   s?: number;
   l?: number;
   onChange?: (h: number) => void;
@@ -78,7 +78,7 @@ function HueSlider({
   return (
     <Slider
       value={value}
-      defaultValue={defaultValue}
+      initialValue={initialValue}
       min={0}
       max={360}
       step={1}

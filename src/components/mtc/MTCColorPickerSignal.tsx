@@ -30,7 +30,7 @@ function MTCColorPicker({
       <MTCHueSlider
         s={s}
         l={l}
-        defaultValue={initialValue[0]}
+        initialValue={initialValue[0]}
         onChange={(hue: number) => {
           h.value = hue;
         }}
@@ -38,7 +38,7 @@ function MTCColorPicker({
       <MTCSaturationSlider
         h={h}
         l={l}
-        defaultValue={initialValue[1]}
+        initialValue={initialValue[1]}
         onChange={(sat: number) => {
           s.value = sat;
         }}
@@ -46,7 +46,7 @@ function MTCColorPicker({
       <MTCLightnessSlider
         h={h}
         s={s}
-        defaultValue={initialValue[2]}
+        initialValue={initialValue[2]}
         onChange={(light: number) => {
           l.value = light;
         }}
