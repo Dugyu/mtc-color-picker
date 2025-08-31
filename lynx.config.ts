@@ -10,7 +10,8 @@ const blockingEnabled = process.env.LYNX_DEMO_BLOCKING_ENABLED === 'true';
 export default defineConfig({
   source: {
     entry: {
-      MTCColorPicker: './src/demos/MTCColorPicker.tsx',
+      'MTCColorPicker-Signal': './src/demos/MTCColorPicker.tsx',
+      'MTCColorPicker-State': './src/demos/MTCColorPickerState.tsx',
       'BTCMTSColorPicker-MTSCoord': './src/demos/BTCMTSColorPicker.tsx',
       'BTCMTSColorPicker-BTCCoord': './src/demos/BTCBTCMTSColorPicker.tsx',
       BTCMTSSlider: './src/demos/BTCMTSSlider.tsx',

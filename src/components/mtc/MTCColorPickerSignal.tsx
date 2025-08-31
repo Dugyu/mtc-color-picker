@@ -4,16 +4,19 @@ import {
   MTCHueSlider,
   MTCSaturationSlider,
   MTCLightnessSlider,
-} from './MTCSlider';
+} from './MTCSliderSignal';
 
 type Color = readonly [number, number, number];
 
-interface MTCColorPicker {
+interface MTCColorPickerProps {
   initialValue: Color;
   onMTCValueChange?: (next: Color) => void;
 }
 
-function MTCColorPicker({ initialValue, onMTCValueChange }: MTCColorPicker) {
+function MTCColorPicker({
+  initialValue,
+  onMTCValueChange,
+}: MTCColorPickerProps) {
   const h = useSignal(initialValue[0]);
   const s = useSignal(initialValue[1]);
   const l = useSignal(initialValue[2]);

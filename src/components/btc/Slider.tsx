@@ -1,22 +1,16 @@
 import { useMemo } from '@lynx-js/react';
 import type { CSSProperties } from '@lynx-js/types';
 import { useSlider } from './use-slider';
+import type { UseSliderProps } from './use-slider';
 import { HSLGradients } from '@/utils/hsl-gradients';
+import type { Expand } from '@/types/utils';
 
-interface SliderProps {
-  value?: number;
-  defaultValue?: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
-  onChange?: (value: number) => void;
-  onCommit?: (value: number) => void;
-
-  // Styling
-  rootStyle?: CSSProperties;
-  trackStyle?: CSSProperties;
-}
+type SliderProps = Expand<
+  UseSliderProps & {
+    rootStyle?: CSSProperties;
+    trackStyle?: CSSProperties;
+  }
+>;
 
 /** ================= Base Slider ================= */
 function Slider(props: SliderProps) {

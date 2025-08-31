@@ -1,25 +1,42 @@
 'main thread';
+
 import { useRef } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 
+/** Pointer position in the element’s local frame. */
 interface PointerPosition {
+  /** Horizontal offset from element's left edge (px). Can be <0 or >width. */
   offset: number;
+  /** offset / elementWidth. Can be <0 or >1. */
   offsetRatio: number;
+  /** Measured width of the element (px). */
   elementWidth: number;
 }
 
+/** Interaction callbacks. */
 interface UseMTCPointerInteractionProps {
-  onMTCUpdate?: (pos: PointerPosition) => void;
-  onMTCCommit?: (pos: PointerPosition) => void;
+  /** Fires during drag/move. */
+  onUpdate?: (pos: PointerPosition) => void;
+  /** Fires on pointer up (final value). */
+  onCommit?: (pos: PointerPosition) => void;
 }
 
+/**
+ * Pointer → element-local coordinates adapter (MTC).
+ *
+ * - Container usually hosts touch/pointer events (better hit area).
+ * - Element defines the coordinate frame (layout + bounding rect).
+ * - If no separate container is needed, bind handlers on the element itself.
+ *
+ * No clamping/step logic is applied here.
+ */
 function useMTCPointerInteraction({
-  onMTCUpdate,
-  onMTCCommit,
-}: UseMTCPointerInteractionProps = {}) {
+  onUpdate,
+  onCommit,
+}: UseMTCPointerInteractionProps = {}): UseMTCPointerInteractionReturnValue {
   /** Element (coordinate frame) metrics */
-  const elementLeftRef = useRef<number | null>(null);
-  const elementWidthRef = useRef(0);
+  const eleLeftRef = useRef<number | null>(null);
+  const eleWidthRef = useRef(0);
 
   /** Last computed pointer position snapshot */
   const posRef = useRef<PointerPosition | null>(null);
@@ -27,63 +44,71 @@ function useMTCPointerInteraction({
   const draggingRef = useRef(false);
 
   function buildPosition(x: number): PointerPosition | null {
-    const elementWidth = elementWidthRef.current;
-    const elementLeft = elementLeftRef.current;
+    const width = eleWidthRef.current;
+    const left = eleLeftRef.current;
 
-    if (elementWidth > 0 && elementLeft != null) {
-      const offset = x - elementLeft;
-      const offsetRatio = offset / elementWidth;
-      const pos = { offset, offsetRatio, elementWidth };
+    if (width > 0 && left != null) {
+      const offset = x - left;
+      const offsetRatio = offset / width;
+      const pos: PointerPosition = { offset, offsetRatio, elementWidth: width };
       posRef.current = pos;
       return pos;
     }
     return null;
   }
 
-  function onPointerDown(e: MainThread.TouchEvent) {
+  function handlePointerDown(e: MainThread.TouchEvent) {
     draggingRef.current = true;
     buildPosition(e.detail.x);
     if (posRef.current) {
-      onMTCUpdate?.(posRef.current);
+      onUpdate?.(posRef.current);
     }
   }
 
-  function onPointerMove(e: MainThread.TouchEvent) {
+  function handlePointerMove(e: MainThread.TouchEvent) {
     if (!draggingRef.current) return;
     buildPosition(e.detail.x);
     if (posRef.current) {
-      onMTCUpdate?.(posRef.current);
+      onUpdate?.(posRef.current);
     }
   }
 
-  function onPointerUp(e: MainThread.TouchEvent) {
+  function handlePointerUp(e: MainThread.TouchEvent) {
     draggingRef.current = false;
     buildPosition(e.detail.x);
     if (posRef.current) {
-      onMTCCommit?.(posRef.current);
+      // Fire update then commit on release.
+      onUpdate?.(posRef.current);
+      onCommit?.(posRef.current);
     }
   }
 
-  async function onElementLayoutChange(e: MainThread.LayoutChangeEvent) {
-    elementWidthRef.current = e.detail.width;
+  async function handleElementLayoutChange(e: MainThread.LayoutChangeEvent) {
+    eleWidthRef.current = e.detail.width;
+
+    // Screen-based rect so it aligns with e.detail.x
     const rect: { left: number } =
       await e.currentTarget.invoke('boundingClientRect');
-    elementLeftRef.current = rect.left;
+    eleLeftRef.current = rect.left;
   }
 
   return {
-    onMTCPointerDown: onPointerDown,
-    onMTCPointerMove: onPointerMove,
-    onMTCPointerUp: onPointerUp,
-    onMTCElementLayoutChange: onElementLayoutChange,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
   };
 }
 
 interface UseMTCPointerInteractionReturnValue {
-  onMTCPointerDown: (e: MainThread.TouchEvent) => void;
-  onMTCPointerMove: (e: MainThread.TouchEvent) => void;
-  onMTCPointerUp: (e: MainThread.TouchEvent) => void;
-  onMTCElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
+  /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchstart={handlePointerDown} /> */
+  handlePointerDown: (e: MainThread.TouchEvent) => void;
+  /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchmove={handlePointerMove} /> */
+  handlePointerMove: (e: MainThread.TouchEvent) => void;
+  /** Bind on CONTAINER (or ELEMENT if container===element): <view bindtouchend|bindtouchcancel={handlePointerUp} /> */
+  handlePointerUp: (e: MainThread.TouchEvent) => void;
+  /** Bind on ELEMENT: <view bindlayoutchange={handleElementLayoutChange} /> */
+  handleElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
 }
 
 export { useMTCPointerInteraction };

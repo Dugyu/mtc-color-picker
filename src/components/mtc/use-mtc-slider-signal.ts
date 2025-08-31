@@ -1,13 +1,13 @@
-import { usePointerInteraction } from './use-pointer-interaction';
+'main thread';
+
+import { useComputed, useSignal } from '@lynx-js/react/signals';
+import { useMTCPointerInteraction } from './use-mtc-pointer-interaction';
 import type {
   PointerPosition,
-  UsePointerInteractionReturnValue,
-} from './use-pointer-interaction';
+  UseMTCPointerInteractionReturnValue,
+} from './use-mtc-pointer-interaction';
 
-import { useControllable } from './use-controllable';
-
-interface UseSliderProps {
-  value?: number;
+interface UseMTCSliderProps {
   defaultValue?: number;
   min?: number;
   max?: number;
@@ -17,26 +17,19 @@ interface UseSliderProps {
   onCommit?: (value: number) => void;
 }
 
-function useSlider(props: UseSliderProps): UseSliderReturnValue {
-  const {
-    value: controlledValue,
-    min = 0,
-    max = 100,
-    step: stepProp = 1,
-    defaultValue = min,
-    disabled = false,
-    onChange,
-    onCommit,
-  } = props;
-
-  const [value = defaultValue, setValue] = useControllable<number>({
-    value: controlledValue,
-    defaultValue,
-    onChange,
-  });
+function useMTCSlider({
+  min = 0,
+  max = 100,
+  step: stepProp = 1,
+  defaultValue = min,
+  disabled = false,
+  onChange,
+  onCommit,
+}: UseMTCSliderProps) {
+  const value = useSignal(defaultValue);
+  const ratio = useComputed(() => valueToRatio(value.value, min, max));
 
   const step = stepProp > 0 ? stepProp : 1;
-  const ratio = valueToRatio(value, min, max);
 
   const quantize = ({ offsetRatio }: PointerPosition) => {
     const span = max - min;
@@ -46,20 +39,20 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     return clamp(aligned, min, max);
   };
 
-  const pointerReturnedValue = usePointerInteraction({
+  const pointerReturnedValue = useMTCPointerInteraction({
     onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      setValue(next);
+      value.value = next;
+      onChange?.(next);
     },
     onCommit: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      setValue(next);
+      value.value = next;
       onCommit?.(next);
     },
   });
-
   return {
     value,
     ratio,
@@ -71,7 +64,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
   };
 }
 
-interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
+interface UseMTCSliderReturnValue extends UseMTCPointerInteractionReturnValue {
   value: number;
   ratio: number;
   min: number;
@@ -95,5 +88,5 @@ function valueToRatio(v: number, min: number, max: number) {
   return clamp01((v - min) / span);
 }
 
-export { useSlider };
-export type { UseSliderProps, UseSliderReturnValue };
+export { useMTCSlider };
+export type { UseMTCSliderProps, UseMTCSliderReturnValue };

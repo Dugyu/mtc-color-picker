@@ -1,8 +1,11 @@
 'main thread';
 
-import { useComputed, useSignal } from '@lynx-js/react/signals';
+import { useState } from '@lynx-js/react';
 import { useMTCPointerInteraction } from './use-mtc-pointer-interaction';
-import type { PointerPosition } from './use-mtc-pointer-interaction';
+import type {
+  PointerPosition,
+  UseMTCPointerInteractionReturnValue,
+} from './use-mtc-pointer-interaction';
 
 interface UseMTCSliderProps {
   defaultValue?: number;
@@ -23,9 +26,9 @@ function useMTCSlider({
   onChange,
   onCommit,
 }: UseMTCSliderProps) {
-  const value = useSignal(defaultValue);
-  const ratio = useComputed(() => valueToRatio(value.value, min, max));
+  const [value, setValue] = useState(defaultValue);
 
+  const ratio = valueToRatio(value, min, max);
   const step = stepProp > 0 ? stepProp : 1;
 
   const quantize = ({ offsetRatio }: PointerPosition) => {
@@ -36,33 +39,39 @@ function useMTCSlider({
     return clamp(aligned, min, max);
   };
 
-  const {
-    onMTCPointerDown,
-    onMTCPointerMove,
-    onMTCPointerUp,
-    onMTCElementLayoutChange,
-  } = useMTCPointerInteraction({
-    onMTCUpdate: (pos) => {
+  const pointerReturnedValue = useMTCPointerInteraction({
+    onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      value.value = next;
+      setValue(next);
       onChange?.(next);
     },
-    onMTCCommit: (pos) => {
+    onCommit: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      value.value = next;
+      setValue(next);
       onCommit?.(next);
     },
   });
+
   return {
     value,
     ratio,
-    onMTCPointerDown,
-    onMTCPointerMove,
-    onMTCPointerUp,
-    onMTCElementLayoutChange,
+    min,
+    max,
+    step,
+    disabled,
+    ...pointerReturnedValue,
   };
+}
+
+interface UseMTCSliderReturnValue extends UseMTCPointerInteractionReturnValue {
+  value: number;
+  ratio: number;
+  min: number;
+  max: number;
+  step: number;
+  disabled: boolean;
 }
 
 function clamp(v: number, min: number, max: number): number {
@@ -81,5 +90,4 @@ function valueToRatio(v: number, min: number, max: number) {
 }
 
 export { useMTCSlider };
-
-export type { UseMTCSliderProps };
+export type { UseMTCSliderProps, UseMTCSliderReturnValue };
