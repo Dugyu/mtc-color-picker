@@ -3,23 +3,11 @@
 import { useRef } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 
-/** Pointer position in the element’s local frame. */
-interface PointerPosition {
-  /** Horizontal offset from element's left edge (px). Can be <0 or >width. */
-  offset: number;
-  /** offset / elementWidth. Can be <0 or >1. */
-  offsetRatio: number;
-  /** Measured width of the element (px). */
-  elementWidth: number;
-}
-
-/** Interaction callbacks. */
-interface UseMTCPointerInteractionProps {
-  /** Fires during drag/move. */
-  onUpdate?: (pos: PointerPosition) => void;
-  /** Fires on pointer up (final value). */
-  onCommit?: (pos: PointerPosition) => void;
-}
+import type {
+  PointerPosition,
+  UsePointerInteractionProps,
+  UsePointerInteractionReturnValueBase,
+} from '@/types/pointer';
 
 /**
  * Pointer → element-local coordinates adapter (MTC).
@@ -30,10 +18,10 @@ interface UseMTCPointerInteractionProps {
  *
  * No clamping/step logic is applied here.
  */
-function useMTCPointerInteraction({
+function usePointerInteraction({
   onUpdate,
   onCommit,
-}: UseMTCPointerInteractionProps = {}): UseMTCPointerInteractionReturnValue {
+}: UsePointerInteractionProps = {}): UsePointerInteractionReturnValue {
   /** Element (coordinate frame) metrics */
   const eleLeftRef = useRef<number | null>(null);
   const eleWidthRef = useRef(0);
@@ -83,15 +71,19 @@ function useMTCPointerInteraction({
     }
   }
 
-  async function handleElementLayoutChange(e: MainThread.LayoutChangeEvent) {
+  function handleElementLayoutChange(e: MainThread.LayoutChangeEvent) {
     eleWidthRef.current = e.detail.width;
 
-    // Screen-based rect so it aligns with e.detail.x
-    const rect: { left: number } =
-      await e.currentTarget.invoke('boundingClientRect');
-    eleLeftRef.current = rect.left;
+    e.currentTarget
+      .invoke('boundingClientRect')
+      .then((rect: { left: number }) => {
+        // Screen-based rect so it aligns with e.detail.x
+        eleLeftRef.current = rect.left;
+      })
+      .catch((err) => {
+        console.error('Failed to get boundingClientRect:', err);
+      });
   }
-
   return {
     handlePointerDown,
     handlePointerMove,
@@ -100,20 +92,10 @@ function useMTCPointerInteraction({
   };
 }
 
-interface UseMTCPointerInteractionReturnValue {
-  /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchstart={handlePointerDown} /> */
-  handlePointerDown: (e: MainThread.TouchEvent) => void;
-  /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchmove={handlePointerMove} /> */
-  handlePointerMove: (e: MainThread.TouchEvent) => void;
-  /** Bind on CONTAINER (or ELEMENT if container===element): <view bindtouchend|bindtouchcancel={handlePointerUp} /> */
-  handlePointerUp: (e: MainThread.TouchEvent) => void;
-  /** Bind on ELEMENT: <view bindlayoutchange={handleElementLayoutChange} /> */
-  handleElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
-}
+type UsePointerInteractionReturnValue = UsePointerInteractionReturnValueBase<
+  MainThread.TouchEvent,
+  MainThread.LayoutChangeEvent
+>;
 
-export { useMTCPointerInteraction };
-export type {
-  PointerPosition,
-  UseMTCPointerInteractionProps,
-  UseMTCPointerInteractionReturnValue,
-};
+export { usePointerInteraction };
+export type { PointerPosition, UsePointerInteractionReturnValue };

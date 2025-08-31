@@ -1,12 +1,7 @@
-import {
-  useCallback,
-  useMemo,
-  useMainThreadRef,
-  MainThreadRef,
-} from '@lynx-js/react';
+import { useCallback, useMainThreadRef, MainThreadRef } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 
-import { useMTSPointerInteraction } from './use-mts-pointer-interaction';
+import { usePointerInteraction } from './use-mts-pointer-interaction';
 import type { PointerPosition } from './use-mts-pointer-interaction';
 
 import { useMTSControllable } from './use-mts-controllable';
@@ -43,7 +38,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     onMTSCommit,
   } = props;
 
-  const step = useMemo(() => (stepProp > 0 ? stepProp : 1), [stepProp]);
+  const step = stepProp > 0 ? stepProp : 1;
   const ratioRef = useMainThreadRef(valueToRatio(initialValue, min, max));
 
   const forwardOnMTSDerivedChange = useCallback(
@@ -74,7 +69,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     [min, max, step],
   );
 
-  const onMTSPointerUpdate = useCallback(
+  const handlePointerUpdate = useCallback(
     (pos: PointerPosition) => {
       ('main thread');
       if (disabled) return;
@@ -86,68 +81,49 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     [disabled, quantize, writeValue],
   );
 
-  const onMTSPointerCommit = useCallback(
-    async (pos: PointerPosition) => {
-      ('main thread');
-      if (disabled) return;
-      const next = quantize(pos);
-      // Controlled: only notify change;
-      // Uncontrolled: update internals and notify change;
-      writeValue(next);
-      onMTSCommit?.(next);
-    },
-    [disabled, quantize, writeValue],
-  );
+  const handlePointerCommit = (pos: PointerPosition) => {
+    ('main thread');
+    if (disabled) return;
+    const next = quantize(pos);
+    // Controlled: only notify change;
+    // Uncontrolled: update internals and notify change;
+    writeValue(next);
+    onMTSCommit?.(next);
+  };
 
   const {
-    onMTSPointerDown,
-    onMTSPointerMove,
-    onMTSPointerUp,
-    onMTSElementLayoutChange,
-  } = useMTSPointerInteraction({
-    onMTSUpdate: onMTSPointerUpdate,
-    onMTSCommit: onMTSPointerCommit,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
+  } = usePointerInteraction({
+    onUpdate: handlePointerUpdate,
+    onCommit: handlePointerCommit,
   });
 
-  const returnedValue = useMemo(
-    () => ({
-      valueRef,
-      writeValue,
-      ratioRef,
-      min,
-      max,
-      step,
-      disabled,
-      onMTSPointerDown,
-      onMTSPointerMove,
-      onMTSPointerUp,
-      onMTSTrackLayoutChange: onMTSElementLayoutChange,
-    }),
-    [
-      writeValue,
-      min,
-      max,
-      step,
-      disabled,
-      onMTSPointerDown,
-      onMTSPointerMove,
-      onMTSPointerUp,
-      onMTSPointerUp,
-      onMTSElementLayoutChange,
-    ],
-  );
-
-  return returnedValue;
+  return {
+    valueRef,
+    writeValue,
+    ratioRef,
+    min,
+    max,
+    step,
+    disabled,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
+  };
 }
 
 interface UseMTSSliderReturnValue {
   writeValue: MTSWriterWithControls<number>;
   valueRef: MainThreadRef<number>;
   ratioRef: MainThreadRef<number>;
-  onMTSPointerDown: (e: MainThread.TouchEvent) => void;
-  onMTSPointerMove: (e: MainThread.TouchEvent) => void;
-  onMTSPointerUp: (e: MainThread.TouchEvent) => void;
-  onMTSTrackLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
+  handlePointerDown: (e: MainThread.TouchEvent) => void;
+  handlePointerMove: (e: MainThread.TouchEvent) => void;
+  handlePointerUp: (e: MainThread.TouchEvent) => void;
+  handleElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
   min: number;
   max: number;
   step: number;

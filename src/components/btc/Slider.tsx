@@ -21,7 +21,6 @@ function Slider(props: SliderProps) {
     handlePointerMove,
     handlePointerUp,
     handleElementLayoutChange,
-    elementRef,
     ratio,
   } = useSlider(sliderProps);
 
@@ -37,7 +36,6 @@ function Slider(props: SliderProps) {
     >
       {/* Track Positioner */}
       <view
-        ref={elementRef}
         bindlayoutchange={handleElementLayoutChange}
         className="relative w-full h-full flex flex-row items-center"
       >

@@ -49,10 +49,10 @@ function BTCMTSSlider(props: BTCMTSSliderProps) {
   const {
     ratioRef,
     writeValue,
-    onMTSPointerDown,
-    onMTSPointerMove,
-    onMTSPointerUp,
-    onMTSTrackLayoutChange,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
   } = useMTSSlider({
     initialValue,
     mtsWriteValue,
@@ -98,16 +98,16 @@ function BTCMTSSlider(props: BTCMTSSliderProps) {
     // Root
     <view
       main-thread:ref={initRoot}
-      main-thread:bindtouchstart={onMTSPointerDown}
-      main-thread:bindtouchmove={onMTSPointerMove}
-      main-thread:bindtouchend={onMTSPointerUp}
-      main-thread:bindtouchcancel={onMTSPointerUp}
+      main-thread:bindtouchstart={handlePointerDown}
+      main-thread:bindtouchmove={handlePointerMove}
+      main-thread:bindtouchend={handlePointerUp}
+      main-thread:bindtouchcancel={handlePointerUp}
       className="relative px-5 bg-primary w-full h-10 flex flex-row items-center rounded-full"
       style={rootStyle}
     >
       {/* Track Positioner */}
       <view
-        main-thread:bindlayoutchange={onMTSTrackLayoutChange}
+        main-thread:bindlayoutchange={handleElementLayoutChange}
         className="relative w-full h-full flex flex-row items-center"
       >
         {/* Track Visualizer */}
