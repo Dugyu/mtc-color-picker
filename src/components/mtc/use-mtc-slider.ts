@@ -37,18 +37,18 @@ function useMTCSlider({
   };
 
   const {
-    onMTCPointerDown,
-    onMTCPointerMove,
-    onMTCPointerUp,
-    onMTCElementLayoutChange,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
   } = useMTCPointerInteraction({
-    onMTCUpdate: (pos) => {
+    onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
       value.value = next;
       onChange?.(next);
     },
-    onMTCCommit: (pos) => {
+    onCommit: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
       value.value = next;
@@ -58,10 +58,10 @@ function useMTCSlider({
   return {
     value,
     ratio,
-    onMTCPointerDown,
-    onMTCPointerMove,
-    onMTCPointerUp,
-    onMTCElementLayoutChange,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleElementLayoutChange,
   };
 }
 

@@ -23,10 +23,10 @@ const defaultHue = signal(0);
 function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
   const {
     ratio, // ReadonlySignal
-    onMTCElementLayoutChange,
-    onMTCPointerDown,
-    onMTCPointerMove,
-    onMTCPointerUp,
+    handleElementLayoutChange,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
   } = useMTCSlider(sliderProps);
 
   return (
@@ -39,15 +39,15 @@ function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
       <view
         className="relative w-full h-full flex flex-row items-center"
         // @ts-expect-error
-        bindlayoutchange={onMTCElementLayoutChange}
+        bindlayoutchange={handleElementLayoutChange}
         // @ts-expect-error
-        bindtouchstart={onMTCPointerDown}
+        bindtouchstart={handlePointerDown}
         // @ts-expect-error
-        bindtouchmove={onMTCPointerMove}
+        bindtouchmove={handlePointerMove}
         // @ts-expect-error
-        bindtouchend={onMTCPointerUp}
+        bindtouchend={handlePointerUp}
         // @ts-expect-error
-        bindtouchcancel={onMTCPointerUp}
+        bindtouchcancel={handlePointerUp}
       >
         {/* Track Visualizer */}
         <view className="w-full h-full bg-secondary" style={trackStyle}></view>
