@@ -1,7 +1,7 @@
 import { root, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 import { MTCColorPicker } from '@/components/mtc/MTCColorPickerState';
-import { DummyStyle } from '@/components/shared/DummyStyle';
+import { DummyStyle } from '@/components/ui/DummyStyle';
 import { sleep } from '@/utils/sleep';
 
 if (__BACKGROUND__) {
