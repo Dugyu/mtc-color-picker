@@ -1,6 +1,6 @@
 import { root, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
-import { MTCColorPicker } from '@/components/mtc/MTCColorPicker';
+import { MTCColorPicker } from '@/components/mtc/MTCColorPickerSignal';
 import { DummyStyle } from '@/components/shared/DummyStyle';
 import { sleep } from '@/utils/sleep';
 

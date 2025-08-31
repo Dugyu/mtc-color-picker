@@ -3,8 +3,8 @@
 import { useComputed, useSignal, signal } from '@lynx-js/react/signals';
 import type { CSSProperties } from '@lynx-js/types';
 
-import { useMTCSlider } from './use-mtc-slider';
-import type { UseMTCSliderProps } from './use-mtc-slider';
+import { useMTCSlider } from './use-mtc-slider-signal';
+import type { UseMTCSliderProps } from './use-mtc-slider-signal';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Expand } from '@/types/utils';
 

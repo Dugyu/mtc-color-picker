@@ -4,7 +4,7 @@ import {
   MTCHueSlider,
   MTCSaturationSlider,
   MTCLightnessSlider,
-} from './MTCSlider';
+} from './MTCSliderSignal';
 
 type Color = readonly [number, number, number];
 
