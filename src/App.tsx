@@ -1,7 +1,7 @@
-import { useMemo } from '@lynx-js/react';
-import type { ReactNode } from '@lynx-js/react';
 import logoUrl from '@/assets/icons/lynx-logo-knockout.png';
 import { MaskIcon } from '@/components/shared/MaskIcon';
+import type { ReactNode } from '@lynx-js/react';
+import { useMemo } from '@lynx-js/react';
 
 import './App.css';
 
@@ -47,7 +47,7 @@ export function AppLayout({
         style={color ? { backgroundColor: color } : undefined}
       />
       {/* BottomSheet */}
-      <view className="absolute bottom-0 w-full h-[calc(33.33%+24px)] p-4 flex-col items-center bg-base-4 rounded-t-lg shadow-xl">
+      <view className="absolute bottom-16 w-full h-[calc(33.33%-24px)] p-4 flex-col items-center bg-base-4 rounded-lg shadow-xl">
         {children}
       </view>
     </page>

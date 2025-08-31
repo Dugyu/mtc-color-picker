@@ -1,9 +1,9 @@
+import type { Expand } from '@/types/utils';
+import { HSLGradients } from '@/utils/hsl-gradients';
 import { useMemo } from '@lynx-js/react';
 import type { CSSProperties } from '@lynx-js/types';
-import { useSlider } from './use-slider';
 import type { UseSliderProps } from './use-slider';
-import { HSLGradients } from '@/utils/hsl-gradients';
-import type { Expand } from '@/types/utils';
+import { useSlider } from './use-slider';
 
 type SliderProps = Expand<
   UseSliderProps & {
@@ -93,4 +93,4 @@ function HueSlider({
   );
 }
 
-export { Slider, HueSlider };
+export { HueSlider, Slider };
