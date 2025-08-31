@@ -1,10 +1,10 @@
 'main thread';
 
 import { useState } from '@lynx-js/react';
-import { useMTCPointerInteraction } from './use-mtc-pointer-interaction';
+import { usePointerInteraction } from './use-mtc-pointer-interaction';
 import type {
   PointerPosition,
-  UseMTCPointerInteractionReturnValue,
+  UsePointerInteractionReturnValue,
 } from './use-mtc-pointer-interaction';
 
 interface UseMTCSliderProps {
@@ -39,7 +39,7 @@ function useMTCSlider({
     return clamp(aligned, min, max);
   };
 
-  const pointerReturnedValue = useMTCPointerInteraction({
+  const pointerReturnedValue = usePointerInteraction({
     onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
@@ -65,7 +65,7 @@ function useMTCSlider({
   };
 }
 
-interface UseMTCSliderReturnValue extends UseMTCPointerInteractionReturnValue {
+interface UseMTCSliderReturnValue extends UsePointerInteractionReturnValue {
   value: number;
   ratio: number;
   min: number;

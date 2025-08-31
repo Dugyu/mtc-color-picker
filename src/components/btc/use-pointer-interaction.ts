@@ -1,26 +1,10 @@
-import { useRef, useCallback } from '@lynx-js/react';
-import type { MutableRefObject } from '@lynx-js/react';
-import type { LayoutChangeEvent, NodesRef, TouchEvent } from '@lynx-js/types';
-
-import { useEffectEvent, noop } from './use-effect-event';
-
-/** Pointer position in the element’s local frame. */
-interface PointerPosition {
-  /** Horizontal offset from element's left edge (px). Can be <0 or >width. */
-  offset: number;
-  /** offset / elementWidth. Can be <0 or >1. */
-  offsetRatio: number;
-  /** Measured width of the element (px). */
-  elementWidth: number;
-}
-
-/** Interaction callbacks. */
-interface UsePointerInteractionProps {
-  /** Fires during drag/move. */
-  onUpdate?: (pos: PointerPosition) => void;
-  /** Fires on pointer up (final value). */
-  onCommit?: (pos: PointerPosition) => void;
-}
+import { useRef } from '@lynx-js/react';
+import type { LayoutChangeEvent, TouchEvent } from '@lynx-js/types';
+import type {
+  PointerPosition,
+  UsePointerInteractionProps,
+  UsePointerInteractionReturnValueBase,
+} from '@/types/pointer';
 
 /**
  * Pointer → element-local coordinates adapter.
@@ -37,7 +21,6 @@ function usePointerInteraction({
   onCommit,
 }: UsePointerInteractionProps = {}): UsePointerInteractionReturnValue {
   /** Element (coordinate frame) & metrics */
-  const eleRef = useRef<NodesRef | null>(null);
   const eleLeftRef = useRef<number | null>(null);
   const eleWidthRef = useRef(0);
 
@@ -46,10 +29,7 @@ function usePointerInteraction({
 
   const draggingRef = useRef(false);
 
-  const onUpdateStable = useEffectEvent(onUpdate ?? noop);
-  const onCommitStable = useEffectEvent(onCommit ?? noop);
-
-  const buildPosition = useCallback((x: number): PointerPosition | null => {
+  const buildPosition = (x: number): PointerPosition | null => {
     const width = eleWidthRef.current;
     const left = eleLeftRef.current;
 
@@ -61,76 +41,64 @@ function usePointerInteraction({
       return pos;
     }
     return null;
-  }, []);
+  };
 
-  const handlePointerDown = useCallback(
-    (e: TouchEvent) => {
-      draggingRef.current = true;
-      buildPosition(e.detail.x);
-      if (posRef.current) {
-        onUpdateStable(posRef.current);
-      }
-    },
-    [buildPosition, onUpdateStable],
-  );
+  const handlePointerDown = (e: TouchEvent) => {
+    draggingRef.current = true;
+    buildPosition(e.detail.x);
+    if (posRef.current) {
+      onUpdate?.(posRef.current);
+    }
+  };
 
-  const handlePointerMove = useCallback(
-    (e: TouchEvent) => {
-      if (!draggingRef.current) return;
-      buildPosition(e.detail.x);
-      if (posRef.current) {
-        onUpdateStable(posRef.current);
-      }
-    },
-    [buildPosition, onUpdateStable],
-  );
+  const handlePointerMove = (e: TouchEvent) => {
+    if (!draggingRef.current) return;
+    buildPosition(e.detail.x);
+    if (posRef.current) {
+      onUpdate?.(posRef.current);
+    }
+  };
 
-  const handlePointerUp = useCallback(
-    (e: TouchEvent) => {
-      draggingRef.current = false;
-      buildPosition(e.detail.x);
-      if (posRef.current) {
-        onUpdateStable(posRef.current);
-        onCommitStable(posRef.current);
-      }
-    },
-    [buildPosition, onUpdateStable, onCommitStable],
-  );
+  const handlePointerUp = (e: TouchEvent) => {
+    draggingRef.current = false;
+    buildPosition(e.detail.x);
+    if (posRef.current) {
+      onUpdate?.(posRef.current);
+      onCommit?.(posRef.current);
+    }
+  };
 
-  const handleElementLayoutChange = useCallback((e: LayoutChangeEvent) => {
+  const handleElementLayoutChange = (e: LayoutChangeEvent) => {
     eleWidthRef.current = e.detail.width;
 
-    eleRef.current
+    const currentTarget = lynx
+      .createSelectorQuery()
+      // @ts-expect-error
+      .selectUniqueID(e.currentTarget.uid);
+
+    currentTarget
       ?.invoke({
         method: 'boundingClientRect',
         params: { relativeTo: 'screen' }, // screen-based so it matches e.detail.x
-        success: (res) => {
+        success: (res: { left: number }) => {
           eleLeftRef.current = res.left;
         },
       })
       .exec();
-  }, []);
+  };
 
   return {
-    elementRef: eleRef,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
     handleElementLayoutChange,
   };
 }
-interface UsePointerInteractionReturnValue {
-  /** Ref for the measured element (coordinate frame). */
-  elementRef: MutableRefObject<NodesRef | null>;
-  /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchstart={handlePointerDown} /> */
-  handlePointerDown: (e: TouchEvent) => void;
-  /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchmove={handlePointerMove} /> */
-  handlePointerMove: (e: TouchEvent) => void;
-  /** Bind on CONTAINER (or ELEMENT if container===element): <view bindtouchend|bindtouchcancel={handlePointerUp} /> */
-  handlePointerUp: (e: TouchEvent) => void;
-  /** Bind on ELEMENT: <view bindlayoutchange={handleElementLayoutChange} /> */
-  handleElementLayoutChange: (e: LayoutChangeEvent) => void;
-}
+
+type UsePointerInteractionReturnValue = UsePointerInteractionReturnValueBase<
+  TouchEvent,
+  LayoutChangeEvent
+>;
 
 export { usePointerInteraction };
 export type {
