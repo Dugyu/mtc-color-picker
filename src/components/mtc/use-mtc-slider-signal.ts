@@ -7,8 +7,8 @@ import type {
   UsePointerInteractionReturnValue,
 } from './use-mtc-pointer-interaction';
 
-interface UseMTCSliderProps {
-  defaultValue?: number;
+interface UseSliderProps {
+  initialValue?: number;
   min?: number;
   max?: number;
   step?: number;
@@ -17,16 +17,16 @@ interface UseMTCSliderProps {
   onCommit?: (value: number) => void;
 }
 
-function useMTCSlider({
+function useSlider({
   min = 0,
   max = 100,
   step: stepProp = 1,
-  defaultValue = min,
+  initialValue = min,
   disabled = false,
   onChange,
   onCommit,
-}: UseMTCSliderProps) {
-  const value = useSignal(defaultValue);
+}: UseSliderProps) {
+  const value = useSignal(initialValue);
   const ratio = useComputed(() => valueToRatio(value.value, min, max));
 
   const step = stepProp > 0 ? stepProp : 1;
@@ -64,7 +64,7 @@ function useMTCSlider({
   };
 }
 
-interface UseMTCSliderReturnValue extends UsePointerInteractionReturnValue {
+interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
   value: number;
   ratio: number;
   min: number;
@@ -88,5 +88,5 @@ function valueToRatio(v: number, min: number, max: number) {
   return clamp01((v - min) / span);
 }
 
-export { useMTCSlider };
-export type { UseMTCSliderProps, UseMTCSliderReturnValue };
+export { useSlider };
+export type { UseSliderProps, UseSliderReturnValue };

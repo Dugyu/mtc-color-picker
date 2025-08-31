@@ -1,7 +1,7 @@
 import { useMemo } from '@lynx-js/react';
 import type { ReactNode } from '@lynx-js/react';
 import logoUrl from '@/assets/icons/lynx-logo-knockout.png';
-import { MaskIcon } from '@/components/shared/MaskIcon';
+import { MaskIcon } from '@/components/ui/MaskIcon';
 
 import './App.css';
 

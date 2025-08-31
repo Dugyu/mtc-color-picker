@@ -27,7 +27,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-48">
-        <ColorPicker initialHSL={value} onHSLChange={setValue} />
+        <ColorPicker initialValue={value} main-thread:onChange={setValue} />
       </view>
     </AppLayout>
   );

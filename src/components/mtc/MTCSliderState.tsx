@@ -1,13 +1,13 @@
 'main thread';
 
 import type { CSSProperties } from '@lynx-js/types';
-import { useMTCSlider } from './use-mtc-slider-state';
-import type { UseMTCSliderProps } from './use-mtc-slider-state';
+import { useSlider } from './use-mtc-slider-state';
+import type { UseSliderProps } from './use-mtc-slider-state';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Expand } from '@/types/utils';
 
-type MTCSliderProps = Expand<
-  UseMTCSliderProps & {
+type SliderProps = Expand<
+  UseSliderProps & {
     // Styling
     rootStyle?: CSSProperties;
     trackStyle?: CSSProperties;
@@ -16,14 +16,14 @@ type MTCSliderProps = Expand<
 
 /** ================= Base Slider ================= */
 
-function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
+function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
   const {
     ratio, // Render-time Value
     handleElementLayoutChange,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
-  } = useMTCSlider(sliderProps);
+  } = useSlider(sliderProps);
 
   return (
     // Root
@@ -62,7 +62,7 @@ function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
 /** ================= HSL Sliders Shared ================= */
 
 type HSLBaseSliderProps = Omit<
-  MTCSliderProps,
+  SliderProps,
   'min' | 'max' | 'step' | 'trackStyle' | 'rootStyle'
 >;
 
@@ -72,7 +72,7 @@ const defaultLightness = 50;
 
 /** ================= Hue Slider ================= */
 
-function MTCHueSlider({
+function HueSlider({
   s = defaultSaturation,
   l = defaultLightness,
   ...restProps
@@ -85,7 +85,7 @@ function MTCHueSlider({
   const gradients = HSLGradients.hueGradientPair(s, l);
 
   return (
-    <MTCSlider
+    <Slider
       min={0}
       max={360}
       step={1}
@@ -98,7 +98,7 @@ function MTCHueSlider({
 
 /** ================= Saturation Slider ================= */
 
-function MTCSaturationSlider({
+function SaturationSlider({
   h = defaultHue,
   l = defaultLightness,
   ...restProps
@@ -111,7 +111,7 @@ function MTCSaturationSlider({
   const gradients = HSLGradients.saturationGradientPair(h, l);
 
   return (
-    <MTCSlider
+    <Slider
       min={0}
       max={100}
       step={1}
@@ -124,7 +124,7 @@ function MTCSaturationSlider({
 
 /** ================= Lightness Slider ================= */
 
-function MTCLightnessSlider({
+function LightnessSlider({
   h = defaultHue,
   s = defaultSaturation,
   ...restProps
@@ -137,7 +137,7 @@ function MTCLightnessSlider({
   const gradients = HSLGradients.lightnessGradientPair(h, s);
 
   return (
-    <MTCSlider
+    <Slider
       min={0}
       max={100}
       step={1}
@@ -148,4 +148,4 @@ function MTCLightnessSlider({
   );
 }
 
-export { MTCSlider, MTCHueSlider, MTCSaturationSlider, MTCLightnessSlider };
+export { Slider, HueSlider, SaturationSlider, LightnessSlider };

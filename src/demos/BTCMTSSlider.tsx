@@ -2,14 +2,13 @@ import {
   root,
   runOnBackground,
   //useMainThreadRef,
-  useCallback,
   useState,
 } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 import { sleep } from '@/utils/sleep';
 
 import { HueSlider } from '@/components/btc-mts/MTSSlider';
-// import type { MTSWriterWithControls } from '@/components/btc-mts-slider/MTSSlider';
+// import type { WriterWithControls } from '@/components/btc-mts-slider/MTSSlider';
 
 if (__BACKGROUND__) {
   setInterval(() => {
@@ -20,14 +19,14 @@ if (__BACKGROUND__) {
 export function App() {
   const [value, setValue] = useState(199);
 
-  // Uncomment `mtsWriteValue` to test BTC owned writer behavior.
-  // const mtsWriteValue = useMainThreadRef<MTSWriterWithControls<number>>();
+  // Uncomment `writeValue` to test BTC owned writer behavior.
+  // const writeValue = useMainThreadRef<WriterWithControls<number>>();
 
-  const onMTSValueChange = useCallback((next: number) => {
+  const handleChange = (next: number) => {
     'main thread';
-    //mtsWriteValue.current?.(next);
+    //writeValue.current?.(next);
     runOnBackground(setValue)(next);
-  }, []);
+  };
 
   return (
     <AppLayout title="BTC-MTS Slider" h={value} s={99} l={72}>
@@ -37,8 +36,8 @@ export function App() {
       <view className="w-60 h-12">
         <HueSlider
           initialValue={value}
-          onMTSChange={onMTSValueChange}
-          // mtsWriteValue={mtsWriteValue}
+          main-thread:onChange={handleChange}
+          // main-thread:writeValue={writeValue}
           initialSL={[99, 72]}
         />
       </view>

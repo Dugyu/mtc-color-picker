@@ -3,13 +3,13 @@
 import { useComputed, useSignal, signal } from '@lynx-js/react/signals';
 import type { CSSProperties } from '@lynx-js/types';
 
-import { useMTCSlider } from './use-mtc-slider-signal';
-import type { UseMTCSliderProps } from './use-mtc-slider-signal';
+import { useSlider } from './use-mtc-slider-signal';
+import type { UseSliderProps } from './use-mtc-slider-signal';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Expand } from '@/types/utils';
 
-type MTCSliderProps = Expand<
-  UseMTCSliderProps & {
+type SliderProps = Expand<
+  UseSliderProps & {
     // Styling
     rootStyle?: CSSProperties;
     trackStyle?: CSSProperties;
@@ -18,14 +18,14 @@ type MTCSliderProps = Expand<
 
 /** ================= Base Slider ================= */
 
-function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
+function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
   const {
     ratio, // ReadonlySignal
     handleElementLayoutChange,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
-  } = useMTCSlider(sliderProps);
+  } = useSlider(sliderProps);
 
   return (
     // Root
@@ -62,7 +62,7 @@ function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
 /** ================== HSL Sliders Shared ================= */
 
 type HSLBaseSliderProps = Omit<
-  MTCSliderProps,
+  SliderProps,
   'min' | 'max' | 'step' | 'trackStyle' | 'rootStyle'
 >;
 
@@ -72,7 +72,7 @@ const defaultLightness = signal(50);
 
 /** ================= Hue Slider ================= */
 
-function MTCHueSlider({
+function HueSlider({
   s = defaultSaturation,
   l = defaultLightness,
   ...restProps
@@ -90,7 +90,7 @@ function MTCHueSlider({
   );
 
   return (
-    <MTCSlider
+    <Slider
       min={0}
       max={360}
       step={1}
@@ -103,7 +103,7 @@ function MTCHueSlider({
 
 /** ================= Saturation Slider ================= */
 
-function MTCSaturationSlider({
+function SaturationSlider({
   h = defaultHue,
   l = defaultLightness,
   ...restProps
@@ -121,7 +121,7 @@ function MTCSaturationSlider({
   );
 
   return (
-    <MTCSlider
+    <Slider
       min={0}
       max={100}
       step={1}
@@ -134,11 +134,11 @@ function MTCSaturationSlider({
 
 /** ================= Lightness Slider ================= */
 
-function MTCLightnessSlider({
+function LightnessSlider({
   h = defaultHue,
   s = defaultSaturation,
   ...restProps
-}: Expand<Omit<MTCSliderProps, 'min' | 'max' | 'step'>> & {
+}: Expand<Omit<SliderProps, 'min' | 'max' | 'step'>> & {
   h?: ReturnType<typeof useSignal<number>>;
   s?: ReturnType<typeof useSignal<number>>;
 }) {
@@ -150,7 +150,7 @@ function MTCLightnessSlider({
   );
 
   return (
-    <MTCSlider
+    <Slider
       min={0}
       max={100}
       step={1}
@@ -161,4 +161,4 @@ function MTCLightnessSlider({
   );
 }
 
-export { MTCSlider, MTCHueSlider, MTCSaturationSlider, MTCLightnessSlider };
+export { Slider, HueSlider, SaturationSlider, LightnessSlider };

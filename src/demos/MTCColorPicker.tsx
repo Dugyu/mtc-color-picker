@@ -1,7 +1,7 @@
 import { root, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
-import { MTCColorPicker } from '@/components/mtc/MTCColorPickerSignal';
-import { DummyStyle } from '@/components/shared/DummyStyle';
+import { ColorPicker } from '@/components/mtc/MTCColorPickerSignal';
+import { DummyStyle } from '@/components/ui/DummyStyle';
 import { sleep } from '@/utils/sleep';
 
 if (__BACKGROUND__) {
@@ -15,7 +15,7 @@ type Color = readonly [number, number, number];
 export function App() {
   const [value, setValue] = useState<Color>(() => [199, 99, 72]);
 
-  function onMTCValueChange(v: Color) {
+  function handleChange(v: Color) {
     'use background';
     setValue(v);
   }
@@ -33,10 +33,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-48">
-        <MTCColorPicker
-          initialValue={value}
-          onMTCValueChange={onMTCValueChange}
-        />
+        <ColorPicker initialValue={value} onChange={handleChange} />
       </view>
     </AppLayout>
   );
