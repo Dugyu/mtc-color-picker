@@ -36,6 +36,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
   });
 
   const step = stepProp > 0 ? stepProp : 1;
+  const ratio = valueToRatio(value, min, max);
 
   const quantize = ({ offsetRatio }: PointerPosition) => {
     const span = max - min;
@@ -61,7 +62,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
 
   return {
     value,
-    ratio: valueToRatio(value, min, max),
+    ratio,
     min,
     max,
     step,

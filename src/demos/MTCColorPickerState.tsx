@@ -1,6 +1,6 @@
 import { root, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
-import { MTCColorPicker } from '@/components/mtc/MTCColorPickerSignal';
+import { MTCColorPicker } from '@/components/mtc/MTCColorPickerState';
 import { DummyStyle } from '@/components/shared/DummyStyle';
 import { sleep } from '@/utils/sleep';
 
@@ -22,7 +22,7 @@ export function App() {
 
   return (
     <AppLayout
-      title="MTC-Signal ColorPicker"
+      title="MTC-State ColorPicker"
       subtitle="Coordinate on MTS"
       h={value[0]}
       s={value[1]}

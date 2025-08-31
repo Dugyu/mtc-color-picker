@@ -1,10 +1,8 @@
 'main thread';
 
-import { useComputed, useSignal, signal } from '@lynx-js/react/signals';
 import type { CSSProperties } from '@lynx-js/types';
-
-import { useMTCSlider } from './use-mtc-slider-signal';
-import type { UseMTCSliderProps } from './use-mtc-slider-signal';
+import { useMTCSlider } from './use-mtc-slider-state';
+import type { UseMTCSliderProps } from './use-mtc-slider-state';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Expand } from '@/types/utils';
 
@@ -20,7 +18,7 @@ type MTCSliderProps = Expand<
 
 function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
   const {
-    ratio, // ReadonlySignal
+    ratio, // Render-time Value
     handleElementLayoutChange,
     handlePointerDown,
     handlePointerMove,
@@ -30,6 +28,8 @@ function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
   return (
     // Root
     <view
+      // @ts-expect-error
+      bindlayoutchange={handleElementLayoutChange}
       // @ts-expect-error
       bindtouchstart={handlePointerDown}
       // @ts-expect-error
@@ -52,23 +52,23 @@ function MTCSlider({ rootStyle, trackStyle, ...sliderProps }: MTCSliderProps) {
         {/* Thumb */}
         <view
           className="absolute bg-white size-8 rounded-full -translate-x-1/2 shadow-md"
-          style={{ left: `${ratio.value * 100}%` }}
+          style={{ left: `${ratio * 100}%` }}
         ></view>
       </view>
     </view>
   );
 }
 
-/** ================== HSL Sliders Shared ================= */
+/** ================= HSL Sliders Shared ================= */
 
 type HSLBaseSliderProps = Omit<
   MTCSliderProps,
   'min' | 'max' | 'step' | 'trackStyle' | 'rootStyle'
 >;
 
-const defaultHue = signal(0);
-const defaultSaturation = signal(100);
-const defaultLightness = signal(50);
+const defaultHue = 0;
+const defaultSaturation = 100;
+const defaultLightness = 50;
 
 /** ================= Hue Slider ================= */
 
@@ -78,24 +78,19 @@ function MTCHueSlider({
   ...restProps
 }: Expand<
   HSLBaseSliderProps & {
-    s?: ReturnType<typeof useSignal<number>>;
-    l?: ReturnType<typeof useSignal<number>>;
+    s?: number;
+    l?: number;
   }
 >) {
-  const gradients = useComputed(() =>
-    HSLGradients.hueGradientPair(
-      s.value ?? defaultSaturation.value,
-      l.value ?? defaultLightness.value,
-    ),
-  );
+  const gradients = HSLGradients.hueGradientPair(s, l);
 
   return (
     <MTCSlider
       min={0}
       max={360}
       step={1}
-      rootStyle={{ backgroundImage: gradients.value.edge }}
-      trackStyle={{ backgroundImage: gradients.value.track }}
+      rootStyle={{ backgroundImage: gradients.edge }}
+      trackStyle={{ backgroundImage: gradients.track }}
       {...restProps}
     />
   );
@@ -109,24 +104,19 @@ function MTCSaturationSlider({
   ...restProps
 }: Expand<
   HSLBaseSliderProps & {
-    h?: ReturnType<typeof useSignal<number>>;
-    l?: ReturnType<typeof useSignal<number>>;
+    h?: number;
+    l?: number;
   }
 >) {
-  const gradients = useComputed(() =>
-    HSLGradients.saturationGradientPair(
-      h.value ?? defaultHue.value,
-      l.value ?? defaultLightness.value,
-    ),
-  );
+  const gradients = HSLGradients.saturationGradientPair(h, l);
 
   return (
     <MTCSlider
       min={0}
       max={100}
       step={1}
-      rootStyle={{ backgroundImage: gradients.value.edge }}
-      trackStyle={{ backgroundImage: gradients.value.track }}
+      rootStyle={{ backgroundImage: gradients.edge }}
+      trackStyle={{ backgroundImage: gradients.track }}
       {...restProps}
     />
   );
@@ -138,24 +128,21 @@ function MTCLightnessSlider({
   h = defaultHue,
   s = defaultSaturation,
   ...restProps
-}: Expand<Omit<MTCSliderProps, 'min' | 'max' | 'step'>> & {
-  h?: ReturnType<typeof useSignal<number>>;
-  s?: ReturnType<typeof useSignal<number>>;
-}) {
-  const gradients = useComputed(() =>
-    HSLGradients.lightnessGradientPair(
-      h.value ?? defaultHue.value,
-      s.value ?? defaultSaturation.value,
-    ),
-  );
+}: Expand<
+  HSLBaseSliderProps & {
+    h?: number;
+    s?: number;
+  }
+>) {
+  const gradients = HSLGradients.lightnessGradientPair(h, s);
 
   return (
     <MTCSlider
       min={0}
       max={100}
       step={1}
-      rootStyle={{ backgroundImage: gradients.value.edge }}
-      trackStyle={{ backgroundImage: gradients.value.track }}
+      rootStyle={{ backgroundImage: gradients.edge }}
+      trackStyle={{ backgroundImage: gradients.track }}
       {...restProps}
     />
   );

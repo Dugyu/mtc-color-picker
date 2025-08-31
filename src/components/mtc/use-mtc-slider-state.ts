@@ -1,6 +1,6 @@
 'main thread';
 
-import { useComputed, useSignal } from '@lynx-js/react/signals';
+import { useState } from '@lynx-js/react';
 import { useMTCPointerInteraction } from './use-mtc-pointer-interaction';
 import type {
   PointerPosition,
@@ -26,9 +26,9 @@ function useMTCSlider({
   onChange,
   onCommit,
 }: UseMTCSliderProps) {
-  const value = useSignal(defaultValue);
-  const ratio = useComputed(() => valueToRatio(value.value, min, max));
+  const [value, setValue] = useState(defaultValue);
 
+  const ratio = valueToRatio(value, min, max);
   const step = stepProp > 0 ? stepProp : 1;
 
   const quantize = ({ offsetRatio }: PointerPosition) => {
@@ -43,16 +43,17 @@ function useMTCSlider({
     onUpdate: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      value.value = next;
+      setValue(next);
       onChange?.(next);
     },
     onCommit: (pos) => {
       if (disabled) return;
       const next = quantize(pos);
-      value.value = next;
+      setValue(next);
       onCommit?.(next);
     },
   });
+
   return {
     value,
     ratio,
