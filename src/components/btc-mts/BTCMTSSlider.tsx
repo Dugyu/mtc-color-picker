@@ -1,48 +1,46 @@
 import { useCallback, useMainThreadRef } from '@lynx-js/react';
 import type { MainThread, CSSProperties } from '@lynx-js/types';
-import { useMTSSlider } from './use-mts-slider';
-import type { MTSWriterWithControlsRef } from './use-mts-slider';
-import type { Expand } from '@/types/utils';
+import { useSlider } from './use-mts-slider';
+import type { UseSliderProps } from './use-mts-slider';
+import type { Expand, RenameKeys } from '@/types/utils';
 
-interface BTCMTSSliderProps {
-  mtsWriteValue?: MTSWriterWithControlsRef<number>;
-  initialValue?: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
-  onMTSChange?: (value: number) => void;
-  onMTSCommit?: (value: number) => void;
-  onMTSInit?: (ref: MainThread.Element) => void;
-
-  // Styling
-  rootStyle?: CSSProperties;
-  trackStyle?: CSSProperties;
-}
+type SliderProps = Expand<
+  RenameKeys<
+    Omit<UseSliderProps, 'onCommit' | 'onDerivedChange'>,
+    {
+      onChange?: 'main-thread:onChange';
+      writeValue?: 'main-thread:writeValue';
+    }
+  > & {
+    // Init callback: for attaching additional writers
+    'main-thread:onInit'?: (ref: MainThread.Element) => void;
+    // Styling
+    rootStyle?: CSSProperties;
+    trackStyle?: CSSProperties;
+  }
+>;
 
 /** ================= Base Slider ================= */
 
-function BTCMTSSlider(props: BTCMTSSliderProps) {
+function Slider(props: SliderProps) {
   const {
-    mtsWriteValue,
-    initialValue,
-    onMTSInit,
-    onMTSChange,
-    onMTSCommit,
+    ['main-thread:writeValue']: externalWriterRef,
+    ['main-thread:onInit']: onInit,
+    ['main-thread:onChange']: onChange,
     min,
     rootStyle,
     trackStyle,
     ...restProps
   } = props;
 
-  const mtsThumbRef = useMainThreadRef<MainThread.Element | null>(null);
+  const thumbRef = useMainThreadRef<MainThread.Element | null>(null);
 
-  const mtsUpdateListenerRef = useMainThreadRef<(value: number) => void>();
+  const updateListenerRef = useMainThreadRef<(value: number) => void>();
 
-  const onMTSDerivedChange = useCallback((value: number) => {
+  const handleDerivedChange = useCallback((value: number) => {
     'main thread';
-    if (mtsUpdateListenerRef.current) {
-      mtsUpdateListenerRef.current(value);
+    if (updateListenerRef.current) {
+      updateListenerRef.current(value);
     }
   }, []);
 
@@ -53,19 +51,17 @@ function BTCMTSSlider(props: BTCMTSSliderProps) {
     handlePointerMove,
     handlePointerUp,
     handleElementLayoutChange,
-  } = useMTSSlider({
-    initialValue,
-    mtsWriteValue,
-    onMTSDerivedChange,
-    onMTSChange,
-    onMTSCommit,
+  } = useSlider({
+    writeValue: externalWriterRef,
+    onDerivedChange: handleDerivedChange,
+    onChange: onChange,
     ...restProps,
   });
 
   const updateThumbStyle = () => {
     'main thread';
-    if (mtsThumbRef.current) {
-      mtsThumbRef.current.setStyleProperties({
+    if (thumbRef.current) {
+      thumbRef.current.setStyleProperties({
         left: `${ratioRef.current * 100}%`,
       });
     }
@@ -73,23 +69,23 @@ function BTCMTSSlider(props: BTCMTSSliderProps) {
 
   const initRoot = useCallback((ref: MainThread.Element) => {
     'main thread';
-    // Bind writeValue to mtsWriteValue
+    // Bind writeValue to prop
     if (ref) {
       writeValue.init();
     } else {
       writeValue.dispose();
     }
     // Initialization callback
-    onMTSInit?.(ref);
+    onInit?.(ref);
   }, []);
 
   const initThumb = useCallback((ref: MainThread.Element) => {
     'main thread';
-    mtsThumbRef.current = ref;
+    thumbRef.current = ref;
     if (ref) {
-      mtsUpdateListenerRef.current = updateThumbStyle;
+      updateListenerRef.current = updateThumbStyle;
     } else {
-      mtsUpdateListenerRef.current = undefined;
+      updateListenerRef.current = undefined;
     }
     updateThumbStyle();
   }, []);
@@ -121,24 +117,28 @@ function BTCMTSSlider(props: BTCMTSSliderProps) {
   );
 }
 
-type HSLSliderProps = Expand<Omit<BTCMTSSliderProps, 'min' | 'max' | 'step'>>;
+/** ================= HSL Sliders Shared ================= */
+
+type HSLSliderProps = Expand<
+  Omit<SliderProps, 'min' | 'max' | 'step' | 'main-thread:onInit'>
+>;
 
 /** ================= Hue Slider ================= */
 
 function HueSlider(props: HSLSliderProps) {
-  return <BTCMTSSlider min={0} max={360} step={1} {...props} />;
+  return <Slider min={0} max={360} step={1} {...props} />;
 }
 
 /** ================= Saturation Slider ================= */
 
 function SaturationSlider(props: HSLSliderProps) {
-  return <BTCMTSSlider min={0} max={100} step={1} {...props} />;
+  return <Slider min={0} max={100} step={1} {...props} />;
 }
 
 /** ================= Lightness Slider ================= */
 
 function LightnessSlider(props: HSLSliderProps) {
-  return <BTCMTSSlider min={0} max={100} step={1} {...props} />;
+  return <Slider min={0} max={100} step={1} {...props} />;
 }
 
 export { HueSlider, SaturationSlider, LightnessSlider };

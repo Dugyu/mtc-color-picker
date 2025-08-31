@@ -11,17 +11,17 @@ import { HSLGradients } from '@/utils/hsl-gradients';
 type Color = readonly [number, number, number];
 
 interface ColorPickerProps {
-  initialHSL?: Color;
-  onHSLChange?: (next: Color) => void;
+  initialValue?: Color;
+  'main-thread:onChange'?: (next: Color) => void;
 }
 
 function ColorPicker({
-  initialHSL = [199, 99, 72],
-  onHSLChange,
+  initialValue: hsl = [199, 99, 72],
+  ['main-thread:onChange']: onChange,
 }: ColorPickerProps) {
-  const [hue, setHue] = useState(initialHSL[0]);
-  const [saturation, setSaturation] = useState(initialHSL[1]);
-  const [lightness, setLightness] = useState(initialHSL[2]);
+  const [hue, setHue] = useState(hsl[0]);
+  const [saturation, setSaturation] = useState(hsl[1]);
+  const [lightness, setLightness] = useState(hsl[2]);
 
   const { edge: hueEdge, track: hueTrack } = useMemo(
     () => HSLGradients.hueGradientPair(saturation, lightness),
@@ -54,26 +54,26 @@ function ColorPicker({
   }, []);
 
   useEffect(() => {
-    onHSLChange?.([hue, saturation, lightness]);
+    onChange?.([hue, saturation, lightness]);
   }, [hue, saturation, lightness]);
 
   return (
     <view className="w-full h-full flex flex-col gap-y-4">
       <HueSlider
         initialValue={hue}
-        onMTSChange={handleHueChange}
+        main-thread:onChange={handleHueChange}
         rootStyle={{ backgroundImage: hueEdge }}
         trackStyle={{ backgroundImage: hueTrack }}
       />
       <SaturationSlider
         initialValue={saturation}
-        onMTSChange={handleSaturtaionChange}
+        main-thread:onChange={handleSaturtaionChange}
         rootStyle={{ backgroundImage: satEdge }}
         trackStyle={{ backgroundImage: satTrack }}
       />
       <LightnessSlider
         initialValue={lightness}
-        onMTSChange={handleLightnessChange}
+        main-thread:onChange={handleLightnessChange}
         rootStyle={{ backgroundImage: lightEdge }}
         trackStyle={{ backgroundImage: lightTrack }}
       />

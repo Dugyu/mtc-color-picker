@@ -15,7 +15,7 @@ export function App() {
     199, 99, 72,
   ]);
 
-  const onMTSHSLChange = useCallback(
+  const handleChange = useCallback(
     (next: readonly [number, number, number]) => {
       'main thread';
       runOnBackground(setValue)(next);
@@ -35,7 +35,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-48">
-        <ColorPicker initialHSL={value} onMTSHSLChange={onMTSHSLChange} />
+        <ColorPicker initialValue={value} main-thread:onChange={handleChange} />
       </view>
     </AppLayout>
   );

@@ -1,60 +1,62 @@
 import { useCallback, useMainThreadRef, MainThreadRef } from '@lynx-js/react';
-import type { MainThread } from '@lynx-js/types';
 
 import { usePointerInteraction } from './use-mts-pointer-interaction';
-import type { PointerPosition } from './use-mts-pointer-interaction';
-
-import { useMTSControllable } from './use-mts-controllable';
 import type {
-  MTSWriter,
-  MTSWriterRef,
-  MTSWriterWithControls,
-  MTSWriterWithControlsRef,
+  PointerPosition,
+  UsePointerInteractionReturnValue,
+} from './use-mts-pointer-interaction';
+
+import { useControllable } from './use-mts-controllable';
+import type {
+  Writer,
+  WriterRef,
+  WriterWithControls,
+  WriterWithControlsRef,
 } from './use-mts-controllable';
 
-interface UseMTSSliderProps {
-  mtsWriteValue?: MTSWriterWithControlsRef<number>;
+interface UseSliderProps {
+  writeValue?: WriterWithControlsRef<number>;
   initialValue?: number;
   min?: number;
   max?: number;
   step?: number;
   disabled?: boolean;
 
-  onMTSDerivedChange?: (value: number) => void;
-  onMTSChange?: (value: number) => void;
-  onMTSCommit?: (value: number) => void;
+  onDerivedChange?: (value: number) => void;
+  onChange?: (value: number) => void;
+  onCommit?: (value: number) => void;
 }
 
-function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
+function useSlider(props: UseSliderProps): UseSliderReturnValue {
   const {
-    mtsWriteValue,
+    writeValue: externalWriterRef,
     min = 0,
     max = 100,
     step: stepProp = 1,
     initialValue = min,
     disabled = false,
-    onMTSDerivedChange,
-    onMTSChange,
-    onMTSCommit,
+    onDerivedChange,
+    onChange,
+    onCommit,
   } = props;
 
   const step = stepProp > 0 ? stepProp : 1;
   const ratioRef = useMainThreadRef(valueToRatio(initialValue, min, max));
 
-  const forwardOnMTSDerivedChange = useCallback(
+  const forwardOnDerivedChange = useCallback(
     (v: number) => {
       'main thread';
       ratioRef.current = mtsValueToRatio(v, min, max);
-      onMTSDerivedChange?.(v);
+      onDerivedChange?.(v);
     },
-    [onMTSDerivedChange, min, max],
+    [onDerivedChange, min, max],
   );
 
-  const [valueRef, writeValue] = useMTSControllable({
-    mtsWriteValue,
+  const [valueRef, writeValue] = useControllable({
+    writeValue: externalWriterRef,
     initialValue,
-    onMTSDerivedChange: forwardOnMTSDerivedChange,
-    onMTSChange,
+    onDerivedChange: forwardOnDerivedChange,
+    onChange,
   });
 
   const quantize = useCallback(
@@ -88,7 +90,7 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
     // Controlled: only notify change;
     // Uncontrolled: update internals and notify change;
     writeValue(next);
-    onMTSCommit?.(next);
+    onCommit?.(next);
   };
 
   const {
@@ -116,14 +118,10 @@ function useMTSSlider(props: UseMTSSliderProps): UseMTSSliderReturnValue {
   };
 }
 
-interface UseMTSSliderReturnValue {
-  writeValue: MTSWriterWithControls<number>;
+interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
+  writeValue: WriterWithControls<number>;
   valueRef: MainThreadRef<number>;
   ratioRef: MainThreadRef<number>;
-  handlePointerDown: (e: MainThread.TouchEvent) => void;
-  handlePointerMove: (e: MainThread.TouchEvent) => void;
-  handlePointerUp: (e: MainThread.TouchEvent) => void;
-  handleElementLayoutChange: (e: MainThread.LayoutChangeEvent) => Promise<void>;
   min: number;
   max: number;
   step: number;
@@ -153,12 +151,12 @@ function mtsValueToRatio(v: number, min: number, max: number) {
   return clamp((v - min) / span, 0, 1);
 }
 
-export { useMTSSlider };
+export { useSlider };
 export type {
-  UseMTSSliderProps,
-  UseMTSSliderReturnValue,
-  MTSWriterRef,
-  MTSWriter,
-  MTSWriterWithControls,
-  MTSWriterWithControlsRef,
+  UseSliderProps,
+  UseSliderReturnValue,
+  WriterRef,
+  Writer,
+  WriterWithControls,
+  WriterWithControlsRef,
 };

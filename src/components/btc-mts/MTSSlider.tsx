@@ -1,69 +1,66 @@
 import { useCallback, useMainThreadRef, useState } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
-import { useMTSSlider } from './use-mts-slider';
+import { useSlider } from './use-mts-slider';
+import type { UseSliderProps } from './use-mts-slider';
+
 import type {
-  MTSWriterRef,
-  MTSWriter,
-  MTSWriterWithControlsRef,
-  MTSWriterWithControls,
+  WriterRef,
+  Writer,
+  WriterWithControlsRef,
+  WriterWithControls,
 } from './use-mts-slider';
 import type { RefWriteAction } from './use-mts-controllable';
 import { resolveNextValue } from './use-mts-controllable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
-import type { Expand } from '@/types/utils';
+import type { Expand, RenameKeys } from '@/types/utils';
 
-interface MTSSliderProps {
-  mtsWriteValue?: MTSWriterWithControlsRef<number>;
-  initialValue?: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
-  onMTSChange?: (value: number) => void;
-  onMTSCommit?: (value: number) => void;
-
-  onMTSInit?: (ref: MainThread.Element) => void;
-
-  // Styling
-  mtsWriteRootStyle?: MTSWriterRef<Record<string, string>>;
-  mtsWriteTrackStyle?: MTSWriterRef<Record<string, string>>;
-  initialRootStyle?: Record<string, string>;
-  initialTrackStyle?: Record<string, string>;
-}
+type SliderProps = Expand<
+  RenameKeys<
+    Omit<UseSliderProps, 'onCommit' | 'onDerivedChange'>,
+    {
+      onChange?: 'main-thread:onChange';
+    }
+  > & {
+    // Init callback: for attaching additional writers
+    'main-thread:onInit'?: (ref: MainThread.Element) => void;
+    // Styling
+    'main-thread:writeRootStyle'?: WriterRef<Record<string, string>>;
+    'main-thread:writeTrackStyle'?: WriterRef<Record<string, string>>;
+    initialRootStyle?: Record<string, string>;
+    initialTrackStyle?: Record<string, string>;
+  }
+>;
 
 /** ================= Base Slider ================= */
 
-function MTSSlider(props: MTSSliderProps) {
+function Slider(props: SliderProps) {
   const {
-    mtsWriteValue,
-    initialValue,
-    onMTSInit,
-    onMTSChange,
-    onMTSCommit,
-    mtsWriteRootStyle,
-    mtsWriteTrackStyle,
+    writeValue: externalWriterRef,
+    ['main-thread:onInit']: onInit,
+    ['main-thread:onChange']: onChange,
+    ['main-thread:writeRootStyle']: writeRootStyle,
+    ['main-thread:writeTrackStyle']: writeTrackStyle,
     initialRootStyle = {},
     initialTrackStyle = {},
-    min,
     ...restProps
   } = props;
 
-  const mtsRootRef = useMainThreadRef<MainThread.Element | null>(null);
-  const mtsTrackRef = useMainThreadRef<MainThread.Element | null>(null);
-  const mtsThumbRef = useMainThreadRef<MainThread.Element | null>(null);
+  const rootRef = useMainThreadRef<MainThread.Element | null>(null);
+  const trackRef = useMainThreadRef<MainThread.Element | null>(null);
+  const thumbRef = useMainThreadRef<MainThread.Element | null>(null);
 
-  const mtsRootStyleRef =
+  const rootStyleRef =
     useMainThreadRef<Record<string, string>>(initialRootStyle);
-  const mtsTrackStyleRef =
+  const trackStyleRef =
     useMainThreadRef<Record<string, string>>(initialTrackStyle);
 
-  const mtsUpdateListenerRef = useMainThreadRef<(value: number) => void>();
+  const updateListenerRef = useMainThreadRef<(value: number) => void>();
 
-  const onMTSDerivedChange = useCallback((value: number) => {
+  const handleDerivedChange = useCallback((value: number) => {
     'main thread';
-    if (mtsUpdateListenerRef.current) {
-      mtsUpdateListenerRef.current(value);
+    if (updateListenerRef.current) {
+      updateListenerRef.current(value);
     }
   }, []);
 
@@ -74,41 +71,39 @@ function MTSSlider(props: MTSSliderProps) {
     handlePointerMove,
     handlePointerUp,
     handleElementLayoutChange,
-  } = useMTSSlider({
-    initialValue,
-    mtsWriteValue,
-    onMTSDerivedChange,
-    onMTSChange,
-    onMTSCommit,
+  } = useSlider({
+    writeValue: externalWriterRef,
+    onDerivedChange: handleDerivedChange,
+    onChange: onChange,
     ...restProps,
   });
 
   function updateRootStyle(next: RefWriteAction<Record<string, string>>) {
     'main thread';
-    if (mtsRootRef.current) {
-      const resolved = resolveNextValue(mtsRootStyleRef.current, next);
+    if (rootRef.current) {
+      const resolved = resolveNextValue(rootStyleRef.current, next);
       if (resolved !== undefined) {
-        mtsRootRef.current.setStyleProperties(resolved);
-        mtsRootStyleRef.current = resolved;
+        rootRef.current.setStyleProperties(resolved);
+        rootStyleRef.current = resolved;
       }
     }
   }
 
   function updateTrackStyle(next: RefWriteAction<Record<string, string>>) {
     'main thread';
-    if (mtsTrackRef.current) {
-      const resolved = resolveNextValue(mtsTrackStyleRef.current, next);
+    if (trackRef.current) {
+      const resolved = resolveNextValue(trackStyleRef.current, next);
       if (resolved !== undefined) {
-        mtsTrackRef.current.setStyleProperties(resolved);
-        mtsTrackStyleRef.current = resolved;
+        trackRef.current.setStyleProperties(resolved);
+        trackStyleRef.current = resolved;
       }
     }
   }
 
   const updateThumbStyle = () => {
     'main thread';
-    if (mtsThumbRef.current) {
-      mtsThumbRef.current.setStyleProperties({
+    if (thumbRef.current) {
+      thumbRef.current.setStyleProperties({
         left: `${ratioRef.current * 100}%`,
       });
     }
@@ -116,40 +111,40 @@ function MTSSlider(props: MTSSliderProps) {
 
   const initRoot = useCallback((ref: MainThread.Element) => {
     'main thread';
-    mtsRootRef.current = ref;
-    // Bind writeValue to mtsWriteValue
+    rootRef.current = ref;
+    // Bind writeValue to prop
     if (ref) {
       writeValue.init();
     } else {
       writeValue.dispose();
     }
     // Initialization callback
-    onMTSInit?.(ref);
-    if (mtsWriteRootStyle) {
-      mtsWriteRootStyle.current = updateRootStyle;
+    onInit?.(ref);
+    if (writeRootStyle) {
+      writeRootStyle.current = updateRootStyle;
     }
     // init root style
-    updateRootStyle(mtsRootStyleRef.current);
+    updateRootStyle(rootStyleRef.current);
   }, []);
 
   const initTrack = useCallback((ref: MainThread.Element) => {
     'main thread';
-    mtsTrackRef.current = ref;
+    trackRef.current = ref;
 
-    if (mtsWriteTrackStyle) {
-      mtsWriteTrackStyle.current = updateTrackStyle;
+    if (writeTrackStyle) {
+      writeTrackStyle.current = updateTrackStyle;
     }
     // init track style
-    updateTrackStyle(mtsTrackStyleRef.current);
+    updateTrackStyle(trackStyleRef.current);
   }, []);
 
   const initThumb = useCallback((ref: MainThread.Element) => {
     'main thread';
-    mtsThumbRef.current = ref;
+    thumbRef.current = ref;
     if (ref) {
-      mtsUpdateListenerRef.current = updateThumbStyle;
+      updateListenerRef.current = updateThumbStyle;
     } else {
-      mtsUpdateListenerRef.current = undefined;
+      updateListenerRef.current = undefined;
     }
     updateThumbStyle();
   }, []);
@@ -183,30 +178,31 @@ function MTSSlider(props: MTSSliderProps) {
   );
 }
 
+/** ================= HSL Sliders Shared ================= */
+
+type HSLBaseSliderProps = Pick<
+  SliderProps,
+  'initialValue' | 'main-thread:onChange' | 'disabled' | 'writeValue'
+>;
+
 /** ================= Hue Slider ================= */
 
 function HueSlider({
-  mtsWriteValue,
-  initialValue,
-  onMTSChange,
-  onMTSCommit,
   initialSL = [100, 50],
-  mtsWriteSL,
-  disabled,
-}: Expand<Omit<MTSSliderProps, 'min' | 'max' | 'step'>> & {
-  initialSL?: readonly [number, number];
-  mtsWriteSL?: MTSWriterRef<readonly [number, number]>;
-}) {
+  ['main-thread:writeSL']: writeSL,
+  ...restProps
+}: Expand<
+  HSLBaseSliderProps & {
+    initialSL?: readonly [number, number];
+    ['main-thread:writeSL']?: WriterRef<readonly [number, number]>;
+  }
+>) {
   const [gradients] = useState(() => {
     return HSLGradients.hueGradientPair(initialSL[0], initialSL[1]);
   });
   const currentSLRef = useMainThreadRef<readonly [number, number]>(initialSL);
-
-  const mtsWriteRootStyle =
-    useMainThreadRef<MTSWriter<Record<string, string>>>();
-
-  const mtsWriteTrackStyle =
-    useMainThreadRef<MTSWriter<Record<string, string>>>();
+  const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
+  const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
   const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
     'main thread';
@@ -216,32 +212,28 @@ function HueSlider({
         resolved[0],
         resolved[1],
       );
-      mtsWriteRootStyle.current?.({ 'background-image': edgeBg });
-      mtsWriteTrackStyle.current?.({ 'background-image': trackBg });
+      writeRootStyle.current?.({ 'background-image': edgeBg });
+      writeTrackStyle.current?.({ 'background-image': trackBg });
     }
   };
   const init = useCallback(() => {
     'main thread';
-    if (mtsWriteSL) {
-      mtsWriteSL.current = updateStyle;
+    if (writeSL) {
+      writeSL.current = updateStyle;
     }
   }, []);
 
   return (
-    <MTSSlider
-      mtsWriteValue={mtsWriteValue}
-      initialValue={initialValue}
-      onMTSInit={init}
-      onMTSChange={onMTSChange}
-      onMTSCommit={onMTSCommit}
+    <Slider
       min={0}
       max={360}
       step={1}
-      disabled={disabled}
-      mtsWriteRootStyle={mtsWriteRootStyle}
-      mtsWriteTrackStyle={mtsWriteTrackStyle}
+      main-thread:onInit={init}
+      main-thread:writeRootStyle={writeRootStyle}
+      main-thread:writeTrackStyle={writeTrackStyle}
       initialRootStyle={{ 'background-image': gradients.edge }}
       initialTrackStyle={{ 'background-image': gradients.track }}
+      {...restProps}
     />
   );
 }
@@ -249,27 +241,23 @@ function HueSlider({
 /** ================= Saturation Slider ================= */
 
 function SaturationSlider({
-  mtsWriteValue,
-  initialValue,
-  onMTSChange,
-  onMTSCommit,
   initialHL = [0, 50],
-  mtsWriteHL,
-  disabled,
-}: Expand<Omit<MTSSliderProps, 'min' | 'max' | 'step'>> & {
-  initialHL?: readonly [number, number];
-  mtsWriteHL?: MTSWriterRef<readonly [number, number]>;
-}) {
+  ['main-thread:writeHL']: writeHL,
+  ...restProps
+}: Expand<
+  HSLBaseSliderProps & {
+    initialHL?: readonly [number, number];
+    ['main-thread:writeHL']?: WriterRef<readonly [number, number]>;
+  }
+>) {
   const [gradients] = useState(() => {
     return HSLGradients.saturationGradientPair(initialHL[0], initialHL[1]);
   });
 
   const currentHLRef = useMainThreadRef<readonly [number, number]>(initialHL);
 
-  const mtsWriteRootStyle =
-    useMainThreadRef<MTSWriter<Record<string, string>>>();
-  const mtsWriteTrackStyle =
-    useMainThreadRef<MTSWriter<Record<string, string>>>();
+  const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
+  const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
   const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
     'main thread';
@@ -277,33 +265,29 @@ function SaturationSlider({
     if (resolved !== undefined) {
       const { edge: edgeBg, track: trackBg } =
         MTSHSLGradients.saturationGradientPair(resolved[0], resolved[1]);
-      mtsWriteRootStyle.current?.({ 'background-image': edgeBg });
-      mtsWriteTrackStyle.current?.({ 'background-image': trackBg });
+      writeRootStyle.current?.({ 'background-image': edgeBg });
+      writeTrackStyle.current?.({ 'background-image': trackBg });
     }
   };
 
   const init = useCallback(() => {
     'main thread';
-    if (mtsWriteHL) {
-      mtsWriteHL.current = updateStyle;
+    if (writeHL) {
+      writeHL.current = updateStyle;
     }
   }, []);
 
   return (
-    <MTSSlider
-      mtsWriteValue={mtsWriteValue}
-      initialValue={initialValue}
-      onMTSInit={init}
-      onMTSChange={onMTSChange}
-      onMTSCommit={onMTSCommit}
+    <Slider
       min={0}
       max={100}
       step={1}
-      disabled={disabled}
-      mtsWriteRootStyle={mtsWriteRootStyle}
-      mtsWriteTrackStyle={mtsWriteTrackStyle}
+      main-thread:onInit={init}
+      main-thread:writeRootStyle={writeRootStyle}
+      main-thread:writeTrackStyle={writeTrackStyle}
       initialRootStyle={{ 'background-image': gradients.edge }}
       initialTrackStyle={{ 'background-image': gradients.track }}
+      {...restProps}
     />
   );
 }
@@ -311,27 +295,23 @@ function SaturationSlider({
 /** ================= Lightness Slider ================= */
 
 function LightnessSlider({
-  mtsWriteValue,
-  initialValue,
-  onMTSChange,
-  onMTSCommit,
   initialHS = [0, 100],
-  mtsWriteHS,
-  disabled,
-}: Expand<Omit<MTSSliderProps, 'min' | 'max' | 'step'>> & {
-  initialHS?: readonly [number, number];
-  mtsWriteHS?: MTSWriterRef<readonly [number, number]>;
-}) {
+  ['main-thread:writeHS']: writeHS,
+  ...restProps
+}: Expand<
+  HSLBaseSliderProps & {
+    initialHS?: readonly [number, number];
+    ['main-thread:writeHS']?: WriterRef<readonly [number, number]>;
+  }
+>) {
   const [gradients] = useState(() => {
     return HSLGradients.lightnessGradientPair(initialHS[0], initialHS[1]);
   });
 
   const currentHSRef = useMainThreadRef<readonly [number, number]>(initialHS);
 
-  const mtsWriteRootStyle =
-    useMainThreadRef<MTSWriter<Record<string, string>>>();
-  const mtsWriteTrackStyle =
-    useMainThreadRef<MTSWriter<Record<string, string>>>();
+  const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
+  const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
   const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
     'main thread';
@@ -339,41 +319,32 @@ function LightnessSlider({
     if (resolved !== undefined) {
       const { edge: edgeBg, track: trackBg } =
         MTSHSLGradients.lightnessGradientPair(resolved[0], resolved[1]);
-      mtsWriteRootStyle.current?.({ 'background-image': edgeBg });
-      mtsWriteTrackStyle.current?.({ 'background-image': trackBg });
+      writeRootStyle.current?.({ 'background-image': edgeBg });
+      writeTrackStyle.current?.({ 'background-image': trackBg });
     }
   };
 
   const init = useCallback(() => {
     'main thread';
-    if (mtsWriteHS) {
-      mtsWriteHS.current = updateStyle;
+    if (writeHS) {
+      writeHS.current = updateStyle;
     }
   }, []);
 
   return (
-    <MTSSlider
-      mtsWriteValue={mtsWriteValue}
-      initialValue={initialValue}
-      onMTSInit={init}
-      onMTSChange={onMTSChange}
-      onMTSCommit={onMTSCommit}
+    <Slider
       min={0}
       max={100}
       step={1}
-      disabled={disabled}
-      mtsWriteRootStyle={mtsWriteRootStyle}
-      mtsWriteTrackStyle={mtsWriteTrackStyle}
+      main-thread:onInit={init}
+      main-thread:writeRootStyle={writeRootStyle}
+      main-thread:writeTrackStyle={writeTrackStyle}
       initialRootStyle={{ 'background-image': gradients.edge }}
       initialTrackStyle={{ 'background-image': gradients.track }}
+      {...restProps}
     />
   );
 }
 
-export { MTSSlider, HueSlider, LightnessSlider, SaturationSlider };
-export type {
-  MTSWriterRef,
-  MTSWriter,
-  MTSWriterWithControls,
-  MTSWriterWithControlsRef,
-};
+export { Slider, HueSlider, LightnessSlider, SaturationSlider };
+export type { WriterRef, Writer, WriterWithControls, WriterWithControlsRef };
