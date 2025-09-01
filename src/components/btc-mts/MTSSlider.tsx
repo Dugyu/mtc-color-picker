@@ -9,7 +9,7 @@ import type {
   WriterWithControlsRef,
   WriterWithControls,
 } from './use-mts-slider';
-import type { RefWriteAction } from './use-mts-ownable';
+import type { WriteAction } from './use-mts-ownable';
 import { resolveNextValue } from './use-mts-ownable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
@@ -21,6 +21,7 @@ type SliderProps = Expand<
     Omit<UseSliderProps, 'onDerivedChange'>,
     {
       onChange?: 'main-thread:onChange';
+      writeValue?: 'main-thread:writeValue';
     }
   > & {
     // Init callback: for attaching additional writers
@@ -36,7 +37,7 @@ type SliderProps = Expand<
 /** ================= Base Slider ================= */
 
 function Slider({
-  writeValue: externalWriterRef,
+  ['main-thread:writeValue']: externalWriterRef,
   ['main-thread:onInit']: onInit,
   ['main-thread:onChange']: onChange,
   ['main-thread:writeRootStyle']: writeRootStyle,
@@ -77,7 +78,7 @@ function Slider({
     ...restProps,
   });
 
-  function updateRootStyle(next: RefWriteAction<Record<string, string>>) {
+  function updateRootStyle(next: WriteAction<Record<string, string>>) {
     'main thread';
     if (rootRef.current) {
       const resolved = resolveNextValue(rootStyleRef.current, next);
@@ -88,7 +89,7 @@ function Slider({
     }
   }
 
-  function updateTrackStyle(next: RefWriteAction<Record<string, string>>) {
+  function updateTrackStyle(next: WriteAction<Record<string, string>>) {
     'main thread';
     if (trackRef.current) {
       const resolved = resolveNextValue(trackStyleRef.current, next);
@@ -191,7 +192,7 @@ function HueSlider({
   const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
   const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
-  const updateStyle = (next: RefWriteAction<Vec2>) => {
+  const updateStyle = (next: WriteAction<Vec2>) => {
     'main thread';
     const resolved = resolveNextValue(currentSLRef.current, next);
     if (resolved !== undefined) {
@@ -241,7 +242,7 @@ function SaturationSlider({
   const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
   const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
-  const updateStyle = (next: RefWriteAction<Vec2>) => {
+  const updateStyle = (next: WriteAction<Vec2>) => {
     'main thread';
     const resolved = resolveNextValue(currentHLRef.current, next);
     if (resolved !== undefined) {
@@ -290,7 +291,7 @@ function LightnessSlider({
   const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
   const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
-  const updateStyle = (next: RefWriteAction<Vec2>) => {
+  const updateStyle = (next: WriteAction<Vec2>) => {
     'main thread';
     const resolved = resolveNextValue(currentHSRef.current, next);
     if (resolved !== undefined) {
@@ -330,7 +331,10 @@ export type { WriterRef, Writer, WriterWithControls, WriterWithControlsRef };
 
 type StyledSliderProps = Pick<
   SliderProps,
-  'initialValue' | 'main-thread:onChange' | 'disabled' | 'writeValue'
+  | 'initialValue'
+  | 'main-thread:onChange'
+  | 'disabled'
+  | 'main-thread:writeValue'
 >;
 
 type HueSliderProps = Expand<
