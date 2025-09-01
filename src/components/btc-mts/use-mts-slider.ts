@@ -6,13 +6,13 @@ import type {
   UsePointerInteractionReturnValue,
 } from './use-mts-pointer-interaction';
 
-import { useControllable } from './use-mts-controllable';
+import { useOwnable } from './use-mts-ownable';
 import type {
   Writer,
   WriterRef,
   WriterWithControls,
   WriterWithControlsRef,
-} from './use-mts-controllable';
+} from './use-mts-ownable';
 
 import { MTSMathUtils } from '@/utils/mts-math-utils';
 import { MathUtils } from '@/utils/math-utils';
@@ -60,7 +60,7 @@ function useSlider({
     [onDerivedChange, min, max],
   );
 
-  const [valueRef, writeValue] = useControllable({
+  const [valueRef, writeValue] = useOwnable({
     writeValue: externalWriterRef,
     initialValue,
     onDerivedChange: forwardOnDerivedChange,
@@ -80,8 +80,8 @@ function useSlider({
       ('main thread');
       if (disabled) return;
       const next = quantize(pos);
-      // Controlled: only notify change;
-      // Uncontrolled: update internals and notify change;
+      // external-owned: only notify change;
+      // owned: update internals and notify change;
       writeValue(next);
     },
     [disabled, quantize, writeValue],
