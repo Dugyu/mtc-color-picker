@@ -8,7 +8,7 @@ import { AppLayout } from '@/App';
 import { sleep } from '@/utils/sleep';
 
 import { HueSlider } from '@/components/btc-mts/MTSSlider';
-// import type { WriterWithControls } from '@/components/btc-mts/MTSSlider';
+// import type { Writer } from '@/components/btc-mts/MTSSlider';
 
 if (__BACKGROUND__) {
   setInterval(() => {
@@ -20,11 +20,11 @@ export function App() {
   const [value, setValue] = useState(199);
 
   // Uncomment `writeValue` to test BTC owned writer behavior.
-  // const writeValue = useMainThreadRef<WriterWithControls<number>>();
+  // const writeValue = useMainThreadRef<Writer<number>>();
 
   const handleChange = (next: number) => {
     'main thread';
-    //writeValue.current?.(next);
+    // writeValue.current?.(next);
     runOnBackground(setValue)(next);
   };
 

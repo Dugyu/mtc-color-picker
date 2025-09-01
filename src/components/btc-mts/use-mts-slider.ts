@@ -10,8 +10,7 @@ import { useOwnable } from './use-mts-ownable';
 import type {
   Writer,
   WriterRef,
-  WriterWithControls,
-  WriterWithControlsRef,
+  UseOwnableReturnValue,
 } from './use-mts-ownable';
 
 import { MTSMathUtils } from '@/utils/mts-math-utils';
@@ -23,21 +22,19 @@ import type {
 } from '@/types/slider';
 
 type UseSliderProps = UseSliderPropsBase<{
-  writeValue?: WriterWithControlsRef<number>;
+  writeValue?: WriterRef<number>;
   onDerivedChange?: (value: number) => void;
 }>;
 
 type UseSliderReturnValue = UseSliderReturnValueBase<
   UsePointerInteractionReturnValue,
-  {
-    writeValue: WriterWithControls<number>;
-    valueRef: MainThreadRef<number>;
+  UseOwnableReturnValue<number> & {
     ratioRef: MainThreadRef<number>;
   }
 >;
 
 function useSlider({
-  writeValue: externalWriterRef,
+  writeValue,
   min = 0,
   max = 100,
   step: stepProp = 1,
@@ -57,8 +54,14 @@ function useSlider({
     onDerivedChange?.(v);
   };
 
-  const [valueRef, writeValue] = useOwnable({
-    writeValue: externalWriterRef,
+  const {
+    valueRef,
+    writer,
+    externalWriter,
+    initExternalWriter,
+    disposeExternalWriter,
+  } = useOwnable({
+    writeValue,
     initialValue,
     onDerivedChange: forwardOnDerivedChange,
     onChange,
@@ -75,7 +78,7 @@ function useSlider({
     const next = quantize(pos);
     // external-owned: only notify change;
     // owned: update internals and notify change;
-    writeValue(next);
+    writer(next);
   };
 
   const pointerReturnedValue = usePointerInteraction({
@@ -83,9 +86,12 @@ function useSlider({
   });
 
   return {
-    valueRef,
-    writeValue,
     ratioRef,
+    valueRef,
+    writer,
+    externalWriter,
+    initExternalWriter,
+    disposeExternalWriter,
     min,
     max,
     step,
@@ -95,11 +101,4 @@ function useSlider({
 }
 
 export { useSlider };
-export type {
-  UseSliderProps,
-  UseSliderReturnValue,
-  WriterRef,
-  Writer,
-  WriterWithControls,
-  WriterWithControlsRef,
-};
+export type { UseSliderProps, UseSliderReturnValue, WriterRef, Writer };
