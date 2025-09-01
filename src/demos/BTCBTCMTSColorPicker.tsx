@@ -3,6 +3,7 @@ import { AppLayout } from '@/App';
 import { sleep } from '@/utils/sleep';
 
 import { ColorPicker } from '@/components/btc-mts/BTCMTSColorPicker';
+import type { HSL } from '@/types/color';
 
 if (__BACKGROUND__) {
   setInterval(() => {
@@ -11,9 +12,7 @@ if (__BACKGROUND__) {
 }
 
 export function App() {
-  const [value, setValue] = useState<readonly [number, number, number]>([
-    199, 99, 72,
-  ]);
+  const [value, setValue] = useState<HSL>([199, 99, 72]);
 
   return (
     <AppLayout

@@ -8,16 +8,14 @@ import { useControllable } from './use-controllable';
 
 import { MathUtils } from '@/utils/math-utils';
 
-interface UseSliderProps {
-  value?: number;
-  initialValue?: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
-  onChange?: (value: number) => void;
-  onCommit?: (value: number) => void;
-}
+import type {
+  UseSliderPropsBase,
+  UseSliderReturnValueBase,
+} from '@/types/slider';
+
+type UseSliderProps = UseSliderPropsBase<{ value?: number }>;
+type UseSliderReturnValue =
+  UseSliderReturnValueBase<UsePointerInteractionReturnValue>;
 
 function useSlider(props: UseSliderProps): UseSliderReturnValue {
   const {
@@ -28,7 +26,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     initialValue = min,
     disabled = false,
     onChange,
-    onCommit,
   } = props;
 
   const [value = initialValue, setValue] = useControllable<number>({
@@ -50,12 +47,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
       const next = quantize(pos);
       setValue(next);
     },
-    onCommit: (pos) => {
-      if (disabled) return;
-      const next = quantize(pos);
-      setValue(next);
-      onCommit?.(next);
-    },
   });
 
   return {
@@ -67,15 +58,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     disabled,
     ...pointerReturnedValue,
   };
-}
-
-interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
-  value: number;
-  ratio: number;
-  min: number;
-  max: number;
-  step: number;
-  disabled: boolean;
 }
 
 export { useSlider };

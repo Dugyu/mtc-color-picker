@@ -6,6 +6,11 @@ import type { UseSliderProps } from './use-mtc-slider-state';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Expand } from '@/types/utils';
 
+import type {
+  StyledSliderPropsBase,
+  HSLSliderPropsBase,
+} from '@/types/hsl-slider';
+
 type SliderProps = Expand<
   UseSliderProps & {
     // Styling
@@ -61,11 +66,6 @@ function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
 
 /** ================= HSL Sliders Shared ================= */
 
-type HSLBaseSliderProps = Omit<
-  SliderProps,
-  'min' | 'max' | 'step' | 'trackStyle' | 'rootStyle'
->;
-
 const defaultHue = 0;
 const defaultSaturation = 100;
 const defaultLightness = 50;
@@ -76,12 +76,7 @@ function HueSlider({
   s = defaultSaturation,
   l = defaultLightness,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    s?: number;
-    l?: number;
-  }
->) {
+}: HueSliderProps) {
   const gradients = HSLGradients.hueGradientPair(s, l);
 
   return (
@@ -102,12 +97,7 @@ function SaturationSlider({
   h = defaultHue,
   l = defaultLightness,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    h?: number;
-    l?: number;
-  }
->) {
+}: SaturationSliderProps) {
   const gradients = HSLGradients.saturationGradientPair(h, l);
 
   return (
@@ -128,12 +118,7 @@ function LightnessSlider({
   h = defaultHue,
   s = defaultSaturation,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    h?: number;
-    s?: number;
-  }
->) {
+}: LightnessSliderProps) {
   const gradients = HSLGradients.lightnessGradientPair(h, s);
 
   return (
@@ -149,3 +134,25 @@ function LightnessSlider({
 }
 
 export { Slider, HueSlider, SaturationSlider, LightnessSlider };
+
+/** ================= HSL Sliders Shared Types ================= */
+
+type StyledSliderProps = StyledSliderPropsBase<
+  SliderProps,
+  'trackStyle' | 'rootStyle'
+>;
+
+type HueSliderProps = HSLSliderPropsBase<StyledSliderProps, number, 's', 'l'>;
+type SaturationSliderProps = HSLSliderPropsBase<
+  StyledSliderProps,
+  number,
+  'h',
+  'l'
+>;
+
+type LightnessSliderProps = HSLSliderPropsBase<
+  StyledSliderProps,
+  number,
+  'h',
+  's'
+>;

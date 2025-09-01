@@ -3,6 +3,7 @@ import { AppLayout } from '@/App';
 import { ColorPicker } from '@/components/mtc/MTCColorPickerState';
 import { DummyStyle } from '@/components/ui/DummyStyle';
 import { sleep } from '@/utils/sleep';
+import type { HSL } from '@/types/color';
 
 if (__BACKGROUND__) {
   setInterval(() => {
@@ -10,12 +11,10 @@ if (__BACKGROUND__) {
   }, 100);
 }
 
-type Color = readonly [number, number, number];
-
 export function App() {
-  const [value, setValue] = useState<Color>(() => [199, 99, 72]);
+  const [value, setValue] = useState<HSL>(() => [199, 99, 72]);
 
-  const handleChange = (v: Color) => {
+  const handleChange = (v: HSL) => {
     'use background';
     setValue(v);
   };

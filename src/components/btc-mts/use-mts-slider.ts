@@ -17,18 +17,24 @@ import type {
 import { MTSMathUtils } from '@/utils/mts-math-utils';
 import { MathUtils } from '@/utils/math-utils';
 
-interface UseSliderProps {
-  writeValue?: WriterWithControlsRef<number>;
-  initialValue?: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
+import type {
+  UseSliderPropsBase,
+  UseSliderReturnValueBase,
+} from '@/types/slider';
 
+type UseSliderProps = UseSliderPropsBase<{
+  writeValue?: WriterWithControlsRef<number>;
   onDerivedChange?: (value: number) => void;
-  onChange?: (value: number) => void;
-  onCommit?: (value: number) => void;
-}
+}>;
+
+type UseSliderReturnValue = UseSliderReturnValueBase<
+  UsePointerInteractionReturnValue,
+  {
+    writeValue: WriterWithControls<number>;
+    valueRef: MainThreadRef<number>;
+    ratioRef: MainThreadRef<number>;
+  }
+>;
 
 function useSlider(props: UseSliderProps): UseSliderReturnValue {
   const {
@@ -40,7 +46,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     disabled = false,
     onDerivedChange,
     onChange,
-    onCommit,
   } = props;
 
   const step = stepProp > 0 ? stepProp : 1;
@@ -84,16 +89,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     [disabled, quantize, writeValue],
   );
 
-  const handlePointerCommit = (pos: PointerPosition) => {
-    ('main thread');
-    if (disabled) return;
-    const next = quantize(pos);
-    // Controlled: only notify change;
-    // Uncontrolled: update internals and notify change;
-    writeValue(next);
-    onCommit?.(next);
-  };
-
   const {
     handlePointerDown,
     handlePointerMove,
@@ -101,7 +96,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     handleElementLayoutChange,
   } = usePointerInteraction({
     onUpdate: handlePointerUpdate,
-    onCommit: handlePointerCommit,
   });
 
   return {
@@ -117,16 +111,6 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
     handlePointerUp,
     handleElementLayoutChange,
   };
-}
-
-interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
-  writeValue: WriterWithControls<number>;
-  valueRef: MainThreadRef<number>;
-  ratioRef: MainThreadRef<number>;
-  min: number;
-  max: number;
-  step: number;
-  disabled: boolean;
 }
 
 export { useSlider };

@@ -59,7 +59,6 @@ function HueSlider({
   s = 100,
   l = 50,
   onChange,
-  onCommit,
   disabled,
 }: {
   value?: number;
@@ -67,7 +66,6 @@ function HueSlider({
   s?: number;
   l?: number;
   onChange?: (h: number) => void;
-  onCommit?: (h: number) => void;
   disabled?: boolean;
 }) {
   const { track: trackBg, edge: edgeBg } = useMemo(
@@ -84,7 +82,6 @@ function HueSlider({
       step={1}
       disabled={disabled}
       onChange={onChange}
-      onCommit={onCommit}
       rootStyle={{ backgroundImage: edgeBg }}
       trackStyle={{ backgroundImage: trackBg }}
     />

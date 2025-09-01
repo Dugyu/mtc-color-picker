@@ -14,10 +14,11 @@ import { resolveNextValue } from './use-mts-controllable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
 import type { Expand, RenameKeys } from '@/types/utils';
+import type { Vec2 } from '@/types/color';
 
 type SliderProps = Expand<
   RenameKeys<
-    Omit<UseSliderProps, 'onCommit' | 'onDerivedChange'>,
+    Omit<UseSliderProps, 'onDerivedChange'>,
     {
       onChange?: 'main-thread:onChange';
     }
@@ -178,33 +179,21 @@ function Slider(props: SliderProps) {
   );
 }
 
-/** ================= HSL Sliders Shared ================= */
-
-type HSLBaseSliderProps = Pick<
-  SliderProps,
-  'initialValue' | 'main-thread:onChange' | 'disabled' | 'writeValue'
->;
-
 /** ================= Hue Slider ================= */
 
 function HueSlider({
   initialSL = [100, 50],
   ['main-thread:writeSL']: writeSL,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    initialSL?: readonly [number, number];
-    ['main-thread:writeSL']?: WriterRef<readonly [number, number]>;
-  }
->) {
+}: HueSliderProps) {
   const [gradients] = useState(() => {
     return HSLGradients.hueGradientPair(initialSL[0], initialSL[1]);
   });
-  const currentSLRef = useMainThreadRef<readonly [number, number]>(initialSL);
+  const currentSLRef = useMainThreadRef<Vec2>(initialSL);
   const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
   const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
-  const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
+  const updateStyle = (next: RefWriteAction<Vec2>) => {
     'main thread';
     const resolved = resolveNextValue(currentSLRef.current, next);
     if (resolved !== undefined) {
@@ -244,22 +233,17 @@ function SaturationSlider({
   initialHL = [0, 50],
   ['main-thread:writeHL']: writeHL,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    initialHL?: readonly [number, number];
-    ['main-thread:writeHL']?: WriterRef<readonly [number, number]>;
-  }
->) {
+}: SaturationSliderProps) {
   const [gradients] = useState(() => {
     return HSLGradients.saturationGradientPair(initialHL[0], initialHL[1]);
   });
 
-  const currentHLRef = useMainThreadRef<readonly [number, number]>(initialHL);
+  const currentHLRef = useMainThreadRef<Vec2>(initialHL);
 
   const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
   const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
-  const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
+  const updateStyle = (next: RefWriteAction<Vec2>) => {
     'main thread';
     const resolved = resolveNextValue(currentHLRef.current, next);
     if (resolved !== undefined) {
@@ -298,22 +282,17 @@ function LightnessSlider({
   initialHS = [0, 100],
   ['main-thread:writeHS']: writeHS,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    initialHS?: readonly [number, number];
-    ['main-thread:writeHS']?: WriterRef<readonly [number, number]>;
-  }
->) {
+}: LightnessSliderProps) {
   const [gradients] = useState(() => {
     return HSLGradients.lightnessGradientPair(initialHS[0], initialHS[1]);
   });
 
-  const currentHSRef = useMainThreadRef<readonly [number, number]>(initialHS);
+  const currentHSRef = useMainThreadRef<Vec2>(initialHS);
 
   const writeRootStyle = useMainThreadRef<Writer<Record<string, string>>>();
   const writeTrackStyle = useMainThreadRef<Writer<Record<string, string>>>();
 
-  const updateStyle = (next: RefWriteAction<readonly [number, number]>) => {
+  const updateStyle = (next: RefWriteAction<Vec2>) => {
     'main thread';
     const resolved = resolveNextValue(currentHSRef.current, next);
     if (resolved !== undefined) {
@@ -348,3 +327,31 @@ function LightnessSlider({
 
 export { Slider, HueSlider, LightnessSlider, SaturationSlider };
 export type { WriterRef, Writer, WriterWithControls, WriterWithControlsRef };
+
+/** ================= HSL Sliders Shared Types ================= */
+
+type StyledSliderProps = Pick<
+  SliderProps,
+  'initialValue' | 'main-thread:onChange' | 'disabled' | 'writeValue'
+>;
+
+type HueSliderProps = Expand<
+  StyledSliderProps & {
+    initialSL?: Vec2;
+    ['main-thread:writeSL']?: WriterRef<Vec2>;
+  }
+>;
+
+type LightnessSliderProps = Expand<
+  StyledSliderProps & {
+    initialHS?: Vec2;
+    ['main-thread:writeHS']?: WriterRef<Vec2>;
+  }
+>;
+
+type SaturationSliderProps = Expand<
+  StyledSliderProps & {
+    initialHL?: Vec2;
+    ['main-thread:writeHL']?: WriterRef<Vec2>;
+  }
+>;

@@ -2,25 +2,24 @@ import { useCallback, useMainThreadRef } from '@lynx-js/react';
 import { HueSlider, LightnessSlider, SaturationSlider } from './MTSSlider';
 import type { Writer } from './MTSSlider';
 
-type Color = readonly [number, number, number];
-type Vector2 = readonly [number, number];
+import type { HSL, Vec2 } from '@/types/color';
 
 interface ColorPickerProps {
-  initialValue?: Color;
-  'main-thread:onChange'?: (next: Color) => void;
+  initialValue?: HSL;
+  'main-thread:onChange'?: (next: HSL) => void;
 }
 function ColorPicker({
   initialValue: hsl = [199, 99, 72],
   ['main-thread:onChange']: onChange,
 }: ColorPickerProps) {
   const hueRef = useMainThreadRef(hsl[0]);
-  const writeSL = useMainThreadRef<Writer<Vector2>>();
+  const writeSL = useMainThreadRef<Writer<Vec2>>();
 
   const satRef = useMainThreadRef(hsl[1]);
-  const writeHL = useMainThreadRef<Writer<Vector2>>();
+  const writeHL = useMainThreadRef<Writer<Vec2>>();
 
   const lightRef = useMainThreadRef(hsl[2]);
-  const writeHS = useMainThreadRef<Writer<Vector2>>();
+  const writeHS = useMainThreadRef<Writer<Vec2>>();
 
   const writeSliderGradients = useCallback(() => {
     'main thread';

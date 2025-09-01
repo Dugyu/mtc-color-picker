@@ -7,8 +7,7 @@ import {
 } from '@lynx-js/react';
 import { HueSlider, LightnessSlider, SaturationSlider } from './BTCMTSSlider';
 import { HSLGradients } from '@/utils/hsl-gradients';
-
-type Color = readonly [number, number, number];
+import type { Color } from '@/types/color';
 
 interface ColorPickerProps {
   initialValue?: Color;
