@@ -1,7 +1,7 @@
 import {
   root,
   runOnBackground,
-  //useMainThreadRef,
+  // useMainThreadRef,
   useState,
 } from '@lynx-js/react';
 import { AppLayout } from '@/App';

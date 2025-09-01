@@ -1,4 +1,4 @@
-import { useCallback, useMainThreadRef, MainThreadRef } from '@lynx-js/react';
+import { useMainThreadRef, MainThreadRef } from '@lynx-js/react';
 
 import { usePointerInteraction } from './use-mts-pointer-interaction';
 import type {
@@ -51,14 +51,11 @@ function useSlider({
     MathUtils.valueToRatio(initialValue, min, max),
   );
 
-  const forwardOnDerivedChange = useCallback(
-    (v: number) => {
-      'main thread';
-      ratioRef.current = MTSMathUtils.valueToRatio(v, min, max);
-      onDerivedChange?.(v);
-    },
-    [onDerivedChange, min, max],
-  );
+  const forwardOnDerivedChange = (v: number) => {
+    'main thread';
+    ratioRef.current = MTSMathUtils.valueToRatio(v, min, max);
+    onDerivedChange?.(v);
+  };
 
   const [valueRef, writeValue] = useOwnable({
     writeValue: externalWriterRef,
@@ -67,32 +64,21 @@ function useSlider({
     onChange,
   });
 
-  const quantize = useCallback(
-    ({ offsetRatio }: PointerPosition) => {
-      'main thread';
-      return MTSMathUtils.quantizeFromRatio(offsetRatio, min, max, step);
-    },
-    [min, max, step],
-  );
+  const quantize = ({ offsetRatio }: PointerPosition) => {
+    'main thread';
+    return MTSMathUtils.quantizeFromRatio(offsetRatio, min, max, step);
+  };
 
-  const handlePointerUpdate = useCallback(
-    (pos: PointerPosition) => {
-      ('main thread');
-      if (disabled) return;
-      const next = quantize(pos);
-      // external-owned: only notify change;
-      // owned: update internals and notify change;
-      writeValue(next);
-    },
-    [disabled, quantize, writeValue],
-  );
+  const handlePointerUpdate = (pos: PointerPosition) => {
+    ('main thread');
+    if (disabled) return;
+    const next = quantize(pos);
+    // external-owned: only notify change;
+    // owned: update internals and notify change;
+    writeValue(next);
+  };
 
-  const {
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    handleElementLayoutChange,
-  } = usePointerInteraction({
+  const pointerReturnedValue = usePointerInteraction({
     onUpdate: handlePointerUpdate,
   });
 
@@ -104,10 +90,7 @@ function useSlider({
     max,
     step,
     disabled,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    handleElementLayoutChange,
+    ...pointerReturnedValue,
   };
 }
 

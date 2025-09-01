@@ -5,23 +5,20 @@ import {
   MainThreadRef,
 } from '@lynx-js/react';
 
-type RefWriteAction<T> = T | ((prev: T) => T);
+import type { Expand } from '@/types/utils';
 
-function isUpdater<T>(v: RefWriteAction<T>): v is (prev: T) => T {
-  'main thread';
-  return typeof v === 'function';
-}
+type WriteAction<T> = T | ((prev: T) => T);
 
-type Writer<T> = (next: RefWriteAction<T>) => void;
+type Writer<T> = (next: WriteAction<T>) => void;
 type WriterRef<T> = MainThreadRef<Writer<T> | undefined>;
 
 type WriterWithControls<T> = Writer<T> & {
   /** Default write: land + derive + notify */
-  write: (next: RefWriteAction<T>) => void;
+  write: (next: WriteAction<T>) => void;
   /** Silent write: land + derive only (no external notify) */
-  writeSilent: (next: RefWriteAction<T>) => void;
+  writeSilent: (next: WriteAction<T>) => void;
   /** Notify only: emit external change (no land, no derive) */
-  notify: (next: RefWriteAction<T>) => void;
+  notify: (next: WriteAction<T>) => void;
   /** Lifecycle hooks (no-op in owned mode) */
   init: () => void;
   dispose: () => void;
@@ -51,11 +48,7 @@ interface UseOwnedProps<T> {
   onDerivedChange?: (value: T) => void;
 }
 
-type ShallowExpand<T> = {
-  [K in keyof T]: T[K];
-} & {};
-
-type UseOwnableProps<T> = ShallowExpand<
+type UseOwnableProps<T> = Expand<
   UseExternalOwnedProps<T> | (UseOwnedProps<T> & { writeValue?: never })
 >;
 
@@ -94,7 +87,7 @@ function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
   }, [internalWriter]);
 
   const write = useCallback(
-    (next: RefWriteAction<T>) => {
+    (next: WriteAction<T>) => {
       'main thread';
       if (isExternalOwned) {
         // Default behaviour for external-owned mode: only notify
@@ -107,7 +100,7 @@ function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
   );
 
   const writeSilent = useCallback(
-    (next: RefWriteAction<T>) => {
+    (next: WriteAction<T>) => {
       'main thread';
       internalWriter.writeSilent(next);
     },
@@ -115,7 +108,7 @@ function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
   );
 
   const notify = useCallback(
-    (next: RefWriteAction<T>) => {
+    (next: WriteAction<T>) => {
       'main thread';
       internalWriter.notify(next);
     },
@@ -130,7 +123,7 @@ function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
    */
 
   const writeCurrent = useMemo<WriterWithControls<T>>(() => {
-    const fn = ((next: RefWriteAction<T>) => {
+    const fn = ((next: WriteAction<T>) => {
       'main thread';
       write(next);
     }) as WriterWithControls<T>;
@@ -178,7 +171,7 @@ function useOwned<T>({
    * - Optionally emits external onChange
    */
   const commit = useCallback(
-    (next: RefWriteAction<T>, notifyExternal: boolean) => {
+    (next: WriteAction<T>, notifyExternal: boolean) => {
       'main thread';
       const resolved = resolveNextValue(currentRef.current, next);
       if (resolved !== undefined && resolved !== currentRef.current) {
@@ -222,7 +215,7 @@ function useOwned<T>({
    * - init/dispose = no-op here; meaningful in the higher-level compositors
    */
   const writeCurrent = useMemo<WriterWithControls<T>>(() => {
-    const fn = ((next: RefWriteAction<T>) => {
+    const fn = ((next: WriteAction<T>) => {
       'main thread';
       write(next);
     }) as WriterWithControls<T>;
@@ -237,16 +230,21 @@ function useOwned<T>({
   return [currentRef, writeCurrent] as const;
 }
 
-function resolveNextValue<T>(current: T, next: RefWriteAction<T>): T {
+function isUpdater<T>(v: WriteAction<T>): v is (prev: T) => T {
+  'main thread';
+  return typeof v === 'function';
+}
+
+function resolveNextValue<T>(current: T, next: WriteAction<T>): T {
   'main thread';
   return isUpdater(next) ? (next as (p: T) => T)(current) : next;
 }
 
-export { useOwnable, useOwned, resolveNextValue, isUseExternalOwned };
+export { useOwnable, useOwned, resolveNextValue };
 export type {
   UseOwnableProps,
   UseOwnedProps,
-  RefWriteAction,
+  WriteAction,
   Writer,
   WriterRef,
   WriterWithControls,
