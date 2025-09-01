@@ -1,10 +1,10 @@
+import { useState } from '@lynx-js/react';
+
 import { usePointerInteraction } from './use-pointer-interaction';
 import type {
   PointerPosition,
   UsePointerInteractionReturnValue,
 } from './use-pointer-interaction';
-
-import { useControllable } from './use-controllable';
 
 import { MathUtils } from '@/utils/math-utils';
 
@@ -18,7 +18,6 @@ type UseSliderReturnValue =
   UseSliderReturnValueBase<UsePointerInteractionReturnValue>;
 
 function useSlider({
-  value: controlledValue,
   min = 0,
   max = 100,
   step: stepProp = 1,
@@ -26,11 +25,7 @@ function useSlider({
   disabled = false,
   onChange,
 }: UseSliderProps): UseSliderReturnValue {
-  const [value = initialValue, setValue] = useControllable<number>({
-    value: controlledValue,
-    initialValue,
-    onChange,
-  });
+  const [value, setValue] = useState<number>(initialValue);
 
   const step = stepProp > 0 ? stepProp : 1;
   const ratio = MathUtils.valueToRatio(value, min, max);
@@ -44,6 +39,7 @@ function useSlider({
       if (disabled) return;
       const next = quantize(pos);
       setValue(next);
+      onChange?.(next);
     },
   });
 
