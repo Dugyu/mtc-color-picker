@@ -13,14 +13,14 @@ importers:
     dependencies:
       '@lynx-js/react':
         specifier: file:./lynx-js-react-0.112.2.tgz
-        version: file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+        version: file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24)
     devDependencies:
       '@lynx-js/qrcode-rsbuild-plugin':
         specifier: ^0.4.1
         version: 0.4.1
       '@lynx-js/react-rsbuild-plugin':
         specifier: file:./lynx-js-react-rsbuild-plugin-0.10.11.tgz
-        version: file:lynx-js-react-rsbuild-plugin-0.10.11.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(webpack@5.101.3)
+        version: file:lynx-js-react-rsbuild-plugin-0.10.11.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(webpack@5.101.3)
       '@lynx-js/rspeedy':
         specifier: ^0.10.8
         version: 0.10.8(@rspack/core@1.4.11(@swc/helpers@0.5.17))(typescript@5.9.2)(webpack@5.101.3)
@@ -35,7 +35,7 @@ importers:
         version: 1.2.4(@rsbuild/core@1.4.15)(@rspack/core@1.4.11(@swc/helpers@0.5.17))(typescript@5.9.2)
       '@types/react':
         specifier: ^18.3.23
-        version: 18.3.23
+        version: 18.3.24
       cross-env:
         specifier: ^10.0.0
         version: 10.0.0
@@ -70,14 +70,14 @@ packages:
     resolution: {integrity: sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==}
     engines: {node: '>=6.9.0'}
 
-  '@emnapi/core@1.4.5':
-    resolution: {integrity: sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q==}
+  '@emnapi/core@1.5.0':
+    resolution: {integrity: sha512-sbP8GzB1WDzacS8fgNPpHlp6C9VZe+SJP3F90W9rLemaQj2PzIuTEl1qDOYQf58YIpyjViI24y9aPWCjEzY2cg==}
 
-  '@emnapi/runtime@1.4.5':
-    resolution: {integrity: sha512-++LApOtY0pEEz1zrd9vy1/zXVaVJJ/EbAF3u0fXIzPJEDtnITsBGbbK0EkM72amhl/R5b+5xx0Y/QhcVOpuulg==}
+  '@emnapi/runtime@1.5.0':
+    resolution: {integrity: sha512-97/BJ3iXHww3djw6hYIfErCZFee7qCtrneuLa20UXFCOTCfBM2cvQHjWJ2EG0s0MtdNwInarqCTz35i4wWXHsQ==}
 
-  '@emnapi/wasi-threads@1.0.4':
-    resolution: {integrity: sha512-PJR+bOmMOPH8AtcTGAyYNiuJ3/Fcoj2XN/gBEWzDIKh254XO+mM9XoXHk5GNEhodxeMznbg7BlRojVbKN+gC6g==}
+  '@emnapi/wasi-threads@1.1.0':
+    resolution: {integrity: sha512-WI0DdZ8xFSbgMjR1sFsKABJ/C5OnRrjT06JXbZKexJGrDuPTzZdDYfFlsgcCXCyf+suG5QU2e/y1Wo2V/OapLQ==}
 
   '@epic-web/invariant@1.0.0':
     resolution: {integrity: sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA==}
@@ -137,8 +137,8 @@ packages:
     peerDependencies:
       tslib: '2'
 
-  '@jsonjoy.com/json-pointer@1.0.1':
-    resolution: {integrity: sha512-tJpwQfuBuxqZlyoJOSZcqf7OUmiYQ6MiPNmOv4KbZdXE/DdvBSSAwhos0zIlJU/AXxC8XpuO8p08bh2fIl+RKA==}
+  '@jsonjoy.com/json-pointer@1.0.2':
+    resolution: {integrity: sha512-Fsn6wM2zlDzY1U+v4Nc8bo3bVqgfNTGcn6dMgs6FjrEnt4ZCe60o6ByKRjOGlI2gow0aE/Q41QOigdTqkyK5fg==}
     engines: {node: '>=10.0'}
     peerDependencies:
       tslib: '2'
@@ -153,8 +153,8 @@ packages:
     resolution: {integrity: sha512-hHcd8iZ6/aUaYZxu2cn3ZWMbjF8CXyzWVrDRcR5u3V/qLtTxntgRUdPlTbkxe2xyKFql3VgEwEM/Gjvh7oDZfA==}
     engines: {node: '>=18'}
 
-  '@lynx-js/chunk-loading-webpack-plugin@0.3.1':
-    resolution: {integrity: sha512-qj7jajf0EeTEccfMKgEB8jm+zrdScy+8CcpuhVrVNa63c9xci53oUpsvlkbIr2KQMEYOXAh9lmfYOy4cW5poCQ==}
+  '@lynx-js/chunk-loading-webpack-plugin@0.3.2':
+    resolution: {integrity: sha512-gRXs1s1GsVC3hqOIeZiEkJJRNaUazuNY0ROKEOorrtsVPCfMbcACds6soKBVacCQ//gAtLfKvNP+7IDpcglaMA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@rspack/core': ^1.3.10
@@ -205,7 +205,7 @@ packages:
         optional: true
 
   '@lynx-js/react@file:lynx-js-react-0.112.2.tgz':
-    resolution: {integrity: sha512-NDejpyeGc1JntSf+nWfmsVAsmZkKivubWixixmZiE6zf6VsAa51ZJqxpzM9jefBhe1XOwJWxAOODF/zocAiNug==, tarball: file:lynx-js-react-0.112.2.tgz}
+    resolution: {integrity: sha512-l75EHp73TMeyc2Ewed0hYqWXvAu8QjFyA//L7QaN1LVQzYwiVkIXydtWUGufkPPLVSIQEX+CQ+m/zyRLINhJwQ==, tarball: file:lynx-js-react-0.112.2.tgz}
     version: 0.112.2
     peerDependencies:
       '@lynx-js/types': '*'
@@ -506,8 +506,8 @@ packages:
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
-  '@types/react@18.3.23':
-    resolution: {integrity: sha512-/LDXMQh55EzZQ0uVAZmKKhfENivEvWz6E+EYzh+/MCjMhNsotd+ZHhBGIjFDTi6+fz0OhQQQLbTgdQIxxCsC0w==}
+  '@types/react@18.3.24':
+    resolution: {integrity: sha512-0dLEBsA1kI3OezMBF8nSsb7Nk19ZnsyE1LLhB8r27KbgU5H4pvuqZLdtE+aUkJVoXgTVuA+iLIwmZ0TuK4tx6A==}
 
   '@types/tapable@2.2.7':
     resolution: {integrity: sha512-D6QzACV9vNX3r8HQQNTOnpG+Bv1rko+yEA82wKs3O9CQ5+XW7HI7TED17/UE7+5dIxyxZIWTxKbsBeF6uKFCwA==}
@@ -794,8 +794,8 @@ packages:
   browserslist-to-es-version@1.1.1:
     resolution: {integrity: sha512-jfRStKh3aQ8HqQA45MWHYYtzhhlMM8X3cffhXJmMRlRWEu8+fk9bN8dYEsfY7j5pAvtSK8ehelUSvyDmEKijOg==}
 
-  browserslist@4.25.3:
-    resolution: {integrity: sha512-cDGv1kkDI4/0e5yON9yM5G/0A5u8sf5TnmdX5C9qHzI9PPu++sQ9zjm1k9NiOrf3riY4OkK0zSGqfvJyJsgCBQ==}
+  browserslist@4.25.4:
+    resolution: {integrity: sha512-4jYpcjabC606xJ3kw2QwGEZKX0Aw7sgQdZCvIK9dhVSPh76BKo+C+btT1RRofH7B+8iNpEbgGNVWiLki5q93yg==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
@@ -825,8 +825,8 @@ packages:
   caniuse-api@3.0.0:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
 
-  caniuse-lite@1.0.30001736:
-    resolution: {integrity: sha512-ImpN5gLEY8gWeqfLUyEF4b7mYWcYoR2Si1VhnrbM4JizRFmfGaAQ12PhNykq6nvI4XvKLrsp8Xde74D5phJOSw==}
+  caniuse-lite@1.0.30001739:
+    resolution: {integrity: sha512-y+j60d6ulelrNSwpPyrHdl+9mJnQzHBr08xm48Qno0nSk4h3Qojh+ziv2qE6rXf4k3tadF4o1J/1tAbVm1NtnA==}
 
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
@@ -1070,8 +1070,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.207:
-    resolution: {integrity: sha512-mryFrrL/GXDTmAtIVMVf+eIXM09BBPlO5IQ7lUyKmK8d+A4VpRGG+M3ofoVef6qyF8s60rJei8ymlJxjUA8Faw==}
+  electron-to-chromium@1.5.211:
+    resolution: {integrity: sha512-IGBvimJkotaLzFnwIVgW9/UD/AOJ2tByUmeOrtqBfACSbAw5b1G0XpvdaieKyc7ULmbwXVx+4e4Be8pOPBrYkw==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -1176,8 +1176,8 @@ packages:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
 
-  fast-uri@3.0.6:
-    resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
+  fast-uri@3.1.0:
+    resolution: {integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -1257,6 +1257,12 @@ packages:
   glob-parent@6.0.2:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
+
+  glob-to-regex.js@1.0.1:
+    resolution: {integrity: sha512-CG/iEvgQqfzoVsMUbxSJcwbG2JwyZ3naEqPkeltwl0BSS8Bp83k3xlGms+0QdWFUAwV+uvo80wNswKF6FWEkKg==}
+    engines: {node: '>=10.0'}
+    peerDependencies:
+      tslib: '2'
 
   glob-to-regexp@0.4.1:
     resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
@@ -1542,8 +1548,8 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  memfs@4.36.3:
-    resolution: {integrity: sha512-rZIVsNPGdZDPls/ckWhIsod2zRNsI2f2kEru0gMldkrEve+fPn7CVBTvfKLNyHQ9rZDWwzVBF8tPsZivzDPiZQ==}
+  memfs@4.38.2:
+    resolution: {integrity: sha512-FpWsVHpAkoSh/LfY1BgAl72BVd374ooMRtDi2VqzBycX4XEfvC0XKACCe0C9VRZoYq5viuoyTv6lYXZ/Q7TrLQ==}
     engines: {node: '>= 4.0.0'}
 
   merge-stream@2.0.0:
@@ -2150,6 +2156,10 @@ packages:
     resolution: {integrity: sha512-Re10+NauLTMCudc7T5WLFLAwDhQ0JWdrMK+9B2M8zR5hRExKmsRDCBA7/aV/pNJFltmBFO5BAMlQFi/vq3nKOg==}
     engines: {node: '>=6'}
 
+  tapable@2.2.3:
+    resolution: {integrity: sha512-ZL6DDuAlRlLGghwcfmSn9sK3Hr6ArtyudlSAiCqQ6IfE+b+HHbydbYDIG15IfS5do+7XQQBdBiubF/cV2dnDzg==}
+    engines: {node: '>=6'}
+
   terser-webpack-plugin@5.3.14:
     resolution: {integrity: sha512-vkZjpUjb6OMS7dhV+tILUW6BhpDR7P2L/aQSAv+Uwk+m8KATX9EccViHTJR2qDtACKPIYndLGCyl3FMo+r2LMw==}
     engines: {node: '>= 10.13.0'}
@@ -2367,18 +2377,18 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.27.1': {}
 
-  '@emnapi/core@1.4.5':
+  '@emnapi/core@1.5.0':
     dependencies:
-      '@emnapi/wasi-threads': 1.0.4
+      '@emnapi/wasi-threads': 1.1.0
       tslib: 2.8.1
     optional: true
 
-  '@emnapi/runtime@1.4.5':
+  '@emnapi/runtime@1.5.0':
     dependencies:
       tslib: 2.8.1
     optional: true
 
-  '@emnapi/wasi-threads@1.0.4':
+  '@emnapi/wasi-threads@1.1.0':
     dependencies:
       tslib: 2.8.1
     optional: true
@@ -2445,14 +2455,15 @@ snapshots:
       '@jsonjoy.com/base64': 1.1.2(tslib@2.8.1)
       '@jsonjoy.com/buffers': 1.0.0(tslib@2.8.1)
       '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
-      '@jsonjoy.com/json-pointer': 1.0.1(tslib@2.8.1)
+      '@jsonjoy.com/json-pointer': 1.0.2(tslib@2.8.1)
       '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
       hyperdyperid: 1.2.0
       thingies: 2.5.0(tslib@2.8.1)
       tslib: 2.8.1
 
-  '@jsonjoy.com/json-pointer@1.0.1(tslib@2.8.1)':
+  '@jsonjoy.com/json-pointer@1.0.2(tslib@2.8.1)':
     dependencies:
+      '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
       '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
       tslib: 2.8.1
 
@@ -2466,7 +2477,7 @@ snapshots:
     dependencies:
       '@lynx-js/webpack-runtime-globals': 0.0.6
 
-  '@lynx-js/chunk-loading-webpack-plugin@0.3.1(@rspack/core@1.4.11(@swc/helpers@0.5.17))':
+  '@lynx-js/chunk-loading-webpack-plugin@0.3.2(@rspack/core@1.4.11(@swc/helpers@0.5.17))':
     dependencies:
       '@lynx-js/webpack-runtime-globals': 0.0.6
       '@rspack/core': 1.4.11(@swc/helpers@0.5.17)
@@ -2488,37 +2499,37 @@ snapshots:
     dependencies:
       unrs-resolver: 1.9.2
 
-  '@lynx-js/react-refresh-webpack-plugin@0.3.4(@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3))':
+  '@lynx-js/react-refresh-webpack-plugin@0.3.4(@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(@lynx-js/template-webpack-plugin@0.8.3))':
     dependencies:
-      '@lynx-js/react-webpack-plugin': file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3)
+      '@lynx-js/react-webpack-plugin': file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(@lynx-js/template-webpack-plugin@0.8.3)
 
-  '@lynx-js/react-rsbuild-plugin@file:lynx-js-react-rsbuild-plugin-0.10.11.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(webpack@5.101.3)':
+  '@lynx-js/react-rsbuild-plugin@file:lynx-js-react-rsbuild-plugin-0.10.11.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(webpack@5.101.3)':
     dependencies:
       '@lynx-js/css-extract-webpack-plugin': 0.6.1(@lynx-js/template-webpack-plugin@0.8.3)(webpack@5.101.3)
       '@lynx-js/react-alias-rsbuild-plugin': 0.10.11
-      '@lynx-js/react-refresh-webpack-plugin': 0.3.4(@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3))
-      '@lynx-js/react-webpack-plugin': file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3)
+      '@lynx-js/react-refresh-webpack-plugin': 0.3.4(@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(@lynx-js/template-webpack-plugin@0.8.3))
+      '@lynx-js/react-webpack-plugin': file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(@lynx-js/template-webpack-plugin@0.8.3)
       '@lynx-js/runtime-wrapper-webpack-plugin': 0.1.2
       '@lynx-js/template-webpack-plugin': 0.8.3
-      '@lynx-js/use-sync-external-store': 1.5.0(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))
+      '@lynx-js/use-sync-external-store': 1.5.0(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))
       background-only: 0.0.1
     optionalDependencies:
-      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24)
     transitivePeerDependencies:
       - webpack
 
-  '@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))(@lynx-js/template-webpack-plugin@0.8.3)':
+  '@lynx-js/react-webpack-plugin@file:lynx-js-react-webpack-plugin-0.6.19.tgz(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))(@lynx-js/template-webpack-plugin@0.8.3)':
     dependencies:
       '@lynx-js/template-webpack-plugin': 0.8.3
       '@lynx-js/webpack-runtime-globals': 0.0.5
       tiny-invariant: 1.3.3
     optionalDependencies:
-      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24)
 
-  '@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)':
+  '@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24)':
     dependencies:
       '@preact/signals': 1.3.2(@hongzhiyuan/preact@10.24.0-00213bad)
-      '@types/react': 18.3.23
+      '@types/react': 18.3.24
       preact: '@hongzhiyuan/preact@10.24.0-00213bad'
     optionalDependencies:
       '@lynx-js/types': 3.3.0
@@ -2526,7 +2537,7 @@ snapshots:
   '@lynx-js/rspeedy@0.10.8(@rspack/core@1.4.11(@swc/helpers@0.5.17))(typescript@5.9.2)(webpack@5.101.3)':
     dependencies:
       '@lynx-js/cache-events-webpack-plugin': 0.0.1
-      '@lynx-js/chunk-loading-webpack-plugin': 0.3.1(@rspack/core@1.4.11(@swc/helpers@0.5.17))
+      '@lynx-js/chunk-loading-webpack-plugin': 0.3.2(@rspack/core@1.4.11(@swc/helpers@0.5.17))
       '@lynx-js/webpack-dev-transport': 0.2.0
       '@lynx-js/websocket': 0.0.4
       '@rsbuild/core': 1.4.15
@@ -2571,9 +2582,9 @@ snapshots:
     dependencies:
       csstype: 3.1.3
 
-  '@lynx-js/use-sync-external-store@1.5.0(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23))':
+  '@lynx-js/use-sync-external-store@1.5.0(@lynx-js/react@file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24))':
     dependencies:
-      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.23)
+      '@lynx-js/react': file:lynx-js-react-0.112.2.tgz(@lynx-js/types@3.3.0)(@types/react@18.3.24)
 
   '@lynx-js/webpack-dev-transport@0.2.0': {}
 
@@ -2612,15 +2623,15 @@ snapshots:
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
-      '@emnapi/core': 1.4.5
-      '@emnapi/runtime': 1.4.5
+      '@emnapi/core': 1.5.0
+      '@emnapi/runtime': 1.5.0
       '@tybys/wasm-util': 0.10.0
     optional: true
 
   '@napi-rs/wasm-runtime@1.0.3':
     dependencies:
-      '@emnapi/core': 1.4.5
-      '@emnapi/runtime': 1.4.5
+      '@emnapi/core': 1.5.0
+      '@emnapi/runtime': 1.5.0
       '@tybys/wasm-util': 0.10.0
     optional: true
 
@@ -2926,14 +2937,14 @@ snapshots:
 
   '@types/prop-types@15.7.15': {}
 
-  '@types/react@18.3.23':
+  '@types/react@18.3.24':
     dependencies:
       '@types/prop-types': 15.7.15
       csstype: 3.1.3
 
   '@types/tapable@2.2.7':
     dependencies:
-      tapable: 2.2.2
+      tapable: 2.2.3
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -3111,7 +3122,7 @@ snapshots:
   ajv@8.17.1:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.0.6
+      fast-uri: 3.1.0
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -3204,14 +3215,14 @@ snapshots:
 
   browserslist-to-es-version@1.1.1:
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
 
-  browserslist@4.25.3:
+  browserslist@4.25.4:
     dependencies:
-      caniuse-lite: 1.0.30001736
-      electron-to-chromium: 1.5.207
+      caniuse-lite: 1.0.30001739
+      electron-to-chromium: 1.5.211
       node-releases: 2.0.19
-      update-browserslist-db: 1.1.3(browserslist@4.25.3)
+      update-browserslist-db: 1.1.3(browserslist@4.25.4)
 
   buffer-from@1.1.2: {}
 
@@ -3238,12 +3249,12 @@ snapshots:
 
   caniuse-api@3.0.0:
     dependencies:
-      browserslist: 4.25.3
-      caniuse-lite: 1.0.30001736
+      browserslist: 4.25.4
+      caniuse-lite: 1.0.30001739
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
 
-  caniuse-lite@1.0.30001736: {}
+  caniuse-lite@1.0.30001739: {}
 
   chalk@4.1.2:
     dependencies:
@@ -3358,7 +3369,7 @@ snapshots:
 
   cssnano-preset-default@6.1.2(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       css-declaration-sorter: 7.2.0(postcss@8.5.6)
       cssnano-utils: 4.0.2(postcss@8.5.6)
       postcss: 8.5.6
@@ -3492,7 +3503,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.207: {}
+  electron-to-chromium@1.5.211: {}
 
   emoji-regex@8.0.0: {}
 
@@ -3521,12 +3532,12 @@ snapshots:
   enhanced-resolve@5.12.0:
     dependencies:
       graceful-fs: 4.2.11
-      tapable: 2.2.2
+      tapable: 2.2.3
 
   enhanced-resolve@5.18.3:
     dependencies:
       graceful-fs: 4.2.11
-      tapable: 2.2.2
+      tapable: 2.2.3
 
   entities@4.5.0: {}
 
@@ -3645,7 +3656,7 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.8
 
-  fast-uri@3.0.6: {}
+  fast-uri@3.1.0: {}
 
   fastq@1.19.1:
     dependencies:
@@ -3743,6 +3754,10 @@ snapshots:
   glob-parent@6.0.2:
     dependencies:
       is-glob: 4.0.3
+
+  glob-to-regex.js@1.0.1(tslib@2.8.1):
+    dependencies:
+      tslib: 2.8.1
 
   glob-to-regexp@0.4.1: {}
 
@@ -4016,10 +4031,11 @@ snapshots:
 
   media-typer@0.3.0: {}
 
-  memfs@4.36.3:
+  memfs@4.38.2:
     dependencies:
       '@jsonjoy.com/json-pack': 1.11.0(tslib@2.8.1)
       '@jsonjoy.com/util': 1.9.0(tslib@2.8.1)
+      glob-to-regex.js: 1.0.1(tslib@2.8.1)
       thingies: 2.5.0(tslib@2.8.1)
       tree-dump: 1.0.3(tslib@2.8.1)
       tslib: 2.8.1
@@ -4042,7 +4058,7 @@ snapshots:
   mini-css-extract-plugin@2.9.4(webpack@5.101.3):
     dependencies:
       schema-utils: 4.3.2
-      tapable: 2.2.2
+      tapable: 2.2.3
       webpack: 5.101.3
 
   minimatch@9.0.5:
@@ -4155,7 +4171,7 @@ snapshots:
 
   postcss-colormin@6.1.0(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       caniuse-api: 3.0.0
       colord: 2.9.3
       postcss: 8.5.6
@@ -4163,7 +4179,7 @@ snapshots:
 
   postcss-convert-values@6.1.0(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
@@ -4210,7 +4226,7 @@ snapshots:
 
   postcss-merge-rules@6.1.1(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       caniuse-api: 3.0.0
       cssnano-utils: 4.0.2(postcss@8.5.6)
       postcss: 8.5.6
@@ -4230,7 +4246,7 @@ snapshots:
 
   postcss-minify-params@6.1.0(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       cssnano-utils: 4.0.2(postcss@8.5.6)
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
@@ -4276,7 +4292,7 @@ snapshots:
 
   postcss-normalize-unicode@6.1.0(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
@@ -4298,7 +4314,7 @@ snapshots:
 
   postcss-reduce-initial@6.1.0(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       caniuse-api: 3.0.0
       postcss: 8.5.6
 
@@ -4601,7 +4617,7 @@ snapshots:
 
   stylehacks@6.1.1(postcss@8.5.6):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       postcss: 8.5.6
       postcss-selector-parser: 6.1.2
 
@@ -4664,6 +4680,8 @@ snapshots:
 
   tapable@2.2.2: {}
 
+  tapable@2.2.3: {}
+
   terser-webpack-plugin@5.3.14(webpack@5.101.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.30
@@ -4712,7 +4730,7 @@ snapshots:
       '@rspack/lite-tapable': 1.0.1
       chokidar: 3.6.0
       is-glob: 4.0.3
-      memfs: 4.36.3
+      memfs: 4.38.2
       minimatch: 9.0.5
       picocolors: 1.1.1
       typescript: 5.9.2
@@ -4802,9 +4820,9 @@ snapshots:
       '@unrs/resolver-binding-win32-ia32-msvc': 1.9.2
       '@unrs/resolver-binding-win32-x64-msvc': 1.9.2
 
-  update-browserslist-db@1.1.3(browserslist@4.25.3):
+  update-browserslist-db@1.1.3(browserslist@4.25.4):
     dependencies:
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       escalade: 3.2.0
       picocolors: 1.1.1
 
@@ -4831,7 +4849,7 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.15.0
       acorn-import-phases: 1.0.4(acorn@8.15.0)
-      browserslist: 4.25.3
+      browserslist: 4.25.4
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.3
       es-module-lexer: 1.7.0
@@ -4844,7 +4862,7 @@ snapshots:
       mime-types: 2.1.35
       neo-async: 2.6.2
       schema-utils: 4.3.2
-      tapable: 2.2.2
+      tapable: 2.2.3
       terser-webpack-plugin: 5.3.14(webpack@5.101.3)
       watchpack: 2.4.4
       webpack-sources: 3.3.3
