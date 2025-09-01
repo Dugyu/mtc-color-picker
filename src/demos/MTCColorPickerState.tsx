@@ -15,10 +15,10 @@ type Color = readonly [number, number, number];
 export function App() {
   const [value, setValue] = useState<Color>(() => [199, 99, 72]);
 
-  function handleOnChange(v: Color) {
+  const handleChange = (v: Color) => {
     'use background';
     setValue(v);
-  }
+  };
 
   return (
     <AppLayout
@@ -33,7 +33,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-48">
-        <ColorPicker initialValue={value} onChange={handleOnChange} />
+        <ColorPicker initialValue={value} onChange={handleChange} />
       </view>
     </AppLayout>
   );

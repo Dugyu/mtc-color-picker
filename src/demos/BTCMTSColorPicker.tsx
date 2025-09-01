@@ -1,4 +1,4 @@
-import { root, runOnBackground, useCallback, useState } from '@lynx-js/react';
+import { root, runOnBackground, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 import { sleep } from '@/utils/sleep';
 
@@ -15,13 +15,10 @@ export function App() {
     199, 99, 72,
   ]);
 
-  const handleChange = useCallback(
-    (next: readonly [number, number, number]) => {
-      'main thread';
-      runOnBackground(setValue)(next);
-    },
-    [],
-  );
+  const handleChange = (next: readonly [number, number, number]) => {
+    'main thread';
+    runOnBackground(setValue)(next);
+  };
 
   return (
     <AppLayout

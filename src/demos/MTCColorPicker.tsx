@@ -15,10 +15,10 @@ type Color = readonly [number, number, number];
 export function App() {
   const [value, setValue] = useState<Color>(() => [199, 99, 72]);
 
-  function handleChange(v: Color) {
+  const handleChange = (v: Color) => {
     'use background';
     setValue(v);
-  }
+  };
 
   return (
     <AppLayout
