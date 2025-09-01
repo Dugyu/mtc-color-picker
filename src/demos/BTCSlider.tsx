@@ -1,4 +1,4 @@
-import { root, useCallback, useState } from '@lynx-js/react';
+import { root, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 
 import { HueSlider } from '@/components/btc/Slider';
@@ -13,9 +13,9 @@ if (__BACKGROUND__) {
 export function App() {
   const [value, setValue] = useState(199);
 
-  const onChange = useCallback((next: number) => {
+  function handleChange(next: number) {
     setValue(next);
-  }, []);
+  }
 
   return (
     <AppLayout title="BTC Slider" h={value} s={99} l={72}>
@@ -23,7 +23,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-12">
-        <HueSlider initialValue={value} onChange={onChange} s={99} l={72} />
+        <HueSlider initialValue={value} onChange={handleChange} s={99} l={72} />
       </view>
     </AppLayout>
   );
