@@ -76,7 +76,7 @@ function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
       // external-owned mode
       writeCurrentWithOptions(next, false, true);
     } else {
-      // Land + derive
+      // Land + Derive, & Notify
       // owned mode
       writeCurrentWithOptions(next, true, true);
     }
@@ -85,7 +85,8 @@ function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
   /** Used by External Owner */
   const externalWriter = (next: WriteAction<T>) => {
     'main thread';
-    // Land + Derive, do not notify
+    // Land + Derive (no Notify)
+    // external-owned mode
     writeCurrentWithOptions(next, true, false);
   };
 
