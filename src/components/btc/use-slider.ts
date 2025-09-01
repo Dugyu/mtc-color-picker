@@ -6,6 +6,8 @@ import type {
 
 import { useControllable } from './use-controllable';
 
+import { MathUtils } from '@/utils/math-utils';
+
 interface UseSliderProps {
   value?: number;
   initialValue?: number;
@@ -36,14 +38,10 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
   });
 
   const step = stepProp > 0 ? stepProp : 1;
-  const ratio = valueToRatio(value, min, max);
+  const ratio = MathUtils.valueToRatio(value, min, max);
 
   const quantize = ({ offsetRatio }: PointerPosition) => {
-    const span = max - min;
-    if (!Number.isFinite(span) || span <= 0) return min;
-    const raw = min + offsetRatio * span;
-    const aligned = Math.round((raw - min) / step) * step + min;
-    return clamp(aligned, min, max);
+    return MathUtils.quantizeFromRatio(offsetRatio, min, max, step);
   };
 
   const pointerReturnedValue = usePointerInteraction({
@@ -78,21 +76,6 @@ interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
   max: number;
   step: number;
   disabled: boolean;
-}
-
-function clamp(v: number, min: number, max: number): number {
-  // Ensure value stays within [min, max]
-  return Math.max(min, Math.min(max, v));
-}
-
-function clamp01(x: number) {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
-function valueToRatio(v: number, min: number, max: number) {
-  const span = max - min;
-  if (!Number.isFinite(span) || span <= 0) return 0;
-  return clamp01((v - min) / span);
 }
 
 export { useSlider };

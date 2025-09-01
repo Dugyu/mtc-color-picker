@@ -14,6 +14,9 @@ import type {
   WriterWithControlsRef,
 } from './use-mts-controllable';
 
+import { MTSMathUtils } from '@/utils/mts-math-utils';
+import { MathUtils } from '@/utils/math-utils';
+
 interface UseSliderProps {
   writeValue?: WriterWithControlsRef<number>;
   initialValue?: number;
@@ -41,12 +44,14 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
   } = props;
 
   const step = stepProp > 0 ? stepProp : 1;
-  const ratioRef = useMainThreadRef(valueToRatio(initialValue, min, max));
+  const ratioRef = useMainThreadRef(
+    MathUtils.valueToRatio(initialValue, min, max),
+  );
 
   const forwardOnDerivedChange = useCallback(
     (v: number) => {
       'main thread';
-      ratioRef.current = mtsValueToRatio(v, min, max);
+      ratioRef.current = MTSMathUtils.valueToRatio(v, min, max);
       onDerivedChange?.(v);
     },
     [onDerivedChange, min, max],
@@ -62,11 +67,7 @@ function useSlider(props: UseSliderProps): UseSliderReturnValue {
   const quantize = useCallback(
     ({ offsetRatio }: PointerPosition) => {
       'main thread';
-      const span = max - min;
-      if (!Number.isFinite(span) || span <= 0) return min;
-      const raw = min + offsetRatio * span;
-      const aligned = Math.round((raw - min) / step) * step + min;
-      return clamp(aligned, min, max);
+      return MTSMathUtils.quantizeFromRatio(offsetRatio, min, max, step);
     },
     [min, max, step],
   );
@@ -126,29 +127,6 @@ interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
   max: number;
   step: number;
   disabled: boolean;
-}
-
-function clamp(v: number, min: number, max: number): number {
-  'main thread';
-  // Ensure value stays within [min, max]
-  return Math.max(min, Math.min(max, v));
-}
-
-function clamp01(x: number) {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
-function valueToRatio(v: number, min: number, max: number) {
-  const span = max - min;
-  if (!Number.isFinite(span) || span <= 0) return 0;
-  return clamp01((v - min) / span);
-}
-
-function mtsValueToRatio(v: number, min: number, max: number) {
-  'main thread';
-  const span = max - min;
-  if (!Number.isFinite(span) || span <= 0) return 0;
-  return clamp((v - min) / span, 0, 1);
 }
 
 export { useSlider };
