@@ -34,19 +34,19 @@ function ColorPicker({
   const handleHueChange = (v: number) => {
     'main thread';
     runOnBackground(setHue)(v);
-    onChange?.([hue, saturation, lightness]);
+    onChange?.([v, saturation, lightness]);
   };
 
   const handleSaturtaionChange = (v: number) => {
     'main thread';
     runOnBackground(setSaturation)(v);
-    onChange?.([hue, saturation, lightness]);
+    onChange?.([hue, v, lightness]);
   };
 
   const handleLightnessChange = (v: number) => {
     'main thread';
     runOnBackground(setLightness)(v);
-    onChange?.([hue, saturation, lightness]);
+    onChange?.([hue, saturation, v]);
   };
 
   return (
