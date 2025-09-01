@@ -1,4 +1,4 @@
-import { root, useState } from '@lynx-js/react';
+import { root, runOnBackground, useState } from '@lynx-js/react';
 import { AppLayout } from '@/App';
 import { sleep } from '@/utils/sleep';
 
@@ -14,6 +14,11 @@ if (__BACKGROUND__) {
 export function App() {
   const [value, setValue] = useState<HSL>([199, 99, 72]);
 
+  const handleChange = (next: HSL) => {
+    'main thread';
+    runOnBackground(setValue)(next);
+  };
+
   return (
     <AppLayout
       title="BTC-MTS ColorPicker"
@@ -26,7 +31,7 @@ export function App() {
         <text className="text-content">{`${value}`}</text>
       </view>
       <view className="w-60 h-48">
-        <ColorPicker initialValue={value} main-thread:onChange={setValue} />
+        <ColorPicker initialValue={value} main-thread:onChange={handleChange} />
       </view>
     </AppLayout>
   );

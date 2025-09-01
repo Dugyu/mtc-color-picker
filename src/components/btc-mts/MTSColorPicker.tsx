@@ -1,4 +1,4 @@
-import { useCallback, useMainThreadRef } from '@lynx-js/react';
+import { useMainThreadRef } from '@lynx-js/react';
 import { HueSlider, LightnessSlider, SaturationSlider } from './MTSSlider';
 import type { Writer } from './MTSSlider';
 
@@ -21,45 +21,36 @@ function ColorPicker({
   const lightRef = useMainThreadRef(hsl[2]);
   const writeHS = useMainThreadRef<Writer<Vec2>>();
 
-  const writeSliderGradients = useCallback(() => {
+  const writeSliderGradients = () => {
     'main thread';
     writeSL?.current?.([satRef.current, lightRef.current]);
     writeHL?.current?.([hueRef.current, lightRef.current]);
     writeHS?.current?.([hueRef.current, satRef.current]);
-  }, []);
+  };
 
-  const forwardOnHSLChange = useCallback(() => {
+  const forwardOnHSLChange = () => {
     'main thread';
     writeSliderGradients();
     onChange?.([hueRef.current, satRef.current, lightRef.current]);
-  }, [onChange]);
+  };
 
-  const handleHueChange = useCallback(
-    (h: number) => {
-      'main thread';
-      hueRef.current = h;
-      forwardOnHSLChange();
-    },
-    [forwardOnHSLChange],
-  );
+  const handleHueChange = (h: number) => {
+    'main thread';
+    hueRef.current = h;
+    forwardOnHSLChange();
+  };
 
-  const handleSaturationChange = useCallback(
-    (s: number) => {
-      'main thread';
-      satRef.current = s;
-      forwardOnHSLChange();
-    },
-    [forwardOnHSLChange],
-  );
+  const handleSaturationChange = (s: number) => {
+    'main thread';
+    satRef.current = s;
+    forwardOnHSLChange();
+  };
 
-  const handleLightnessChange = useCallback(
-    (l: number) => {
-      ('main thread');
-      lightRef.current = l;
-      forwardOnHSLChange();
-    },
-    [forwardOnHSLChange],
-  );
+  const handleLightnessChange = (l: number) => {
+    ('main thread');
+    lightRef.current = l;
+    forwardOnHSLChange();
+  };
 
   return (
     <view className="w-full h-full flex flex-col gap-y-4">

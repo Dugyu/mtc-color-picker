@@ -1,4 +1,4 @@
-import { useCallback, useMainThreadRef } from '@lynx-js/react';
+import { useMainThreadRef } from '@lynx-js/react';
 import type { MainThread, CSSProperties } from '@lynx-js/types';
 import { useSlider } from './use-mts-slider';
 import type { UseSliderProps } from './use-mts-slider';
@@ -35,12 +35,12 @@ function Slider({
 
   const updateListenerRef = useMainThreadRef<(value: number) => void>();
 
-  const handleDerivedChange = useCallback((value: number) => {
+  const handleDerivedChange = (value: number) => {
     'main thread';
     if (updateListenerRef.current) {
       updateListenerRef.current(value);
     }
-  }, []);
+  };
 
   const {
     ratioRef,
@@ -66,7 +66,7 @@ function Slider({
     }
   };
 
-  const initRoot = useCallback((ref: MainThread.Element) => {
+  const initRoot = (ref: MainThread.Element) => {
     'main thread';
     // Bind writeValue to prop
     if (ref) {
@@ -76,9 +76,9 @@ function Slider({
     }
     // Initialization callback
     onInit?.(ref);
-  }, []);
+  };
 
-  const initThumb = useCallback((ref: MainThread.Element) => {
+  const initThumb = (ref: MainThread.Element) => {
     'main thread';
     thumbRef.current = ref;
     if (ref) {
@@ -87,7 +87,7 @@ function Slider({
       updateListenerRef.current = undefined;
     }
     updateThumbStyle();
-  }, []);
+  };
 
   return (
     // Root

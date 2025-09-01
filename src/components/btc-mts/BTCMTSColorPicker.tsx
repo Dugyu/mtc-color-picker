@@ -1,10 +1,4 @@
-import {
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-  runOnBackground,
-} from '@lynx-js/react';
+import { useState, useMemo, runOnBackground } from '@lynx-js/react';
 import { HueSlider, LightnessSlider, SaturationSlider } from './BTCMTSSlider';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Color } from '@/types/color';
@@ -37,24 +31,23 @@ function ColorPicker({
     [hue, saturation],
   );
 
-  const handleHueChange = useCallback((v: number) => {
+  const handleHueChange = (v: number) => {
     'main thread';
     runOnBackground(setHue)(v);
-  }, []);
+    onChange?.([hue, saturation, lightness]);
+  };
 
-  const handleSaturtaionChange = useCallback((v: number) => {
+  const handleSaturtaionChange = (v: number) => {
     'main thread';
     runOnBackground(setSaturation)(v);
-  }, []);
+    onChange?.([hue, saturation, lightness]);
+  };
 
-  const handleLightnessChange = useCallback((v: number) => {
+  const handleLightnessChange = (v: number) => {
     'main thread';
     runOnBackground(setLightness)(v);
-  }, []);
-
-  useEffect(() => {
     onChange?.([hue, saturation, lightness]);
-  }, [hue, saturation, lightness]);
+  };
 
   return (
     <view className="w-full h-full flex flex-col gap-y-4">

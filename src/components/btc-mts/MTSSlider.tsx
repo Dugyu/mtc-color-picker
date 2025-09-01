@@ -1,4 +1,4 @@
-import { useCallback, useMainThreadRef, useState } from '@lynx-js/react';
+import { useMainThreadRef, useState } from '@lynx-js/react';
 import type { MainThread } from '@lynx-js/types';
 import { useSlider } from './use-mts-slider';
 import type { UseSliderProps } from './use-mts-slider';
@@ -52,12 +52,12 @@ function Slider({
 
   const updateListenerRef = useMainThreadRef<(value: number) => void>();
 
-  const handleDerivedChange = useCallback((value: number) => {
+  const handleDerivedChange = (value: number) => {
     'main thread';
     if (updateListenerRef.current) {
       updateListenerRef.current(value);
     }
-  }, []);
+  };
 
   const {
     ratioRef,
@@ -105,54 +105,45 @@ function Slider({
     }
   };
 
-  const initRoot = useCallback(
-    (ref: MainThread.Element) => {
-      'main thread';
-      rootRef.current = ref;
-      // Bind writeValue to prop
-      if (ref) {
-        initExternalWriter();
-      } else {
-        disposeExternalWriter();
-      }
-      // Initialization callback
-      onInit?.(ref);
-      if (writeRootStyle) {
-        writeRootStyle.current = updateRootStyle;
-      }
-      // init root style
-      updateRootStyle(rootStyleRef.current);
-    },
-    [updateRootStyle],
-  );
+  const initRoot = (ref: MainThread.Element) => {
+    'main thread';
+    rootRef.current = ref;
+    // Bind writeValue to prop
+    if (ref) {
+      initExternalWriter();
+    } else {
+      disposeExternalWriter();
+    }
+    // Initialization callback
+    onInit?.(ref);
+    if (writeRootStyle) {
+      writeRootStyle.current = updateRootStyle;
+    }
+    // init root style
+    updateRootStyle(rootStyleRef.current);
+  };
 
-  const initTrack = useCallback(
-    (ref: MainThread.Element) => {
-      'main thread';
-      trackRef.current = ref;
+  const initTrack = (ref: MainThread.Element) => {
+    'main thread';
+    trackRef.current = ref;
 
-      if (writeTrackStyle) {
-        writeTrackStyle.current = updateTrackStyle;
-      }
-      // init track style
-      updateTrackStyle(trackStyleRef.current);
-    },
-    [updateTrackStyle],
-  );
+    if (writeTrackStyle) {
+      writeTrackStyle.current = updateTrackStyle;
+    }
+    // init track style
+    updateTrackStyle(trackStyleRef.current);
+  };
 
-  const initThumb = useCallback(
-    (ref: MainThread.Element) => {
-      'main thread';
-      thumbRef.current = ref;
-      if (ref) {
-        updateListenerRef.current = updateThumbStyle;
-      } else {
-        updateListenerRef.current = undefined;
-      }
-      updateThumbStyle();
-    },
-    [updateThumbStyle],
-  );
+  const initThumb = (ref: MainThread.Element) => {
+    'main thread';
+    thumbRef.current = ref;
+    if (ref) {
+      updateListenerRef.current = updateThumbStyle;
+    } else {
+      updateListenerRef.current = undefined;
+    }
+    updateThumbStyle();
+  };
 
   return (
     // Root
@@ -209,12 +200,13 @@ function HueSlider({
       writeTrackStyle.current?.({ 'background-image': trackBg });
     }
   };
-  const init = useCallback(() => {
+
+  const init = () => {
     'main thread';
     if (writeSL) {
       writeSL.current = updateStyle;
     }
-  }, []);
+  };
 
   return (
     <Slider
@@ -258,12 +250,12 @@ function SaturationSlider({
     }
   };
 
-  const init = useCallback(() => {
+  const init = () => {
     'main thread';
     if (writeHL) {
       writeHL.current = updateStyle;
     }
-  }, []);
+  };
 
   return (
     <Slider
@@ -307,12 +299,12 @@ function LightnessSlider({
     }
   };
 
-  const init = useCallback(() => {
+  const init = () => {
     'main thread';
     if (writeHS) {
       writeHS.current = updateStyle;
     }
-  }, []);
+  };
 
   return (
     <Slider
