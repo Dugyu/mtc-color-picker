@@ -36,18 +36,16 @@ type UseSliderReturnValue = UseSliderReturnValueBase<
   }
 >;
 
-function useSlider(props: UseSliderProps): UseSliderReturnValue {
-  const {
-    writeValue: externalWriterRef,
-    min = 0,
-    max = 100,
-    step: stepProp = 1,
-    initialValue = min,
-    disabled = false,
-    onDerivedChange,
-    onChange,
-  } = props;
-
+function useSlider({
+  writeValue: externalWriterRef,
+  min = 0,
+  max = 100,
+  step: stepProp = 1,
+  initialValue = min,
+  disabled = false,
+  onDerivedChange,
+  onChange,
+}: UseSliderProps): UseSliderReturnValue {
   const step = stepProp > 0 ? stepProp : 1;
   const ratioRef = useMainThreadRef(
     MathUtils.valueToRatio(initialValue, min, max),

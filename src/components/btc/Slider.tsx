@@ -13,9 +13,7 @@ type SliderProps = Expand<
 >;
 
 /** ================= Base Slider ================= */
-function Slider(props: SliderProps) {
-  const { rootStyle, trackStyle, ...sliderProps } = props;
-
+function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
   const {
     handlePointerDown,
     handlePointerMove,

@@ -17,17 +17,15 @@ type UseSliderProps = UseSliderPropsBase<{ value?: number }>;
 type UseSliderReturnValue =
   UseSliderReturnValueBase<UsePointerInteractionReturnValue>;
 
-function useSlider(props: UseSliderProps): UseSliderReturnValue {
-  const {
-    value: controlledValue,
-    min = 0,
-    max = 100,
-    step: stepProp = 1,
-    initialValue = min,
-    disabled = false,
-    onChange,
-  } = props;
-
+function useSlider({
+  value: controlledValue,
+  min = 0,
+  max = 100,
+  step: stepProp = 1,
+  initialValue = min,
+  disabled = false,
+  onChange,
+}: UseSliderProps): UseSliderReturnValue {
   const [value = initialValue, setValue] = useControllable<number>({
     value: controlledValue,
     initialValue,

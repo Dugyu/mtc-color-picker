@@ -35,18 +35,16 @@ type SliderProps = Expand<
 
 /** ================= Base Slider ================= */
 
-function Slider(props: SliderProps) {
-  const {
-    writeValue: externalWriterRef,
-    ['main-thread:onInit']: onInit,
-    ['main-thread:onChange']: onChange,
-    ['main-thread:writeRootStyle']: writeRootStyle,
-    ['main-thread:writeTrackStyle']: writeTrackStyle,
-    initialRootStyle = {},
-    initialTrackStyle = {},
-    ...restProps
-  } = props;
-
+function Slider({
+  writeValue: externalWriterRef,
+  ['main-thread:onInit']: onInit,
+  ['main-thread:onChange']: onChange,
+  ['main-thread:writeRootStyle']: writeRootStyle,
+  ['main-thread:writeTrackStyle']: writeTrackStyle,
+  initialRootStyle = {},
+  initialTrackStyle = {},
+  ...restProps
+}: SliderProps) {
   const rootRef = useMainThreadRef<MainThread.Element | null>(null);
   const trackRef = useMainThreadRef<MainThread.Element | null>(null);
   const thumbRef = useMainThreadRef<MainThread.Element | null>(null);
