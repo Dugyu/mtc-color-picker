@@ -9,8 +9,8 @@ import type {
   WriterWithControlsRef,
   WriterWithControls,
 } from './use-mts-slider';
-import type { RefWriteAction } from './use-mts-controllable';
-import { resolveNextValue } from './use-mts-controllable';
+import type { RefWriteAction } from './use-mts-ownable';
+import { resolveNextValue } from './use-mts-ownable';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import { MTSHSLGradients } from '@/utils/mts-hsl-gradients';
 import type { Expand, RenameKeys } from '@/types/utils';

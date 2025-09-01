@@ -22,7 +22,7 @@ type WriterWithControls<T> = Writer<T> & {
   writeSilent: (next: RefWriteAction<T>) => void;
   /** Notify only: emit external change (no land, no derive) */
   notify: (next: RefWriteAction<T>) => void;
-  /** Lifecycle hooks (no-op in uncontrolled mode) */
+  /** Lifecycle hooks (no-op in owned mode) */
   init: () => void;
   dispose: () => void;
 };
@@ -30,22 +30,22 @@ type WriterWithControlsRef<T> = MainThreadRef<
   WriterWithControls<T> | undefined
 >;
 
-type UseControllableReturnValue<T> = Readonly<
+type UseOwnableReturnValue<T> = Readonly<
   [MainThreadRef<T>, WriterWithControls<T>]
 >;
 
-type UseUncontrolledReturnValue<T> = Readonly<
+type UseOwnedReturnValue<T> = Readonly<
   [MainThreadRef<T>, WriterWithControls<T>]
 >;
 
-interface UseControlledProps<T> {
+interface UseExternalOwnedProps<T> {
   writeValue: WriterWithControlsRef<T>;
   initialValue: T;
   onChange?: (value: T) => void;
   onDerivedChange?: (value: T) => void;
 }
 
-interface UseUncontrolledProps<T> {
+interface UseOwnedProps<T> {
   initialValue: T;
   onChange?: (value: T) => void;
   onDerivedChange?: (value: T) => void;
@@ -55,30 +55,28 @@ type ShallowExpand<T> = {
   [K in keyof T]: T[K];
 } & {};
 
-type UseControllabeProps<T> = ShallowExpand<
-  UseControlledProps<T> | (UseUncontrolledProps<T> & { writeValue?: never })
+type UseOwnableProps<T> = ShallowExpand<
+  UseExternalOwnedProps<T> | (UseOwnedProps<T> & { writeValue?: never })
 >;
 
-function isUseControlled<T>(
-  props: UseControllabeProps<T>,
-): props is UseControlledProps<T> {
+function isUseExternalOwned<T>(
+  props: UseOwnableProps<T>,
+): props is UseExternalOwnedProps<T> {
   return props.writeValue != null;
 }
 
-function useControllable<T>(
-  props: UseControllabeProps<T>,
-): UseControllableReturnValue<T> {
+function useOwnable<T>(props: UseOwnableProps<T>): UseOwnableReturnValue<T> {
   const { initialValue, onChange, onDerivedChange } = props;
 
   // Internal Single Source of Truth
-  const [currentRef, internalWriter] = useUncontrolled({
+  const [currentRef, internalWriter] = useOwned({
     initialValue,
     onChange,
     onDerivedChange,
   });
 
-  const isControlled = isUseControlled(props);
-  const externalWriterRef = isControlled ? props.writeValue : undefined;
+  const isExternalOwned = isUseExternalOwned(props);
+  const externalWriterRef = isExternalOwned ? props.writeValue : undefined;
 
   const bindExternal = useCallback(() => {
     'main thread';
@@ -98,14 +96,14 @@ function useControllable<T>(
   const write = useCallback(
     (next: RefWriteAction<T>) => {
       'main thread';
-      if (isControlled) {
-        // Default behaviour for controlled mode: only notify
+      if (isExternalOwned) {
+        // Default behaviour for external-owned mode: only notify
         internalWriter.notify(next);
       } else {
         internalWriter.write(next);
       }
     },
-    [isControlled, internalWriter],
+    [isExternalOwned, internalWriter],
   );
 
   const writeSilent = useCallback(
@@ -147,11 +145,11 @@ function useControllable<T>(
   return [currentRef, writeCurrent] as const;
 }
 
-function useUncontrolled<T>({
+function useOwned<T>({
   initialValue,
   onDerivedChange,
   onChange,
-}: UseUncontrolledProps<T>): UseUncontrolledReturnValue<T> {
+}: UseOwnedProps<T>): UseOwnedReturnValue<T> {
   const currentRef = useMainThreadRef<T>(initialValue);
 
   /**
@@ -244,10 +242,10 @@ function resolveNextValue<T>(current: T, next: RefWriteAction<T>): T {
   return isUpdater(next) ? (next as (p: T) => T)(current) : next;
 }
 
-export { useControllable, useUncontrolled, resolveNextValue, isUseControlled };
+export { useOwnable, useOwned, resolveNextValue, isUseExternalOwned };
 export type {
-  UseControllabeProps,
-  UseUncontrolledProps,
+  UseOwnableProps,
+  UseOwnedProps,
   RefWriteAction,
   Writer,
   WriterRef,
