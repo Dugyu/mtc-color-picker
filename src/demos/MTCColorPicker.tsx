@@ -15,7 +15,7 @@ export function App() {
   const [value, setValue] = useState<HSL>(() => [199, 99, 72]);
 
   const handleChange = (v: HSL) => {
-    'use background';
+    'background';
     setValue(v);
   };
 
