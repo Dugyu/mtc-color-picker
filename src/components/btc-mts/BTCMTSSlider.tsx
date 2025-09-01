@@ -22,17 +22,15 @@ type SliderProps = Expand<
 
 /** ================= Base Slider ================= */
 
-function Slider(props: SliderProps) {
-  const {
-    ['main-thread:writeValue']: externalWriterRef,
-    ['main-thread:onInit']: onInit,
-    ['main-thread:onChange']: onChange,
-    min,
-    rootStyle,
-    trackStyle,
-    ...restProps
-  } = props;
-
+function Slider({
+  ['main-thread:writeValue']: externalWriterRef,
+  ['main-thread:onInit']: onInit,
+  ['main-thread:onChange']: onChange,
+  min,
+  rootStyle,
+  trackStyle,
+  ...restProps
+}: SliderProps) {
   const thumbRef = useMainThreadRef<MainThread.Element | null>(null);
 
   const updateListenerRef = useMainThreadRef<(value: number) => void>();
