@@ -3,12 +3,7 @@ import type { MainThread } from '@lynx-js/types';
 import { useSlider } from './use-mts-slider';
 import type { UseSliderProps } from './use-mts-slider';
 
-import type {
-  WriterRef,
-  Writer,
-  WriterWithControlsRef,
-  WriterWithControls,
-} from './use-mts-slider';
+import type { WriterRef, Writer } from './use-mts-slider';
 import type { WriteAction } from './use-mts-ownable';
 import { resolveNextValue } from './use-mts-ownable';
 import { HSLGradients } from '@/utils/hsl-gradients';
@@ -66,7 +61,8 @@ function Slider({
 
   const {
     ratioRef,
-    writeValue,
+    initExternalWriter,
+    disposeExternalWriter,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
@@ -109,45 +105,54 @@ function Slider({
     }
   };
 
-  const initRoot = useCallback((ref: MainThread.Element) => {
-    'main thread';
-    rootRef.current = ref;
-    // Bind writeValue to prop
-    if (ref) {
-      writeValue.init();
-    } else {
-      writeValue.dispose();
-    }
-    // Initialization callback
-    onInit?.(ref);
-    if (writeRootStyle) {
-      writeRootStyle.current = updateRootStyle;
-    }
-    // init root style
-    updateRootStyle(rootStyleRef.current);
-  }, []);
+  const initRoot = useCallback(
+    (ref: MainThread.Element) => {
+      'main thread';
+      rootRef.current = ref;
+      // Bind writeValue to prop
+      if (ref) {
+        initExternalWriter();
+      } else {
+        disposeExternalWriter();
+      }
+      // Initialization callback
+      onInit?.(ref);
+      if (writeRootStyle) {
+        writeRootStyle.current = updateRootStyle;
+      }
+      // init root style
+      updateRootStyle(rootStyleRef.current);
+    },
+    [updateRootStyle],
+  );
 
-  const initTrack = useCallback((ref: MainThread.Element) => {
-    'main thread';
-    trackRef.current = ref;
+  const initTrack = useCallback(
+    (ref: MainThread.Element) => {
+      'main thread';
+      trackRef.current = ref;
 
-    if (writeTrackStyle) {
-      writeTrackStyle.current = updateTrackStyle;
-    }
-    // init track style
-    updateTrackStyle(trackStyleRef.current);
-  }, []);
+      if (writeTrackStyle) {
+        writeTrackStyle.current = updateTrackStyle;
+      }
+      // init track style
+      updateTrackStyle(trackStyleRef.current);
+    },
+    [updateTrackStyle],
+  );
 
-  const initThumb = useCallback((ref: MainThread.Element) => {
-    'main thread';
-    thumbRef.current = ref;
-    if (ref) {
-      updateListenerRef.current = updateThumbStyle;
-    } else {
-      updateListenerRef.current = undefined;
-    }
-    updateThumbStyle();
-  }, []);
+  const initThumb = useCallback(
+    (ref: MainThread.Element) => {
+      'main thread';
+      thumbRef.current = ref;
+      if (ref) {
+        updateListenerRef.current = updateThumbStyle;
+      } else {
+        updateListenerRef.current = undefined;
+      }
+      updateThumbStyle();
+    },
+    [updateThumbStyle],
+  );
 
   return (
     // Root
@@ -325,7 +330,7 @@ function LightnessSlider({
 }
 
 export { Slider, HueSlider, LightnessSlider, SaturationSlider };
-export type { WriterRef, Writer, WriterWithControls, WriterWithControlsRef };
+export type { WriterRef, Writer };
 
 /** ================= HSL Sliders Shared Types ================= */
 

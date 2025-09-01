@@ -44,7 +44,8 @@ function Slider({
 
   const {
     ratioRef,
-    writeValue,
+    initExternalWriter,
+    disposeExternalWriter,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
@@ -69,9 +70,9 @@ function Slider({
     'main thread';
     // Bind writeValue to prop
     if (ref) {
-      writeValue.init();
+      initExternalWriter();
     } else {
-      writeValue.dispose();
+      disposeExternalWriter();
     }
     // Initialization callback
     onInit?.(ref);
