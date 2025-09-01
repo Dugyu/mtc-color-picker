@@ -2,11 +2,11 @@
 import { useState } from '@lynx-js/react';
 import { HueSlider, SaturationSlider, LightnessSlider } from './MTCSliderState';
 
-type Color = readonly [number, number, number];
+import type { HSL } from '@/types/color';
 
 interface ColorPickerProps {
-  initialValue: Color;
-  onChange?: (next: Color) => void;
+  initialValue: HSL;
+  onChange?: (next: HSL) => void;
 }
 
 function ColorPicker({ initialValue, onChange }: ColorPickerProps) {

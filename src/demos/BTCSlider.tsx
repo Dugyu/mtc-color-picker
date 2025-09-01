@@ -13,9 +13,9 @@ if (__BACKGROUND__) {
 export function App() {
   const [value, setValue] = useState(199);
 
-  function handleChange(next: number) {
+  const handleChange = (next: number) => {
     setValue(next);
-  }
+  };
 
   return (
     <AppLayout title="BTC Slider" h={value} s={99} l={72}>

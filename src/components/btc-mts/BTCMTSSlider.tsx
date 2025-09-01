@@ -6,7 +6,7 @@ import type { Expand, RenameKeys } from '@/types/utils';
 
 type SliderProps = Expand<
   RenameKeys<
-    Omit<UseSliderProps, 'onCommit' | 'onDerivedChange'>,
+    Omit<UseSliderProps, 'onDerivedChange'>,
     {
       onChange?: 'main-thread:onChange';
       writeValue?: 'main-thread:writeValue';

@@ -9,15 +9,18 @@ import type {
 
 import { MathUtils } from '@/utils/math-utils';
 
-interface UseSliderProps {
-  initialValue?: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
-  onChange?: (value: number) => void;
-  onCommit?: (value: number) => void;
-}
+import type {
+  UseSliderPropsBase,
+  UseSliderReturnValueBase,
+} from '@/types/slider';
+
+import type { Signal, ReadonlySignal } from '@/types/signals';
+
+type UseSliderProps = UseSliderPropsBase;
+type UseSliderReturnValue = UseSliderReturnValueBase<
+  UsePointerInteractionReturnValue,
+  { value: Signal<number>; ratio: ReadonlySignal<number> }
+>;
 
 function useSlider({
   min = 0,
@@ -26,8 +29,7 @@ function useSlider({
   initialValue = min,
   disabled = false,
   onChange,
-  onCommit,
-}: UseSliderProps) {
+}: UseSliderProps): UseSliderReturnValue {
   const value = useSignal(initialValue);
   const ratio = useComputed(() =>
     MathUtils.valueToRatio(value.value, min, max),
@@ -46,12 +48,6 @@ function useSlider({
       value.value = next;
       onChange?.(next);
     },
-    onCommit: (pos) => {
-      if (disabled) return;
-      const next = quantize(pos);
-      value.value = next;
-      onCommit?.(next);
-    },
   });
   return {
     value,
@@ -62,15 +58,6 @@ function useSlider({
     disabled,
     ...pointerReturnedValue,
   };
-}
-
-interface UseSliderReturnValue extends UsePointerInteractionReturnValue {
-  value: number;
-  ratio: number;
-  min: number;
-  max: number;
-  step: number;
-  disabled: boolean;
 }
 
 export { useSlider };

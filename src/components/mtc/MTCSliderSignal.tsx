@@ -1,12 +1,18 @@
 'main thread';
 
-import { useComputed, useSignal, signal } from '@lynx-js/react/signals';
+import { useComputed, signal } from '@lynx-js/react/signals';
 import type { CSSProperties } from '@lynx-js/types';
 
 import { useSlider } from './use-mtc-slider-signal';
 import type { UseSliderProps } from './use-mtc-slider-signal';
 import { HSLGradients } from '@/utils/hsl-gradients';
 import type { Expand } from '@/types/utils';
+import type { ReadonlySignal } from '@/types/signals';
+
+import type {
+  StyledSliderPropsBase,
+  HSLSliderPropsBase,
+} from '@/types/hsl-slider';
 
 type SliderProps = Expand<
   UseSliderProps & {
@@ -61,11 +67,6 @@ function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
 
 /** ================== HSL Sliders Shared ================= */
 
-type HSLBaseSliderProps = Omit<
-  SliderProps,
-  'min' | 'max' | 'step' | 'trackStyle' | 'rootStyle'
->;
-
 const defaultHue = signal(0);
 const defaultSaturation = signal(100);
 const defaultLightness = signal(50);
@@ -76,12 +77,7 @@ function HueSlider({
   s = defaultSaturation,
   l = defaultLightness,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    s?: ReturnType<typeof useSignal<number>>;
-    l?: ReturnType<typeof useSignal<number>>;
-  }
->) {
+}: HueSliderProps) {
   const gradients = useComputed(() =>
     HSLGradients.hueGradientPair(
       s.value ?? defaultSaturation.value,
@@ -107,12 +103,7 @@ function SaturationSlider({
   h = defaultHue,
   l = defaultLightness,
   ...restProps
-}: Expand<
-  HSLBaseSliderProps & {
-    h?: ReturnType<typeof useSignal<number>>;
-    l?: ReturnType<typeof useSignal<number>>;
-  }
->) {
+}: SaturationSliderProps) {
   const gradients = useComputed(() =>
     HSLGradients.saturationGradientPair(
       h.value ?? defaultHue.value,
@@ -138,10 +129,7 @@ function LightnessSlider({
   h = defaultHue,
   s = defaultSaturation,
   ...restProps
-}: Expand<Omit<SliderProps, 'min' | 'max' | 'step'>> & {
-  h?: ReturnType<typeof useSignal<number>>;
-  s?: ReturnType<typeof useSignal<number>>;
-}) {
+}: LightnessSliderProps) {
   const gradients = useComputed(() =>
     HSLGradients.lightnessGradientPair(
       h.value ?? defaultHue.value,
@@ -162,3 +150,29 @@ function LightnessSlider({
 }
 
 export { Slider, HueSlider, SaturationSlider, LightnessSlider };
+
+/** ================= HSL Sliders Shared Types ================= */
+type StyledSliderProps = StyledSliderPropsBase<
+  SliderProps,
+  'trackStyle' | 'rootStyle'
+>;
+
+type HueSliderProps = HSLSliderPropsBase<
+  StyledSliderProps,
+  ReadonlySignal<number>,
+  's',
+  'l'
+>;
+type SaturationSliderProps = HSLSliderPropsBase<
+  StyledSliderProps,
+  ReadonlySignal<number>,
+  'h',
+  'l'
+>;
+
+type LightnessSliderProps = HSLSliderPropsBase<
+  StyledSliderProps,
+  ReadonlySignal<number>,
+  'h',
+  's'
+>;
