@@ -1,5 +1,4 @@
 import { useState } from '@lynx-js/react';
-
 import { usePointerInteraction } from './use-pointer-interaction';
 import type {
   PointerPosition,
@@ -13,7 +12,7 @@ import type {
   UseSliderReturnValueBase,
 } from '@/types/slider';
 
-type UseSliderProps = UseSliderPropsBase<{ value?: number }>;
+type UseSliderProps = UseSliderPropsBase;
 type UseSliderReturnValue =
   UseSliderReturnValueBase<UsePointerInteractionReturnValue>;
 
@@ -25,10 +24,10 @@ function useSlider({
   disabled = false,
   onChange,
 }: UseSliderProps): UseSliderReturnValue {
-  const [value, setValue] = useState<number>(initialValue);
+  const [value, setValue] = useState(initialValue);
 
-  const step = stepProp > 0 ? stepProp : 1;
   const ratio = MathUtils.valueToRatio(value, min, max);
+  const step = stepProp > 0 ? stepProp : 1;
 
   const quantize = ({ offsetRatio }: PointerPosition) => {
     return MathUtils.quantizeFromRatio(offsetRatio, min, max, step);

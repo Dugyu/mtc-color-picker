@@ -73,7 +73,6 @@ function HueSlider({
 
   return (
     <Slider
-      value={value}
       initialValue={initialValue}
       min={0}
       max={360}
