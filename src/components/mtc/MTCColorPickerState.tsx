@@ -14,10 +14,6 @@ function ColorPicker({ initialValue, onChange }: ColorPickerProps) {
   const [s, setS] = useState(initialValue[1]);
   const [l, setL] = useState(initialValue[2]);
 
-  const forwardOnValueChange = () => {
-    onChange?.([h, s, l]);
-  };
-
   return (
     <view className="w-full h-full flex flex-col gap-y-4">
       <HueSlider
@@ -26,7 +22,7 @@ function ColorPicker({ initialValue, onChange }: ColorPickerProps) {
         initialValue={initialValue[0]}
         onChange={(hue: number) => {
           setH(hue);
-          forwardOnValueChange();
+          onChange?.([hue, s, l]);
         }}
       />
       <SaturationSlider
@@ -35,7 +31,7 @@ function ColorPicker({ initialValue, onChange }: ColorPickerProps) {
         initialValue={initialValue[1]}
         onChange={(sat: number) => {
           setS(sat);
-          forwardOnValueChange();
+          onChange?.([h, sat, l]);
         }}
       />
       <LightnessSlider
@@ -44,7 +40,7 @@ function ColorPicker({ initialValue, onChange }: ColorPickerProps) {
         initialValue={initialValue[2]}
         onChange={(light: number) => {
           setL(light);
-          forwardOnValueChange();
+          onChange?.([h, s, light]);
         }}
       />
     </view>
