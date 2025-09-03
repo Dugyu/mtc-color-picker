@@ -122,7 +122,8 @@ This demonstrates the core problem: BTC alone is vulnerable to blocking, while B
 ### ColorPickers: BTC-MTS vs MTC
 
 ![BTC-MTS vs MTS](./docs/colorpicker-comparision.gif)
-We compare three compositional patterns under background blocking:
+
+We then compare three compositional patterns using ColorPickers under background blocking:
 
 - **BTC-MTS (BTS Coord)** – coordination stays on the background thread, so slider gradients **freeze and stutter** when the thread is blocked.
 - **BTC-MTS (MTS Coord)** – coordination runs on the main thread, so gradients **stay smooth and responsive** even under blocking.
