@@ -1,7 +1,22 @@
 {
-  "name": "rspeedy-react-ts",
+  "name": "mtc-color-picker",
   "version": "1.0.0",
+  "description": "Demos comparing BTC, BTC-MTS, and MTC in Lynx.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dugyu/mtc-color-picker.git"
+  },
+  "homepage": "https://github.com/Dugyu/mtc-color-picker#readme",
+  "author": "The Lynx Authors",
+  "keywords": [
+    "lynx",
+    "mtc",
+    "btc",
+    "btc-mts",
+    "reactlynx",
+    "color-picker"
+  ],
   "scripts": {
     "demo": "cross-env LYNX_DEMO_BLOCKING_ENABLED=true rspeedy dev",
     "build": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy build",
@@ -29,7 +44,7 @@
   "engines": {
     "node": ">=18"
   },
-  "pnpm":{
+  "pnpm": {
     "overrides": {
       "@lynx-js/react-webpack-plugin": "file:./lynx-js-react-webpack-plugin-0.6.19.tgz"
     }
