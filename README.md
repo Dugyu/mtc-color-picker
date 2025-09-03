@@ -1,6 +1,8 @@
-# mtc-color-picker
+# MTC Color Picker
 
-Demo repo showing why **Main Thread Components (MTC)** are needed in [Lynx](https://lynxjs.org).
+This repository demonstrates why **Main Thread Components (MTC)** are needed in [Lynx](https://lynxjs.org).
+
+It provides a set of demos that compare **BTC**, **BTC-MTS**, and **MTC**, highlighting how MTC restores declarative programming on the main thread within Lynx's dual-threaded architecture.
 
 ## Motivation
 
@@ -124,9 +126,7 @@ For reference, here is the mapping between the conceptual demo names and the act
 | MTC-State ColorPicker                    | `MTCColorPicker-State`          |
 | MTC-State ColorPicker (with a BTC Child) | `MTCColorPicker-BTC`            |
 
----
-
-## Design Summary
+## Final Design Insights
 
 - **BTC**: simple but blocks under heavy load.
 - **BTC-MTS**: resilient, but requires verbose imperative coordination.
@@ -134,4 +134,6 @@ For reference, here is the mapping between the conceptual demo names and the act
 
 The demos in this repo serve as a proof-of-concept of the **declarative approach** within Lynx's **dual-threaded programming model**, showing how MTC eliminates the imperative burden while keeping the UI fully responsive under background blocking.
 
----
+## Acknowledgements
+
+This work is the result of a collective effort. The demos and design insights grew out of our shared discussions, experiments, and implementation work around MTC and the dual-threaded model. Thanks to everyone on the team who contributed ideas and feedback throughout the process.
