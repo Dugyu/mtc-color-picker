@@ -11,10 +11,10 @@ export default defineConfig({
   source: {
     entry: {
       'MTCColorPicker-BTC': './src/demos/MTCColorPickerBTC.tsx',
-      'MTCColorPicker-Signal': './src/demos/MTCColorPicker.tsx',
+      'MTCColorPicker-Signal': './src/demos/MTCColorPickerSignal.tsx',
       'MTCColorPicker-State': './src/demos/MTCColorPickerState.tsx',
       'BTCMTSColorPicker-MTSCoord': './src/demos/BTCMTSColorPicker.tsx',
-      'BTCMTSColorPicker-BTCCoord': './src/demos/BTCBTCMTSColorPicker.tsx',
+      'BTCMTSColorPicker-BTSCoord': './src/demos/BTCBTCMTSColorPicker.tsx',
       BTCMTSSlider: './src/demos/BTCMTSSlider.tsx',
       BTCSlider: './src/demos/BTCSlider.tsx',
     },
