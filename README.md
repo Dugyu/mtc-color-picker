@@ -1,5 +1,7 @@
 # MTC Color Picker
 
+![MTC Color Picker Demo Banner](./docs/mtc-color-picker-banner.png)
+
 This repository demonstrates why **Main Thread Components (MTC)** are needed in [Lynx](https://lynxjs.org).
 
 It provides a set of demos that compare **BTC**, **BTC-MTS**, and **MTC**, highlighting how MTC restores declarative programming on the main thread within Lynx's dual-threaded architecture.
@@ -11,7 +13,7 @@ Traditional **Background Thread Components (BTC)** can become unresponsive when 
 
 However, **BTC-MTS** components require more **imperative code**.
 
-Since BTC-MTS pattern is fundamentally imperative, **external-derived state cannot be updated reactively**. Any style or value that depends on other components (e.g. a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
+Since BTC-MTS pattern is fundamentally imperative, **external-derived state cannot be updated reactively**. Any style or value that depends on other components (e.g., a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
 
 This leads to:
 
@@ -133,6 +135,21 @@ For reference, here is the mapping between the conceptual demo names and the act
 - **MTC**: combines the **simplicity of BTC** with the **resilience of BTC-MTS**.
 
 The demos in this repo serve as a proof-of-concept of the **declarative approach** within Lynx's **dual-threaded programming model**, showing how MTC eliminates the imperative burden while keeping the UI fully responsive under background blocking.
+
+## Banner Design Concept
+
+The hero banner is not just decorative—it encodes the ideas behind this repo:
+
+- **Circles** – solid circles represent **BTC** and **MTC**.
+- **Lynx silhouette** – rendered in outer **BTC** component (top-level App):
+  - Filled part – changes with the ColorPicker, symbolizing reactive UI updates.
+
+  - Knockout part – acts as a cut-out path, symbolizing **MTS** shuttling between **BTC** and **MTC**.
+
+- **ColorPicker & sliders** – represent the **MTC** components from the demos, handling interaction and state updates.
+
+- **Numeric display inside the ColorPicker** – shows a nested BTC child component.
+- **Gradients** – more than decoration, they represent **external-derived state** in the demos (e.g., background depending on saturation and lightness). In **BTC-MTS**, this requires imperative writers, leading to extra props and ref wiring. In **MTC**, it flows naturally through declarative props.
 
 ## Acknowledgements
 
