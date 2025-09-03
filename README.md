@@ -104,6 +104,32 @@ This repo includes multiple demos that illustrate the evolution of component com
 - **MTC-Signal ColorPicker (Coordinate on MTS)** – signal-based alternative.
 - **MTC-State ColorPicker (with a BTC Child)** – composability demo: nesting BTC inside MTC.
 
+## Background Blocking Experiments
+
+We run multiple component comparisons under a simulated background-blocking condition to show how different compositional patterns behave (BTC, BTC-MTS, and MTC).
+
+### Sliders: BTC vs BTC-MTS
+
+![BTC vs BTC-MTS](./docs/slider-comparision.gif)
+
+We start with the simplest case: a single Slider under background blocking.
+
+- **BTC Slider** – the **thumb stops following your drag** (UI freezes), because all updates run on the blocked background thread.
+- **BTC-MTS Slider** – the **thumb stays responsive and smooth**, as coordination is moved onto the main thread (MTS).
+
+This demonstrates the core problem: BTC alone is vulnerable to blocking, while BTC-MTS preserves responsiveness.
+
+### ColorPickers: BTC-MTS vs MTC
+
+![BTC-MTS vs MTS](./docs/colorpicker-comparision.gif)
+We compare three compositional patterns under background blocking:
+
+- **BTC-MTS (BTS Coord)** – coordination stays on the background thread, so slider gradients **freeze and stutter** when the thread is blocked.
+- **BTC-MTS (MTS Coord)** – coordination runs on the main thread, so gradients **stay smooth and responsive** even under blocking.
+- **MTC** – gradients are **equally smooth**, but with a **declarative API** (no MainThreadRef or scattered directives).
+
+TL;DR: Both **BTC-MTS (MTS Coord)** and **MTC** stay silky under blocking; **BTC-MTS (BTS Coord)** does not. MTC achieves the same responsiveness with a declarative surface.
+
 ## How to Explore
 
 Run the development server:
