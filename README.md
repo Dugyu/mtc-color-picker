@@ -9,7 +9,7 @@ Traditional **Background Thread Components (BTC)** can become unresponsive when 
 
 However, **BTC-MTS** components require more **imperative code**.
 
-Since BTC-MTS pattern is fundamentally imperative, **external-derived states cannot be updated reactively**. Any style or value that depends on other components (e.g. a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
+Since BTC-MTS pattern is fundamentally imperative, **external-derived state cannot be updated reactively**. Any style or value that depends on other components (e.g. a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
 
 This leads to:
 
@@ -82,7 +82,7 @@ This makes it easy to reproduce blocking scenarios and confirm that the UI remai
 
 ## Compositional Patterns
 
-The repo includes multiple demos that illustrate the **evolution from BTC → BTC-MTS → MTC**.
+This repo includes multiple demos that illustrate the **evolution from BTC → BTC-MTS → MTC**.
 
 ### BTC
 
@@ -99,8 +99,6 @@ The repo includes multiple demos that illustrate the **evolution from BTC → BT
 - **MTC-Signal ColorPicker (Coordinate on MTS)** – signal-based state propagation.
 - **MTC-State ColorPicker (Coordinate on MTS)** – state-based alternative.
 - **MTC-State ColorPicker (with a BTC Child)** – composability demo: nesting BTC inside MTC.
-
----
 
 ## How to Explore
 
@@ -134,6 +132,6 @@ For reference, here is the mapping between the conceptual demo names and the act
 - **BTC-MTS**: resilient, but requires verbose imperative coordination.
 - **MTC**: combines the **simplicity of BTC** with the **resilience of BTC-MTS**.
 
-The demos in this repo are more than just widget samples, they validate the **declarative approach** within Lynx's **dual-threaded programming model**, showing how MTC eliminates the imperative burden while keeping the UI fully responsive under background blocking.
+The demos in this repo serve as a proof-of-concept of the **declarative approach** within Lynx's **dual-threaded programming model**, showing how MTC eliminates the imperative burden while keeping the UI fully responsive under background blocking.
 
 ---
