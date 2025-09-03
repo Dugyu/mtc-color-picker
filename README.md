@@ -4,7 +4,7 @@
 
 This repository demonstrates why **Main Thread Components (MTC)** are needed in [Lynx](https://lynxjs.org).
 
-It provides a set of demos that compare **BTC**, **BTC-MTS**, and **MTC**, highlighting how MTC restores declarative programming on the main thread within Lynx's dual-threaded architecture.
+It provides a set of demos that compare the **BTC**, **BTC-MTS**, and **MTC** component compositional patterns, highlighting how **MTC** restores declarative programming on the main thread within Lynx's dual-threaded architecture.
 
 ## Motivation
 
@@ -13,7 +13,7 @@ Traditional **Background Thread Components (BTC)** can become unresponsive when 
 
 However, **BTC-MTS** components require more **imperative code**.
 
-Since BTC-MTS pattern is fundamentally imperative, **external-derived state cannot be updated reactively**. Any style or value that depends on other components (e.g., a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
+Since **BTC-MTS** pattern is fundamentally imperative, **external-derived state cannot be updated reactively**. Any style or value that depends on other components (e.g., a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
 
 This leads to:
 
@@ -25,7 +25,7 @@ This leads to:
 
 The result is **bloated props**, **imperative chaining**, **ref hell**, and **directive clutter**, all of which **accumulate at every abstraction layer**.
 
-**MTC removes this burden.** External-derived state updates flow naturally through declarative props, without extra refs, initial values, or imperative writers. In practice, this means developers can write code that looks **almost identical to BTC**, but without the prop bloat, ref wiring, or directive clutter. At the same time, **MTC preserves the responsiveness** of BTC-MTS under background blocking.
+**MTC removes this burden.** External-derived state updates flow naturally through declarative props, without extra refs, initial values, or imperative writers. In practice, this means developers can write code that looks **almost identical to BTC**, but without the prop bloat, ref wiring, or directive clutter. At the same time, **MTC preserves the responsiveness** of **BTC-MTS** under background blocking.
 
 ## Rspeedy Project
 
@@ -86,7 +86,7 @@ This makes it easy to reproduce blocking scenarios and confirm that the UI remai
 
 ## Compositional Patterns
 
-This repo includes multiple demos that illustrate the **evolution from BTC → BTC-MTS → MTC**.
+This repo includes multiple demos that illustrate the evolution of component compositional patterns across Lynx's dual-threaded architecture **(BTC → BTC-MTS → MTC)**.
 
 ### BTC
 
@@ -138,7 +138,7 @@ The demos in this repo serve as a proof-of-concept of the **declarative approach
 
 ## Banner Design Concept
 
-The hero banner is not just decorative—it encodes the ideas behind this repo:
+The hero banner encodes the ideas behind this repo:
 
 - **Circles** – solid circles represent **BTC** and **MTC**.
 - **Lynx silhouette** – rendered in outer **BTC** component (top-level App):
@@ -153,4 +153,4 @@ The hero banner is not just decorative—it encodes the ideas behind this repo:
 
 ## Acknowledgements
 
-This work is the result of a collective effort. The demos and design insights grew out of our shared discussions, experiments, and implementation work around MTC and the dual-threaded model. Thanks to everyone on the team who contributed ideas and feedback throughout the process.
+This work is the result of a collective effort. The demos and design insights grew out of our shared discussions, experiments, and implementation work around MTC, ReactLynx, LynxUI, and the dual-threaded model. Thanks to everyone on the team who contributed ideas and feedback throughout the process.
