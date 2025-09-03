@@ -98,8 +98,8 @@ This repo includes multiple demos that illustrate the **evolution from BTC → B
 
 ### MTC
 
-- **MTC-Signal ColorPicker (Coordinate on MTS)** – signal-based state propagation.
 - **MTC-State ColorPicker (Coordinate on MTS)** – state-based alternative.
+- **MTC-Signal ColorPicker (Coordinate on MTS)** – signal-based alternative.
 - **MTC-State ColorPicker (with a BTC Child)** – composability demo: nesting BTC inside MTC.
 
 ## How to Explore
@@ -116,15 +116,15 @@ Then, press `r` in your terminal to open the entry switcher. Use the up and down
 
 For reference, here is the mapping between the conceptual demo names and the actual entry keys:
 
-| Demo name (docs)                         | Entry key (in `lynx.config.ts`) |
-| ---------------------------------------- | ------------------------------- |
-| BTC Slider                               | `BTCSlider`                     |
-| BTC-MTS Slider                           | `BTCMTSSlider`                  |
-| BTC-MTS ColorPicker (Coordinate on BTS)  | `BTCMTSColorPicker-BTCCoord`    |
-| BTC-MTS ColorPicker (Coordinate on MTS)  | `BTCMTSColorPicker-MTSCoord`    |
-| MTC-Signal ColorPicker                   | `MTCColorPicker-Signal`         |
-| MTC-State ColorPicker                    | `MTCColorPicker-State`          |
-| MTC-State ColorPicker (with a BTC Child) | `MTCColorPicker-BTC`            |
+| Demo name (docs)                           | Entry key (in `lynx.config.ts`) |
+| ------------------------------------------ | ------------------------------- |
+| BTC Slider                                 | `BTCSlider`                     |
+| BTC-MTS Slider                             | `BTCMTSSlider`                  |
+| BTC-MTS ColorPicker (Coordinate on BTS)    | `BTCMTSColorPicker-BTSCoord`    |
+| BTC-MTS ColorPicker (Coordinate on MTS)    | `BTCMTSColorPicker-MTSCoord`    |
+| MTC-State ColorPicker (Coordinate on MTS)  | `MTCColorPicker-State`          |
+| MTC-Signal ColorPicker (Coordinate on MTS) | `MTCColorPicker-Signal`         |
+| MTC-State ColorPicker (with a BTC Child)   | `MTCColorPicker-BTC`            |
 
 ## Final Design Insights
 
