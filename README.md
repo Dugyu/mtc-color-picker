@@ -4,7 +4,7 @@
 
 This repository demonstrates why **Main Thread Components (MTC)** are needed in [Lynx](https://lynxjs.org).
 
-It provides a set of demos that compare the **BTC**, **BTC-MTS**, and **MTC** component compositional patterns, highlighting how **MTC restores declarative programming on the main thread within Lynx's dual-threaded architecture**.
+It provides a set of demos that compare the **BTC**, **BTC-MTS**, and **MTC** component patterns, highlighting how **MTC restores declarative programming on the main thread within Lynx's dual-threaded architecture**.
 
 ## Motivation
 
@@ -18,27 +18,31 @@ To solve this, **BTC-MTS (Main Thread Scripting)** coordination moves critical U
 
 But it comes with significant complexity.
 
-Since the **BTC-MTS** pattern is fundamentally imperative, **external-derived state cannot flow reactively**. external-derived state cannot flow reactively. Any dependent style or value (e.g., a Hue slider background derived from Saturation and Lightness) must be driven through explicit writer calls instead of updating automatically.
+Since the **BTC-MTS** pattern is fundamentally imperative, what should be **prop-driven state** can no longer flow reactively. Instead, it turns into **externally driven state** that must be pushed through explicit writer calls.
 
-As a result, developers face **imperative overhead**:
+The same applies to styles or values that depend on other components (e.g., a Hue slider background calculated from Saturation and Lightness): they, too, require explicit writer calls rather than updating automatically.
 
-- **More props**. Every externally driven or coordinated value/style needs both an initial value and explicit writer calls, effectively doubling the prop surface.
+At first glance, styles can react to their core visual value (a slider's thumb offset, for example). But the moment a style depends on **other components**, it can no longer behave as a mere callback; it must be explicitly coordinated through writers.
+
+As a result, developers encounter the following **MTS friction in abstracting UI components**:
+
+- **More props**. Every **externally driven value or style** needs both an initial value and explicit writer calls, effectively doubling the prop surface.
 
 - **More** `MainThreadRef` **bindings**. Internal writer methods must be bound to external refs.
 
-- **More** `"main thread"` **annotations**. Imperative writers often become separate helper functions, and each one needs its own `"main thread"` directive, leading to scattered annotations.
+- **More** `"main thread"` **annotations**. Imperative writers often split into separate helper functions, each requiring its own directive and contributing to scattered annotations across the codebase.
 
-These costs **accumulate at every abstraction layer**, turning minor inconveniences into systemic overhead.
+Such friction **accumulates at every abstraction layer**, turning minor inconveniences into systemic overhead.
 
 ### Solution
 
-**MTC removes this burden.** External-derived state flows naturally through declarative props, **eliminating the need for imperative chaining**.
+**MTC removes this burden.** Externally driven state flows naturally through declarative props, **eliminating the need for imperative chaining**.
 
 In practice, developers can write code that looks **almost identical to BTC**, but without the bloated props, ref hell, or directive clutter. At the same time, **MTC preserves the responsiveness** of **BTC-MTS** under background blocking.
 
 ## Compositional Patterns
 
-This repo includes multiple demos that illustrate the evolution of component compositional patterns across Lynx's dual-threaded architecture (**BTC → BTC-MTS → MTC**).
+This repo includes multiple demos that illustrate the evolution of component patterns across Lynx's dual-threaded architecture (**BTC → BTC-MTS → MTC**).
 
 ### BTC
 
@@ -58,7 +62,7 @@ This repo includes multiple demos that illustrate the evolution of component com
 
 ## Background Blocking Experiments
 
-To validate these patterns in practice, we run blocking experiments under simulated heavy load: every `100ms` a task is scheduled and each blocks for `250ms`, creating sustained congestion. We then compare how different compositional patterns behave (**BTC, BTC-MTS, and MTC**).
+To validate these patterns in practice, we run blocking experiments under simulated heavy load: every `100ms` a task is scheduled and each blocks for `250ms`, creating sustained congestion. We then compare how **BTC**, **BTC-MTS**, and **MTC** patterns behave.
 
 ### Sliders: BTC vs BTC-MTS
 
@@ -177,7 +181,7 @@ The hero banner visually encodes the ideas behind this repo:
 
 - **Numeric display inside the ColorPicker** – shows a nested BTC child component.
 
-- **Gradients** – symbolize **external-derived state** in the demos (e.g., a background depending on saturation and lightness).
+- **Gradients** – symbolize **externally driven style** in the demos (e.g., a background depending on saturation and lightness).
 
 ## Acknowledgements
 
