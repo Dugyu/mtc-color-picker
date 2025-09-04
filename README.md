@@ -27,66 +27,9 @@ The result is **bloated props**, **imperative chaining**, **ref hell**, and **di
 
 **MTC removes this burden.** External-derived state updates flow naturally through declarative props, without extra refs, initial values, or imperative writers. In practice, this means developers can write code that looks **almost identical to BTC**, but without the prop bloat, ref wiring, or directive clutter. At the same time, **MTC preserves the responsiveness** of **BTC-MTS** under background blocking.
 
-## Rspeedy Project
-
-This is a [ReactLynx](https://lynxjs.org/react/) project bootstrapped with [`create-rspeedy`](https://lynxjs.org/rspeedy/).
-
-## Getting Started
-
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-Run the development server:
-
-```bash
-pnpm run dev
-```
-
-Scan the QR code in the terminal with your **LynxExplorer App** to see the result.
-
-## LynxExplorer App
-
-To view the demos on your device, install the **LynxExplorer App**:
-
-- [Android](https://github.com/lynx-family/lynx/releases/latest) – official Lynx Android release (via GitHub Releases)
-- [iOS](https://apps.apple.com/ca/app/lynx-go-dev-explorer/id6743227790) – community build available on the App Store.
-
-Once the app is installed and your **computer and mobile device are on the same network**, you can scan the QR code shown in the terminal after running `pnpm run dev` to open the demo directly in the app.
-This is the basic setup required to run any example in this repo.
-
-For more details, see the [Starting Guide](https://lynxjs.org/guide/start/quick-start.html).
-
-## Testing Background Blocking
-
-With the app set up, you can also try blocking scenarios to see why main-thread responsiveness matters.
-
-This demo includes a toggle for simulating background thread blocking, to verify that MTS keeps the UI responsive.
-
-Run with blocking enabled:
-
-```bash
-pnpm run demo
-```
-
-This command sets the environment variable:
-
-```json
-"scripts": {
-  "demo": "cross-env LYNX_DEMO_BLOCKING_ENABLED=true rspeedy dev",
-}
-```
-
-- `LYNX_DEMO_BLOCKING_ENABLED=true` → enables blocking mode.
-- Default (`dev`, `build`, `preview`) → blocking disabled.
-
-This makes it easy to reproduce blocking scenarios and confirm that the UI remains responsive thanks to MTS and MTC.
-
 ## Compositional Patterns
 
-This repo includes multiple demos that illustrate the evolution of component compositional patterns across Lynx's dual-threaded architecture **(BTC → BTC-MTS → MTC)**.
+This repo includes multiple demos that illustrate the evolution of component compositional patterns across Lynx's dual-threaded architecture (**BTC → BTC-MTS → MTC**).
 
 ### BTC
 
@@ -106,7 +49,7 @@ This repo includes multiple demos that illustrate the evolution of component com
 
 ## Background Blocking Experiments
 
-We run multiple component comparisons under a simulated background-blocking condition to show how different compositional patterns behave (BTC, BTC-MTS, and MTC).
+We run multiple component comparisons under a simulated background-blocking condition to show how different compositional patterns behave (**BTC, BTC-MTS, and MTC**).
 
 ### Sliders: BTC vs BTC-MTS
 
@@ -117,7 +60,7 @@ We start with the simplest case: a single Slider under background blocking.
 - **BTC Slider** – the **thumb stops following your drag** (UI freezes), because all updates run on the blocked background thread.
 - **BTC-MTS Slider** – the **thumb stays responsive and smooth**, as coordination is moved onto the main thread (MTS).
 
-This demonstrates the core problem: BTC alone is vulnerable to blocking, while BTC-MTS preserves responsiveness.
+This demonstrates the core problem: **BTC alone is vulnerable to blocking**, while **BTC-MTS preserves responsiveness**.
 
 ### ColorPickers: BTC-MTS vs MTC
 
@@ -129,9 +72,27 @@ We then compare three compositional patterns using ColorPickers under background
 - **BTC-MTS (MTS Coord)** – coordination runs on the main thread, so gradients **stay smooth and responsive** even under blocking.
 - **MTC** – gradients are **equally smooth**, but with a **declarative API** (no MainThreadRef or scattered directives).
 
-TL;DR: Both **BTC-MTS (MTS Coord)** and **MTC** stay silky under blocking; **BTC-MTS (BTS Coord)** does not. MTC achieves the same responsiveness with a declarative surface.
+Both **BTC-MTS (MTS Coord)** and **MTC** stay silky under blocking; **BTC-MTS (BTS Coord)** does not. **MTC achieves the same responsiveness with a declarative surface**.
+
+## Key Takeways
+
+- **BTC**: simple but blocks under heavy load.
+- **BTC-MTS**: resilient, but requires verbose imperative coordination.
+- **MTC**: combines the **simplicity of BTC** with the **resilience of BTC-MTS**.
+
+The demos in this repo serve as a proof-of-concept of the **declarative approach** within Lynx's **dual-threaded programming model**, showing how **MTC** eliminates the imperative burden while keeping the UI fully responsive under background blocking.
 
 ## How to Explore
+
+### Rspeedy Project
+
+This is a [ReactLynx](https://lynxjs.org/react/) project bootstrapped with [`create-rspeedy`](https://lynxjs.org/rspeedy/).
+
+Install dependencies:
+
+```bash
+pnpm install
+```
 
 Run the development server:
 
@@ -139,7 +100,47 @@ Run the development server:
 pnpm run dev
 ```
 
-Then, press `r` in your terminal to open the entry switcher. Use the up and down `↑`/`↓` arrow keys to navigate between entries, and press `Enter` to load the selected demo.
+Scan the QR code in the terminal with your **LynxExplorer App** to see the result.
+
+### LynxExplorer App
+
+To view the demos on your mobile device, install the **LynxExplorer App**:
+
+- [Android](https://github.com/lynx-family/lynx/releases/latest) – official Lynx Android release (via GitHub Releases)
+- [iOS](https://apps.apple.com/ca/app/lynx-go-dev-explorer/id6743227790) – community build available on the App Store.
+
+Make sure your **computer and mobile device are on the same network**, then scan the QR code printed in the terminal to open the demo directly in the app.
+
+This is the basic setup required to run any example in this repo.
+
+For more details, see the [Starting Guide](https://lynxjs.org/guide/start/quick-start.html).
+
+### Testing Background Blocking
+
+With the app set up, you can also try blocking scenarios to see why main-thread responsiveness matters.
+
+Run with blocking enabled (demo mode):
+
+```bash
+pnpm run demo
+```
+
+This command sets the environment variable:
+
+```json
+"scripts": {
+  "demo": "cross-env LYNX_DEMO_BLOCKING_ENABLED=true rspeedy dev",
+}
+```
+
+- `LYNX_DEMO_BLOCKING_ENABLED=true` → enables blocking mode.
+- Default (`dev`, `build`, `preview`) → blocking disabled.
+
+This makes it easy to reproduce blocking scenarios and confirm that the UI remains responsive thanks to MTS and MTC.
+
+### Switch Demo Entries
+
+Press `r` in your terminal to open the entry switcher. Use the up and down `↑`/`↓` arrow keys to navigate between entries, and press `Enter` to load the selected demo.
 
 ## Demo Entries
 
@@ -154,14 +155,6 @@ For reference, here is the mapping between the conceptual demo names and the act
 | MTC-State ColorPicker (Coordinate on MTS)  | `MTCColorPicker-State`          |
 | MTC-Signal ColorPicker (Coordinate on MTS) | `MTCColorPicker-Signal`         |
 | MTC-State ColorPicker (with a BTC Child)   | `MTCColorPicker-BTC`            |
-
-## Final Design Insights
-
-- **BTC**: simple but blocks under heavy load.
-- **BTC-MTS**: resilient, but requires verbose imperative coordination.
-- **MTC**: combines the **simplicity of BTC** with the **resilience of BTC-MTS**.
-
-The demos in this repo serve as a proof-of-concept of the **declarative approach** within Lynx's **dual-threaded programming model**, showing how MTC eliminates the imperative burden while keeping the UI fully responsive under background blocking.
 
 ## Banner Design Concept
 
