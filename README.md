@@ -4,18 +4,23 @@
 
 This repository demonstrates why **Main Thread Components (MTC)** are needed in [Lynx](https://lynxjs.org).
 
-It provides a set of demos that compare the **BTC**, **BTC-MTS**, and **MTC** component compositional patterns, highlighting how **MTC** restores declarative programming on the main thread within Lynx's dual-threaded architecture.
+It provides a set of demos that compare the **BTC**, **BTC-MTS**, and **MTC** component compositional patterns, highlighting how **MTC restores declarative programming on the main thread within Lynx's dual-threaded architecture**.
 
 ## Motivation
 
+### Problem
+
 Traditional **Background Thread Components (BTC)** can become unresponsive when the background thread is blocked by heavy computation.
-**BTC-MTS (Main Thread Scripting)** coordination solves this by moving critical UI logic onto the main thread, ensuring responsiveness.
 
-However, **BTC-MTS** components require more **imperative code**.
+### Symptom
 
-Since **BTC-MTS** pattern is fundamentally imperative, **external-derived state cannot be updated reactively**. Any style or value that depends on other components (e.g., a Hue slider background that derives from Saturation and Lightness) must be driven through explicit writers, rather than flowing through reactive updates.
+To solve this, **BTC-MTS (Main Thread Scripting)** coordination moves critical UI logic onto the main thread, keeping the UI responsive.
 
-This leads to:
+But it comes with significant complexity.
+
+Since the **BTC-MTS** pattern is fundamentally imperative, **external-derived state cannot flow reactively**. external-derived state cannot flow reactively. Any dependent style or value (e.g., a Hue slider background derived from Saturation and Lightness) must be driven through explicit writer calls instead of updating automatically.
+
+As a result, developers face **imperative overhead**:
 
 - **More props**. Every externally driven or coordinated value/style needs both an initial value and explicit writer calls, effectively doubling the prop surface.
 
@@ -23,9 +28,13 @@ This leads to:
 
 - **More** `"main thread"` **annotations**. Imperative writers often become separate helper functions, and each one needs its own `"main thread"` directive, leading to scattered annotations.
 
-The result is **bloated props**, **imperative chaining**, **ref hell**, and **directive clutter**, all of which **accumulate at every abstraction layer**.
+These costs **accumulate at every abstraction layer**, turning minor inconveniences into systemic overhead.
 
-**MTC removes this burden.** External-derived state updates flow naturally through declarative props, without extra refs, initial values, or imperative writers. In practice, this means developers can write code that looks **almost identical to BTC**, but without the prop bloat, ref wiring, or directive clutter. At the same time, **MTC preserves the responsiveness** of **BTC-MTS** under background blocking.
+### Solution
+
+**MTC removes this burden.** External-derived state flows naturally through declarative props, **eliminating the need for imperative chaining**.
+
+In practice, developers can write code that looks **almost identical to BTC**, but without the bloated props, ref hell, or directive clutter. At the same time, **MTC preserves the responsiveness** of **BTC-MTS** under background blocking.
 
 ## Compositional Patterns
 
@@ -43,44 +52,44 @@ This repo includes multiple demos that illustrate the evolution of component com
 
 ### MTC
 
-- **MTC-State ColorPicker (Coordinate on MTS)** – state-based alternative.
-- **MTC-Signal ColorPicker (Coordinate on MTS)** – signal-based alternative.
+- **MTC-State ColorPicker (Coordinate on MTS)** – state-based variant.
+- **MTC-Signal ColorPicker (Coordinate on MTS)** – signal-based variant.
 - **MTC-State ColorPicker (with a BTC Child)** – composability demo: nesting BTC inside MTC.
 
 ## Background Blocking Experiments
 
-We run multiple component comparisons under a simulated background-blocking condition to show how different compositional patterns behave (**BTC, BTC-MTS, and MTC**).
+To validate these patterns in practice, we run blocking experiments under simulated heavy load: every `100ms` a task is scheduled and each blocks for `250ms`, creating sustained congestion. We then compare how different compositional patterns behave (**BTC, BTC-MTS, and MTC**).
 
 ### Sliders: BTC vs BTC-MTS
 
 ![BTC vs BTC-MTS](./docs/slider-comparision.gif)
 
-We start with the simplest case: a single Slider under background blocking.
+First, we test the simplest case: a single Slider under blocking.
 
-- **BTC Slider** – the **thumb stops following your drag** (UI freezes), because all updates run on the blocked background thread.
-- **BTC-MTS Slider** – the **thumb stays responsive and smooth**, as coordination is moved onto the main thread (MTS).
+- **BTC Slider** – the **thumb stops following your drag** (UI freezes) because all updates run on the blocked background thread.
+- **BTC-MTS Slider** – the **thumb stays responsive and smooth** as coordination is moved onto the main thread (MTS).
 
-This demonstrates the core problem: **BTC alone is vulnerable to blocking**, while **BTC-MTS preserves responsiveness**.
+This highlights the core issue: **BTC alone is vulnerable to blocking**, while **BTC-MTS preserves responsiveness**.
 
 ### ColorPickers: BTC-MTS vs MTC
 
 ![BTC-MTS vs MTS](./docs/colorpicker-comparision.gif)
 
-We then compare three compositional patterns using ColorPickers under background blocking:
+Next, we compare three ColorPickers variants under background blocking:
 
 - **BTC-MTS (BTS Coord)** – coordination stays on the background thread, so slider gradients **freeze and stutter** when the thread is blocked.
 - **BTC-MTS (MTS Coord)** – coordination runs on the main thread, so gradients **stay smooth and responsive** even under blocking.
-- **MTC** – gradients are **equally smooth**, but with a **declarative API** (no MainThreadRef or scattered directives).
+- **MTC** – gradients are **equally smooth**, but with a **declarative API** (no `MainThreadRef` or scattered directives).
 
-Both **BTC-MTS (MTS Coord)** and **MTC** stay silky under blocking; **BTC-MTS (BTS Coord)** does not. **MTC achieves the same responsiveness with a declarative surface**.
+Both **BTC-MTS (MTS Coord)** and **MTC** remain silky under blocking; **BTC-MTS (BTS Coord)** does not. **MTC achieves the same responsiveness with a declarative surface**.
 
-## Key Takeways
+## Key Takeaways
 
-- **BTC**: simple but blocks under heavy load.
-- **BTC-MTS**: resilient, but requires verbose imperative coordination.
-- **MTC**: combines the **simplicity of BTC** with the **resilience of BTC-MTS**.
+- **BTC** – simple, but freezes under heavy load.
+- **BTC-MTS** – responsive, but verbose and imperative.
+- **MTC** – combines **BTC's simplicity** with **BTC-MTS's resilience**.
 
-The demos in this repo serve as a proof-of-concept of the **declarative approach** within Lynx's **dual-threaded programming model**, showing how **MTC** eliminates the imperative burden while keeping the UI fully responsive under background blocking.
+Together, these demos serve as a proof of concept for the **declarative approach** in Lynx's **dual-threaded model**, showing how **MTC** removes the imperative burden while keeping the UI fully responsive under background blocking.
 
 ## How to Explore
 
@@ -111,13 +120,11 @@ To view the demos on your mobile device, install the **LynxExplorer App**:
 
 Make sure your **computer and mobile device are on the same network**, then scan the QR code printed in the terminal to open the demo directly in the app.
 
-This is the basic setup required to run any example in this repo.
-
-For more details, see the [Starting Guide](https://lynxjs.org/guide/start/quick-start.html).
+You have finished the basic setup required to run any example in this repo. For more details, see the [Starting Guide](https://lynxjs.org/guide/start/quick-start.html).
 
 ### Testing Background Blocking
 
-With the app set up, you can also try blocking scenarios to see why main-thread responsiveness matters.
+Now, let's try a blocking scenario together.
 
 Run with blocking enabled (demo mode):
 
@@ -125,7 +132,7 @@ Run with blocking enabled (demo mode):
 pnpm run demo
 ```
 
-This command sets the environment variable:
+The demo command runs the dev server with the following environment variable:
 
 ```json
 "scripts": {
@@ -136,7 +143,7 @@ This command sets the environment variable:
 - `LYNX_DEMO_BLOCKING_ENABLED=true` → enables blocking mode.
 - Default (`dev`, `build`, `preview`) → blocking disabled.
 
-This makes it easy to reproduce blocking scenarios and confirm that the UI remains responsive thanks to MTS and MTC.
+From here, you can reproduce our experiments and observe how different patterns respond.
 
 ### Switch Demo Entries
 
@@ -158,18 +165,19 @@ For reference, here is the mapping between the conceptual demo names and the act
 
 ## Banner Design Concept
 
-The hero banner encodes the ideas behind this repo:
+The hero banner visually encodes the ideas behind this repo:
 
 - **Circles** – solid circles represent **BTC** and **MTC**.
 - **Lynx silhouette** – rendered in outer **BTC** component (top-level App):
-  - Filled part – changes with the ColorPicker, symbolizing reactive UI updates.
+  - **Filled part** – changes with the ColorPicker, symbolizing reactive UI updates.
 
-  - Knockout part – acts as a cut-out path, symbolizing **MTS** shuttling between **BTC** and **MTC**.
+  - **Knockout part** – acts as a cut-out path, symbolizing **MTS** shuttling between **BTC** and **MTC**.
 
 - **ColorPicker & sliders** – represent the **MTC** components from the demos, handling interaction and state updates.
 
 - **Numeric display inside the ColorPicker** – shows a nested BTC child component.
-- **Gradients** – more than decoration, they represent **external-derived state** in the demos (e.g., background depending on saturation and lightness). In **BTC-MTS**, this requires imperative writers, leading to extra props and ref wiring. In **MTC**, it flows naturally through declarative props.
+
+- **Gradients** – symbolize **external-derived state** in the demos (e.g., a background depending on saturation and lightness).
 
 ## Acknowledgements
 
