@@ -16,7 +16,7 @@ interface UsePointerInteractionProps {
   onCommit?: (pos: PointerPosition) => void;
 }
 
-type UsePointerInteractionReturnValueBase<TTouch, TLayout> = {
+type UsePointerInteractionReturnValueBase<TTouch, TLayout, TMouse = unknown> = {
   /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchstart={handlePointerDown} /> */
   handlePointerDown: (e: TTouch) => void;
   /** Bind on CONTAINER (or ELEMENT if container === element): <view bindtouchmove={handlePointerMove} /> */
@@ -25,6 +25,14 @@ type UsePointerInteractionReturnValueBase<TTouch, TLayout> = {
   handlePointerUp: (e: TTouch) => void;
   /** Bind on ELEMENT: <view bindlayoutchange={handleElementLayoutChange} /> */
   handleElementLayoutChange: (e: TLayout) => void;
+  /** Web compat: <view bindmousedown={handleMouseDown} /> */
+  handleMouseDown: (e: TMouse) => void;
+  /** Web compat: <view bindmousemove={handleMouseMove} /> */
+  handleMouseMove: (e: TMouse) => void;
+  /** Web compat: <view bindmouseup={handleMouseUp} /> */
+  handleMouseUp: (e: TMouse) => void;
+  /** Web compat: <view global-bindmouseup={handleMouseCancel} /> */
+  handleMouseCancel: () => void;
 };
 
 export type {

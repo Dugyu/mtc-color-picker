@@ -6,6 +6,7 @@
 # Dist
 node_modules
 dist/
+web/dist/
 
 # IDE
 .vscode/*

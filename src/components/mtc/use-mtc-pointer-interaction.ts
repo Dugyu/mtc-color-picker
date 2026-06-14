@@ -15,6 +15,11 @@ import type {
  * - If no separate container is needed, bind handlers on the element itself.
  *
  * No clamping/step logic is applied here.
+ *
+ * Web/native unified coords:
+ * - Touch on Lynx Web: `touches[0].clientX` is populated.
+ * - Touch on native: falls back to `e.detail.x`.
+ * - Desktop web has no touch events; `bindmouse{down,move,up}` handlers cover it.
  */
 function usePointerInteraction({
   onUpdate,
@@ -29,7 +34,27 @@ function usePointerInteraction({
 
   const draggingRef = useRef(false);
 
-  function buildPosition(x: number): PointerPosition | null {
+  const isWebPlatformRef = useRef<boolean>(
+    (SystemInfo.platform as string) === 'web',
+  );
+
+  /**
+   * Extract the X coordinate from a touch event.
+   * Prefers `clientX` (Lynx Web populates it), falls back to Lynx `detail.x`.
+   */
+  function pickCoord(e: MainThread.TouchEvent): number | null {
+    if (!isWebPlatformRef.current) {
+      return e.detail?.x ?? null;
+    }
+
+    const t = e.touches?.[0] ?? e.changedTouches?.[0];
+    const cx = (t as unknown as { clientX?: number } | undefined)?.clientX;
+    if (cx != null) return cx;
+    return e.detail?.x ?? null;
+  }
+
+  function buildPosition(x: number | null): PointerPosition | null {
+    if (x === null) return null;
     const width = eleWidthRef.current;
     const left = eleLeftRef.current;
 
@@ -43,56 +68,123 @@ function usePointerInteraction({
     return null;
   }
 
-  function handlePointerDown(e: MainThread.TouchEvent) {
-    draggingRef.current = true;
-    buildPosition(e.detail.x);
-    if (posRef.current) {
-      onUpdate?.(posRef.current);
+  function updateFromX(x: number) {
+    const pos = buildPosition(x);
+    if (pos) {
+      onUpdate?.(pos);
     }
+  }
+
+  function commitCurrentPosition() {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    if (posRef.current) {
+      onCommit?.(posRef.current);
+    }
+  }
+
+  // ── Touch handlers (native + web touch devices) ──
+
+  function handlePointerDown(e: MainThread.TouchEvent) {
+    // Clear the prior gesture's snapshot so a fallback commit from this
+    // gesture can never re-emit the previous gesture's position.
+    posRef.current = null;
+    draggingRef.current = true;
+    const x = pickCoord(e);
+    if (x === null) return;
+    updateFromX(x);
   }
 
   function handlePointerMove(e: MainThread.TouchEvent) {
     if (!draggingRef.current) return;
-    buildPosition(e.detail.x);
-    if (posRef.current) {
-      onUpdate?.(posRef.current);
-    }
+    const x = pickCoord(e);
+    if (x === null) return;
+    updateFromX(x);
   }
 
   function handlePointerUp(e: MainThread.TouchEvent) {
     draggingRef.current = false;
-    buildPosition(e.detail.x);
-    if (posRef.current) {
-      // Fire update then commit on release.
-      onUpdate?.(posRef.current);
+    const x = pickCoord(e);
+    const pos = x === null ? null : buildPosition(x);
+    if (pos) {
+      onUpdate?.(pos);
+      onCommit?.(pos);
+    } else if (posRef.current) {
       onCommit?.(posRef.current);
     }
+  }
+
+  // ── Mouse handlers (desktop web where touch events are unavailable) ──
+
+  function handleMouseDown(e: MainThread.MouseEvent) {
+    posRef.current = null;
+    draggingRef.current = true;
+    const x = e.clientX ?? e.pageX;
+    updateFromX(x);
+  }
+
+  function handleMouseMove(e: MainThread.MouseEvent) {
+    if (!draggingRef.current) return;
+    // Self-heal: if the user released the button outside the slider, the
+    // local `mouseup` never fires. Detect via `buttons` and finalize here so
+    // `draggingRef` doesn't stay stuck across unrelated future interactions.
+    if (e.buttons != null && (e.buttons & 1) === 0) {
+      commitCurrentPosition();
+      return;
+    }
+    const x = e.clientX ?? e.pageX;
+    updateFromX(x);
+  }
+
+  function handleMouseUp(e: MainThread.MouseEvent) {
+    const wasDragging = draggingRef.current;
+    draggingRef.current = false;
+    if (!wasDragging) return;
+    const x = e.clientX ?? e.pageX;
+    const pos = buildPosition(x);
+    if (pos) {
+      onUpdate?.(pos);
+      onCommit?.(pos);
+    } else if (posRef.current) {
+      onCommit?.(posRef.current);
+    }
+  }
+
+  function handleMouseCancel() {
+    commitCurrentPosition();
   }
 
   function handleElementLayoutChange(e: MainThread.LayoutChangeEvent) {
     eleWidthRef.current = e.detail.width;
 
+    // Screen-relative on native, viewport-relative on Lynx Web — matches
+    // the coord source (`detail.x` / `clientX`) on each platform.
     e.currentTarget
-      .invoke('boundingClientRect')
+      .invoke('boundingClientRect', { relativeTo: 'screen' })
       .then((rect: { left: number }) => {
-        // Screen-based rect so it aligns with e.detail.x
         eleLeftRef.current = rect.left;
       })
       .catch((err) => {
         console.error('Failed to get boundingClientRect:', err);
       });
   }
+
   return {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseCancel,
     handleElementLayoutChange,
   };
 }
 
 type UsePointerInteractionReturnValue = UsePointerInteractionReturnValueBase<
   MainThread.TouchEvent,
-  MainThread.LayoutChangeEvent
+  MainThread.LayoutChangeEvent,
+  MainThread.MouseEvent
 >;
 
 export { usePointerInteraction };

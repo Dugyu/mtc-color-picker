@@ -66,6 +66,10 @@ function Slider({
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseCancel,
     handleElementLayoutChange,
   } = useSlider({
     writeValue: externalWriterRef,
@@ -153,6 +157,10 @@ function Slider({
       main-thread:bindtouchmove={handlePointerMove}
       main-thread:bindtouchend={handlePointerUp}
       main-thread:bindtouchcancel={handlePointerUp}
+      main-thread:bindmousedown={handleMouseDown}
+      main-thread:bindmousemove={handleMouseMove}
+      main-thread:bindmouseup={handleMouseUp}
+      main-thread:global-bindmouseup={handleMouseCancel}
       className="relative px-5 bg-primary w-full h-10 flex flex-row items-center rounded-full"
     >
       {/* Track Positioner */}

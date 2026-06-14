@@ -17,5 +17,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": ["dist/"]
+  "exclude": ["dist/", "web/"]
 }

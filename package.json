@@ -22,7 +22,9 @@
     "build": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy build",
     "dev": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy dev",
     "format": "prettier --write .",
-    "preview": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy preview"
+    "preview": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy preview",
+    "web:dev": "rsbuild dev --config web/rsbuild.config.ts",
+    "web:build": "cross-env LYNX_DEMO_BLOCKING_ENABLED=false rspeedy build && rsbuild build --config web/rsbuild.config.ts"
   },
   "dependencies": {
     "@lynx-js/react": "file:./lynx-js-react-0.112.2.tgz"
@@ -33,10 +35,17 @@
     "@lynx-js/rspeedy": "^0.10.8",
     "@lynx-js/tailwind-preset": "^0.2.0",
     "@lynx-js/types": "3.3.0",
+    "@lynx-js/web-core": "^0.19.8",
+    "@lynx-js/web-elements": "^0.12.0",
+    "@rsbuild/core": "^1.4.15",
+    "@rsbuild/plugin-react": "^1.4.6",
     "@rsbuild/plugin-type-check": "1.2.4",
     "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
     "cross-env": "^10.0.0",
     "prettier": "^3.6.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rsbuild-plugin-tailwindcss": "^0.2.3",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.2"

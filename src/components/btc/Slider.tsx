@@ -18,6 +18,10 @@ function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseCancel,
     handleElementLayoutChange,
     ratio,
   } = useSlider(sliderProps);
@@ -29,6 +33,10 @@ function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
       bindtouchmove={handlePointerMove}
       bindtouchend={handlePointerUp}
       bindtouchcancel={handlePointerUp}
+      bindmousedown={handleMouseDown}
+      bindmousemove={handleMouseMove}
+      bindmouseup={handleMouseUp}
+      global-bindmouseup={handleMouseCancel}
       className="relative px-5 bg-primary w-full h-10 flex flex-row items-center rounded-full"
       style={rootStyle}
     >

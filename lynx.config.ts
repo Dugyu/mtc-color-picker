@@ -8,6 +8,10 @@ import { pluginTailwindCSS } from 'rsbuild-plugin-tailwindcss';
 const blockingEnabled = process.env.LYNX_DEMO_BLOCKING_ENABLED === 'true';
 
 export default defineConfig({
+  environments: {
+    web: {},
+    lynx: {},
+  },
   source: {
     entry: {
       'MTCColorPicker-BTC': './src/demos/MTCColorPickerBTC.tsx',

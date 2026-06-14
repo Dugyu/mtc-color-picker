@@ -153,6 +153,24 @@ From here, you can reproduce our experiments and observe how different patterns 
 
 Press `r` in your terminal to open the entry switcher. Use the up and down `↑`/`↓` arrow keys to navigate between entries, and press `Enter` to load the selected demo.
 
+### Preview in a Browser (Lynx for Web)
+
+You can also preview the demos in a desktop browser via [Lynx for Web](https://lynxjs.org/guide/start/quick-start.html). The web host lives in `web/` and renders each `*.web.bundle` inside a `<lynx-view>` element.
+
+The bundles served by the web host come from the root `dist/` directory (configured as `publicDir` in `web/rsbuild.config.ts`), so you must build them first:
+
+```bash
+# 1. Build Lynx bundles (produces both *.lynx.bundle and *.web.bundle)
+pnpm build
+
+# 2. Start the web host dev server
+pnpm web:dev
+```
+
+For a single-shot production build of both, use `pnpm web:build`.
+
+> Note: `pnpm web:dev` only watches `web/`. To pick up changes in `src/`, re-run `pnpm build` (or run it in a separate terminal in watch mode).
+
 ## Demo Entries
 
 For reference, here is the mapping between the conceptual demo names and the actual entry keys:

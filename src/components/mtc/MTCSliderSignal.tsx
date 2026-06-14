@@ -31,6 +31,10 @@ function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleMouseCancel,
   } = useSlider(sliderProps);
 
   return (
@@ -44,6 +48,13 @@ function Slider({ rootStyle, trackStyle, ...sliderProps }: SliderProps) {
       bindtouchend={handlePointerUp}
       // @ts-expect-error
       bindtouchcancel={handlePointerUp}
+      // @ts-expect-error MTC type mismatch
+      bindmousedown={handleMouseDown}
+      // @ts-expect-error MTC type mismatch
+      bindmousemove={handleMouseMove}
+      // @ts-expect-error MTC type mismatch
+      bindmouseup={handleMouseUp}
+      global-bindmouseup={handleMouseCancel}
       className="relative px-5 bg-primary w-full h-10 flex flex-row items-center rounded-full"
       style={rootStyle}
     >

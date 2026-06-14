@@ -43,7 +43,7 @@ export function AppLayout({
       {/* ColorDisplay */}
       <MaskIcon
         iconUrl={logoUrl}
-        className="absolute bottom-1/3 rounded-full size-72 bg-content"
+        className="absolute bottom-1/3 left-1/2 -translate-x-1/2 rounded-full size-72 bg-content"
         style={color ? { backgroundColor: color } : undefined}
       />
       {/* BottomSheet */}
